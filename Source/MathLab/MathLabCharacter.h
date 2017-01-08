@@ -39,7 +39,7 @@ public:
 	uint32 bUsingMotionControllers : 1;
 
 protected:
-	
+
 	/** Resets HMD orientation and position in VR. */
 	void OnResetVR();
 

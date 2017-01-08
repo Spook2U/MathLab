@@ -5,5 +5,7 @@
 
 #include "EngineMinimal.h"
 
+#include "DebugTools.h"
 
+       
 #endif
