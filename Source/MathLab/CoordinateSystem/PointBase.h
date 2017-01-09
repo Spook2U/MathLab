@@ -10,15 +10,26 @@ class MATHLAB_API APointBase : public AGeometryBase
 {
 	GENERATED_BODY()
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Member Variable  ////////////////////////////////////////////////////////////////////////////////
 public:
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "point")
-      FVector Coordinate;
+   FVector Coordinate;
 
-
+private:
+   UStaticMeshComponent *Point;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
-      void SetValuesPoint(ACoordinateSystemBase * coordinateSystem, LaserColors color, FVector coordinate);
+   UFUNCTION(BlueprintCallable, Category = "point")
+   void ConstructPoint();
+   
+   UFUNCTION(BlueprintCallable, Category = "point")   
+   void SetComponents(UStaticMeshComponent *point);
 
-      void CreateGuidesPoint(LaserColors color);	
+   void SetValuesPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate);
+
+   void CreateGuidesPoint(LaserColors color);	
 
 	
 	

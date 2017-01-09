@@ -13,10 +13,25 @@ class MATHLAB_API AUnitBase : public APointBase
 {
 	GENERATED_BODY()
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Member Variable  ////////////////////////////////////////////////////////////////////////////////
+private:
+   UStaticMeshComponent *XAxis;
+   UStaticMeshComponent *YAxis;
+   UStaticMeshComponent *XLaser;
+   UStaticMeshComponent *YLaser;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
    void OrientateToAxis(UStaticMeshComponent *axis);
 
-	
-	
-	
+   UFUNCTION(BlueprintCallable, Category = "unit")
+   void SetAxis(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *xLaser, UStaticMeshComponent *yLaser);
+
+   UFUNCTION(BlueprintCallable, Category = "unit")
+   void ScaleUnitLaser();
+   
+   void ScaleUnitLaser_AtAxis(UStaticMeshComponent *laser, UStaticMeshComponent *axis, float laserSize);	
+
 };

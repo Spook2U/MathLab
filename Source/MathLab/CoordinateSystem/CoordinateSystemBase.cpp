@@ -7,20 +7,48 @@
 #include "CoordinateSystemBase.h"
 
 
-ACoordinateSystemBase::ACoordinateSystemBase()      { PrimaryActorTick.bCanEverTick = true;}
-void ACoordinateSystemBase::BeginPlay()             {	Super::BeginPlay(); }
-void ACoordinateSystemBase::Tick( float DeltaTime ) { Super::Tick( DeltaTime ); }
+ACoordinateSystemBase::ACoordinateSystemBase()      
+{ 
+   PrimaryActorTick.bCanEverTick = true;
 
-void ACoordinateSystemBase::setAxis(UStaticMeshComponent * xAxis, UStaticMeshComponent * yAxis, UStaticMeshComponent * zAxis)
-{
-   this->XAxis = xAxis;
-   this->YAxis = yAxis;
-   this->ZAxis = zAxis;
+   XAxis = NULL;
+   YAxis = NULL;
+   ZAxis = NULL;
+
+   UnitCount = 0;
 }
 
-void ACoordinateSystemBase::scaleAxis(float length, float diameter)
+void ACoordinateSystemBase::BeginPlay()             
+{	
+   Super::BeginPlay(); 
+}
+void ACoordinateSystemBase::Tick( float DeltaTime ) { Super::Tick( DeltaTime ); }
+
+
+
+void ACoordinateSystemBase::TestFunction()
 {
-   ConvertFactor = AxisLength * 100 / UnitCount;
+   printLog("test %s", *FVector(1.f, 2.f, 3.f).ToString());
+}
+
+
+
+void ACoordinateSystemBase::SetAxis(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *zAxis)
+{
+   if(xAxis && yAxis && zAxis)
+   {
+      this->XAxis = xAxis;
+      this->YAxis = yAxis;
+      this->ZAxis = zAxis;
+   }
+}
+
+void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
+{
+   if(UnitCount)
+   {
+      ConvertFactor = AxisLength * 100 / UnitCount;
+   }
 
    FVector scaleVector = {diameter, diameter, 2 * length};
 
@@ -29,41 +57,44 @@ void ACoordinateSystemBase::scaleAxis(float length, float diameter)
    ZAxis->SetWorldScale3D(scaleVector);
 }
 
-AGeometryBase *ACoordinateSystemBase::addGeometry(bool isGuide, TSubclassOf<AGeometryBase> geometry)
+AGeometryBase *ACoordinateSystemBase::AddGeometry(bool isGuide, TSubclassOf<AGeometryBase> geometry)
 {
    AGeometryBase *newGeometry;
-
    FTransform transform = GetTransform();
 
    newGeometry = (AGeometryBase *)GetWorld()->SpawnActor(geometry, &transform);
 
    AttachToActor(newGeometry, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
-   newGeometry->isGuide = isGuide;
+   newGeometry->IsGuide = isGuide;
    if(!isGuide) Elements.Add(newGeometry);
 
    return newGeometry;
 }
 
-void ACoordinateSystemBase::addUnits()
+void ACoordinateSystemBase::AddUnits()
 {
-   for(int i = -UnitCount; i <= UnitCount; i++)
+   for(int i = UnitCount * (-1); i <= UnitCount; i++)
    {
       if(i != 0) // No Unit at Origin
       {
-         addUnits_ToAxis(XAxis, i);
-         addUnits_ToAxis(YAxis, i);
-         addUnits_ToAxis(ZAxis, i);
+         //AddUnits_ToAxis(XAxis, i);
+         //AddUnits_ToAxis(YAxis, i);
+         //AddUnits_ToAxis(ZAxis, i);
       }
    }
 }
 
-void ACoordinateSystemBase::addUnits_ToAxis(UStaticMeshComponent * axis, int index)
+void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int index)
 {
-   AUnitBase *newUnit;
-   newUnit = (AUnitBase *)addGeometry(false, AUnitBase::StaticClass());
+   if(!axis) return; /* nur bei ... */
 
-   newUnit->SetValuesPoint(this, LaserColor, axis->GetUpVector()*index);
-   newUnit->OrientateToAxis(axis);
+   AUnitBase *newUnit = (AUnitBase *)AddGeometry(false, AUnitBase::StaticClass());
+
+   if(newUnit)
+   {
+      newUnit->SetValuesPoint(this, LaserColor, axis->GetUpVector()*index);
+      newUnit->OrientateToAxis(axis);
+   }
 }
 
 
