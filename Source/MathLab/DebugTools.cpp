@@ -12,7 +12,7 @@ BOOL d_ASSERT(BOOL bCond, LPCSTR pszFile, int nLine)
 {
    if(!bCond)
    {
-      printError("%s, Line %d", pszFile, nLine);
+      PRINTERR("Pointer = NULL, Line %d", nLine);
       //if(nResult == IDABORT)
       //{
       //   
@@ -29,16 +29,6 @@ BOOL d_ASSERT(BOOL bCond, LPCSTR pszFile, int nLine)
 
 DEFINE_LOG_CATEGORY(MLog);
 DEFINE_LOG_CATEGORY(MLogScreen);
-
-void debug_uelog(FString s, int mode)
-{  
-   switch(mode)
-   {
-      case 0: UE_LOG(MLog, Log, TEXT("%s"), *s); break;
-      case 1: UE_LOG(MLog, Warning, TEXT("%s"), *s); break;
-      case 2: UE_LOG(MLog, Error, TEXT("%s"), *s); break;
-   }
-}
 
 void debug_uescreen(FString s, FColor color)
 {

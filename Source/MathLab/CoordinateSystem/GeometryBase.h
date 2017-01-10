@@ -29,7 +29,7 @@ public:
    TArray<AGeometryBase *> Guides;
 
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "geometry")
-   float Size = 0.075;
+   float Size;
 
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
    bool IsGuide;
@@ -52,11 +52,14 @@ public:
    UFUNCTION(BlueprintCallable, Category = "geometry")
    void SetPosition(FVector coordinate);
 
-   void SetValues(ACoordinateSystemBase *coordinateSystem, LaserColors color);
-
    UFUNCTION(BlueprintCallable, Category = "geometry")
    void ShowGuides(bool show);
 
    UFUNCTION(BlueprintCallable, Category = "geometry")
    void Updaterandering();
+
+// -------------------------------------------------------------------------------------------------
+protected:
+   void SetValues(ACoordinateSystemBase *coordinateSystem, LaserColors color);
+
 };

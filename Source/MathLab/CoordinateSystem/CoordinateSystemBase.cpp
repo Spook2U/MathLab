@@ -11,16 +11,35 @@ ACoordinateSystemBase::ACoordinateSystemBase()
 { 
    PrimaryActorTick.bCanEverTick = true;
 
-   XAxis = NULL;
-   YAxis = NULL;
-   ZAxis = NULL;
+   AxisLength = 1;
+   AxisSize = 0.03f;
+   UnitCount = 10;
+   UnitSizeFactor = 0.5f;
+   LaserSizefactor = 0.5f;
+   LaserColor = LaserColors::green;
+   Glowiness = 10.f;
+   Elements;
+   ConvertFactor = 0;
+   MaxCoordinate = 0;
 
-   UnitCount = 0;
+   //XAxis = NULL;
+   //YAxis = NULL;
+   //ZAxis = NULL;
+
+   TArray<UStaticMeshComponent *> comps;
+   GetComponents(comps);
+   PRINTLOG("%d", comps.Num());
+      
+   UnitBP = NULL;
+   static ConstructorHelpers::FObjectFinder<UBlueprint> ItemBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Unit.Unit'"));
+   if(ItemBlueprint.Object) { UnitBP = (UClass *)ItemBlueprint.Object->GeneratedClass; }
+   
 }
 
 void ACoordinateSystemBase::BeginPlay()             
 {	
    Super::BeginPlay(); 
+   TestFunction();
 }
 void ACoordinateSystemBase::Tick( float DeltaTime ) { Super::Tick( DeltaTime ); }
 
@@ -28,13 +47,15 @@ void ACoordinateSystemBase::Tick( float DeltaTime ) { Super::Tick( DeltaTime ); 
 
 void ACoordinateSystemBase::TestFunction()
 {
-   printLog("test %s", *FVector(1.f, 2.f, 3.f).ToString());
 }
 
 
 
 void ACoordinateSystemBase::SetAxis(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *zAxis)
 {
+   POINTERTEST(xAxis);
+   POINTERTEST(yAxis);
+   POINTERTEST(zAxis);
    if(xAxis && yAxis && zAxis)
    {
       this->XAxis = xAxis;
@@ -45,16 +66,19 @@ void ACoordinateSystemBase::SetAxis(UStaticMeshComponent *xAxis, UStaticMeshComp
 
 void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
 {
-   if(UnitCount)
-   {
-      ConvertFactor = AxisLength * 100 / UnitCount;
-   }
+   ConvertFactor = AxisLength * 100 / UnitCount;
 
    FVector scaleVector = {diameter, diameter, 2 * length};
 
-   XAxis->SetWorldScale3D(scaleVector);
-   YAxis->SetWorldScale3D(scaleVector);
-   ZAxis->SetWorldScale3D(scaleVector);
+   POINTERTEST(XAxis);
+   POINTERTEST(YAxis);
+   POINTERTEST(ZAxis);
+   if(XAxis && YAxis && ZAxis)
+   {
+      XAxis->SetWorldScale3D(scaleVector);
+      YAxis->SetWorldScale3D(scaleVector);
+      ZAxis->SetWorldScale3D(scaleVector);
+   }
 }
 
 AGeometryBase *ACoordinateSystemBase::AddGeometry(bool isGuide, TSubclassOf<AGeometryBase> geometry)
@@ -64,32 +88,41 @@ AGeometryBase *ACoordinateSystemBase::AddGeometry(bool isGuide, TSubclassOf<AGeo
 
    newGeometry = (AGeometryBase *)GetWorld()->SpawnActor(geometry, &transform);
 
-   AttachToActor(newGeometry, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
-   newGeometry->IsGuide = isGuide;
-   if(!isGuide) Elements.Add(newGeometry);
-
+   POINTERTEST(newGeometry);
+   if(newGeometry)
+   {
+      newGeometry->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+      newGeometry->IsGuide = isGuide;
+      if(!isGuide) Elements.Add(newGeometry);
+   }
    return newGeometry;
 }
 
 void ACoordinateSystemBase::AddUnits()
 {
-   for(int i = UnitCount * (-1); i <= UnitCount; i++)
-   {
-      if(i != 0) // No Unit at Origin
-      {
-         //AddUnits_ToAxis(XAxis, i);
-         //AddUnits_ToAxis(YAxis, i);
-         //AddUnits_ToAxis(ZAxis, i);
-      }
-   }
+   //for(int i = UnitCount * (-1); i <= UnitCount; i++)
+   //{
+   //   if(i != 0) // No Unit at Origin
+   //   {
+         POINTERTEST(XAxis);
+         POINTERTEST(YAxis);
+         POINTERTEST(ZAxis);
+         if(XAxis && YAxis && ZAxis)
+         {
+            AddUnits_ToAxis(XAxis, 1);
+            //AddUnits_ToAxis(XAxis, i);
+            //AddUnits_ToAxis(YAxis, i);
+            //AddUnits_ToAxis(ZAxis, i);
+         }
+   //   }
+   //}
 }
 
 void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int index)
 {
-   if(!axis) return; /* nur bei ... */
-
-   AUnitBase *newUnit = (AUnitBase *)AddGeometry(false, AUnitBase::StaticClass());
-
+   AUnitBase *newUnit = (AUnitBase *)AddGeometry(false, UnitBP);
+   
+   POINTERTEST(newUnit);
    if(newUnit)
    {
       newUnit->SetValuesPoint(this, LaserColor, axis->GetUpVector()*index);

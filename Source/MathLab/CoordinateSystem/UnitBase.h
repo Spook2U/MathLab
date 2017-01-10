@@ -24,14 +24,14 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
-   void OrientateToAxis(UStaticMeshComponent *axis);
-
    UFUNCTION(BlueprintCallable, Category = "unit")
    void SetAxis(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *xLaser, UStaticMeshComponent *yLaser);
 
    UFUNCTION(BlueprintCallable, Category = "unit")
    void ScaleUnitLaser();
    
-   void ScaleUnitLaser_AtAxis(UStaticMeshComponent *laser, UStaticMeshComponent *axis, float laserSize);	
+   void OrientateToAxis(UStaticMeshComponent *axis);
+
+   void ScaleUnitLaser_AtAxis(UStaticMeshComponent *laser, UStaticMeshComponent *axis, float laserSize);
 
 };

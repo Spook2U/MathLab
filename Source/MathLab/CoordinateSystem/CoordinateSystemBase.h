@@ -31,31 +31,31 @@ public:
 // Member Variable  ////////////////////////////////////////////////////////////////////////////////
 public:
    //Length of each positive and negative side of the axis in m
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
-   float AxisLength = 1;
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "settings", meta = (ClampMin = 0.5, UIMin = 1, UIMax = 9))
+   float AxisLength;
 
    //Diameter of the Axis and Unit in m
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
-   float AxisSize = 0.03f;
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "settings", meta = (ClampMin = 0.01, UIMin = 1))
+   float AxisSize;
 
    //Number of Units shown on each positive and negative side of each axis
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
-   int UnitCount = 10;
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "settings", meta = (ClampMin = 1, UIMin = 1, UIMax = 50))
+   int UnitCount;
 
    //Size in percent from the AxisSize (diameter)
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
-   float UnitSizeFactor = 0.5f;
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "settings", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
+   float UnitSizeFactor;
 
    //Size in percent from the AxisSize (diameter)
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
-   float LaserSizefactor = 0.5f;
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "settings", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
+   float LaserSizefactor;
 
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
-   LaserColors LaserColor = LaserColors::green;
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "settings")
+   LaserColors LaserColor;
 
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
-   float Glowiness = 10.f;
-
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "settings", meta = (ClampMin = 0))
+   float Glowiness;
+// -------------------------------------------------------------------------------------------------
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "coordinate System") 
    TArray<AGeometryBase *> Elements;
 
@@ -65,11 +65,15 @@ public:
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "coordinate System")
    float MaxCoordinate;
 
+// -------------------------------------------------------------------------------------------------
 private:
    UStaticMeshComponent *XAxis;
    UStaticMeshComponent *YAxis;
    UStaticMeshComponent *ZAxis;
 
+   TSubclassOf<AGeometryBase> PointBP;
+   TSubclassOf<AGeometryBase>  UnitBP;
+   
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
@@ -80,17 +84,21 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System")
    void AddUnits();
 
-   //Help function for addUnits()
-   void AddUnits_ToAxis(UStaticMeshComponent *axis, int index);
-
    //Changes size of the axis and updates the ConvertFactor
    UFUNCTION(BlueprintCallable, Category = "coordinate System")
    void ScaleAxis(float length, float diameter);
 
    //Saves the StaticMeshReferences in the source file to work on
    UFUNCTION(BlueprintCallable, Category = "coordinate System")
-   void SetAxis(UStaticMeshComponent* xAxis, UStaticMeshComponent* yAxis, UStaticMeshComponent* zAxis);
+   void SetAxis(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *zAxis);
 
    UFUNCTION(BlueprintCallable, Category = "Test")
    void TestFunction();
+
+// -------------------------------------------------------------------------------------------------
+private:
+   //Help function for addUnits()
+   void AddUnits_ToAxis(UStaticMeshComponent *axis, int index);
+
+
 };

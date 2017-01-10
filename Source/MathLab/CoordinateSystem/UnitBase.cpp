@@ -13,19 +13,27 @@ void AUnitBase::SetAxis(UStaticMeshComponent * xAxis, UStaticMeshComponent * yAx
 
 void AUnitBase::OrientateToAxis(UStaticMeshComponent *axis)
 {
-   float thickness = CoordinateSystem->AxisSize*CoordinateSystem->UnitSizeFactor;
+   POINTERTEST(CoordinateSystem);
+   if(CoordinateSystem)
+   {
+      float thickness = CoordinateSystem->AxisSize*CoordinateSystem->UnitSizeFactor;
 
-   FRotator rotation = axis->GetComponentRotation();
-   FVector  location = GetActorLocation();
-   FVector  scale    = FVector(thickness, thickness, 0.1f);
+      FRotator rotation = axis->GetComponentRotation();
+      FVector  location = GetActorLocation();
+      FVector  scale    = FVector(thickness, thickness, 0.1f);
 
-   SetActorTransform(FTransform(rotation, location, scale));
+      SetActorTransform(FTransform(rotation, location, scale));
+   }
 }
 
 void AUnitBase::ScaleUnitLaser()
 {
-   ScaleUnitLaser_AtAxis(XAxis, XLaser, CoordinateSystem->LaserSizefactor);
-   ScaleUnitLaser_AtAxis(YAxis, YLaser, CoordinateSystem->LaserSizefactor);
+   POINTERTEST(CoordinateSystem);
+   if(CoordinateSystem)
+   {
+      ScaleUnitLaser_AtAxis(XAxis, XLaser, CoordinateSystem->LaserSizefactor);
+      ScaleUnitLaser_AtAxis(YAxis, YLaser, CoordinateSystem->LaserSizefactor);
+   }
 }
 
 void AUnitBase::ScaleUnitLaser_AtAxis(UStaticMeshComponent *laser, UStaticMeshComponent *axis, float laserSize)

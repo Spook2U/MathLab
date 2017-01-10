@@ -4,9 +4,20 @@
 #include "GeometryBase.h"
 
 
-AGeometryBase::AGeometryBase()              { PrimaryActorTick.bCanEverTick = false; }
+AGeometryBase::AGeometryBase()              
+{ 
+   PrimaryActorTick.bCanEverTick = false; 
+
+   CoordinateSystem = NULL;
+   LaserCompoents;
+   Guides;
+   Size = 0.075;
+   IsGuide = false;
+}
 void AGeometryBase::BeginPlay()             { Super::BeginPlay(); }
 void AGeometryBase::Tick( float DeltaTime ) { Super::Tick( DeltaTime ); }
+
+
 
 void AGeometryBase::SetPosition(FVector coordinate)
 {
@@ -32,9 +43,14 @@ void AGeometryBase::AddLaserComponent(UStaticMeshComponent *laser)
 FVector AGeometryBase::CoordinateToLocation(FVector coordinate)
 {
    FVector location = coordinate;
-   location *= CoordinateSystem->ConvertFactor;
-   location *= FVector(1.f, -1.f, 1.f);
-   location += CoordinateSystem->GetActorLocation();
+
+   POINTERTEST(CoordinateSystem);
+   if(CoordinateSystem)
+   {
+      location *= CoordinateSystem->ConvertFactor;
+      location *= FVector(1.f, -1.f, 1.f);
+      location += CoordinateSystem->GetActorLocation();
+   }
    return location;
 }
 
@@ -53,14 +69,21 @@ void AGeometryBase::SetColor(LaserColors color)
       case LaserColors::white:   newColor = FLinearColor(0.75f, 1.f,   0.05f, 1.f); glow = 1.f;  break;
       case LaserColors::yellow:  newColor = FLinearColor(1.f,   1.f,   1.f,   1.f); glow = 1.f;  break;
    }
-   glow *= CoordinateSystem->Glowiness;
-   
+   POINTERTEST(CoordinateSystem);
+   if(CoordinateSystem)
+   {
+      glow *= CoordinateSystem->Glowiness;
+   }
+
    for(UStaticMeshComponent *laser : LaserCompoents)
    {
-      laser->SetVectorParameterValueOnMaterials(FName(TEXT("LaserColor")), FVector(newColor));
-      laser->SetScalarParameterValueOnMaterials(FName(TEXT("Glowiness")), glow);
+      POINTERTEST(laser);
+      if(laser)
+      {
+         laser->SetVectorParameterValueOnMaterials(FName(TEXT("LaserColor")), FVector(newColor));
+         laser->SetScalarParameterValueOnMaterials(FName(TEXT("Glowiness")), glow);
+      }
    }
-   
 }
 
 void AGeometryBase::ShowGuides(bool show)
@@ -69,11 +92,19 @@ void AGeometryBase::ShowGuides(bool show)
 
 void AGeometryBase::Updaterandering()
 {
-   float bound = CoordinateSystem->AxisLength*200;
-   for(UStaticMeshComponent *laser : LaserCompoents)
+   POINTERTEST(CoordinateSystem);
+   if(CoordinateSystem)
    {
-      laser->SetVectorParameterValueOnMaterials(TEXT("Location"), CoordinateSystem->GetActorLocation());
-      laser->SetVectorParameterValueOnMaterials(TEXT("Bounds"), FVector(bound, bound, bound));
+      float bound = CoordinateSystem->AxisLength*200;
+      for(UStaticMeshComponent *laser : LaserCompoents)
+      {
+         POINTERTEST(laser);
+         if(laser)
+         {
+            laser->SetVectorParameterValueOnMaterials(TEXT("Location"), CoordinateSystem->GetActorLocation());
+            laser->SetVectorParameterValueOnMaterials(TEXT("Bounds"), FVector(bound, bound, bound));
+         }
+      }
    }
 }
 

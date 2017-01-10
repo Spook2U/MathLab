@@ -29,6 +29,8 @@ public:
 
    void SetValuesPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate);
 
+// -------------------------------------------------------------------------------------------------
+protected:
    void CreateGuidesPoint(LaserColors color);	
 
 	
