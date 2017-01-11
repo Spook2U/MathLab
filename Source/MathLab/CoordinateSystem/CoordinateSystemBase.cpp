@@ -6,7 +6,6 @@
 #include "UnitBase.h"
 #include "CoordinateSystemBase.h"
 
-
 ACoordinateSystemBase::ACoordinateSystemBase()      
 { 
    PrimaryActorTick.bCanEverTick = true;
@@ -14,34 +13,60 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    AxisLength = 1;
    AxisSize = 0.03f;
    UnitCount = 10;
-   UnitSizeFactor = 0.5f;
-   LaserSizefactor = 0.5f;
    LaserColor = LaserColors::green;
+
+   UnitSizeFactor = 0.5f;
+   LaserSizeFactor = 0.5f;
    Glowiness = 10.f;
+
    Elements;
    ConvertFactor = 0;
    MaxCoordinate = 0;
 
-   //XAxis = NULL;
-   //YAxis = NULL;
-   //ZAxis = NULL;
+   XAxis = NULL;
+   YAxis = NULL;
+   ZAxis = NULL;
 
-   TArray<UStaticMeshComponent *> comps;
-   GetComponents(comps);
-   PRINTLOG("%d", comps.Num());
-      
    UnitBP = NULL;
    static ConstructorHelpers::FObjectFinder<UBlueprint> ItemBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Unit.Unit'"));
    if(ItemBlueprint.Object) { UnitBP = (UClass *)ItemBlueprint.Object->GeneratedClass; }
    
 }
 
+void ACoordinateSystemBase::OnConstruction(const FTransform &Transform) { Super::OnConstruction(Transform); }
+
+void ACoordinateSystemBase::PostInitProperties()
+{
+   Super::PostInitProperties();
+   MaxCoordinate = UnitCount;
+}
+
 void ACoordinateSystemBase::BeginPlay()             
 {	
-   Super::BeginPlay(); 
+#ifdef _UE_BUILD_DEBUG_FLAG_
+   g_this = this;
+#endif
+
+   //TArray<UStaticMeshComponent *> comps;
+   //GetComponents(comps);
+   //for(UStaticMeshComponent *c : comps)
+   //{
+   //   POINTERTEST(c);
+   //   if(c->GetName().Compare("X-Axis") == 0) { XAxis = c; }
+   //   if(c->GetName().Compare("Y-Axis") == 0) { YAxis = c; }
+   //   if(c->GetName().Compare("Z-Axis") == 0) { ZAxis = c; }
+   //}
+   //PRINTLOG("%s", *XAxis->GetName());
+   
+   InitCoordinateSystem();
+   
+   Super::BeginPlay();
+   
    TestFunction();
 }
 void ACoordinateSystemBase::Tick( float DeltaTime ) { Super::Tick( DeltaTime ); }
+
+void ACoordinateSystemBase::bp_debug_Screen(FString inString, FLinearColor color) { PRINTSCN(color.ToFColor(true), "%s", *inString); }
 
 
 
@@ -51,7 +76,9 @@ void ACoordinateSystemBase::TestFunction()
 
 
 
-void ACoordinateSystemBase::SetAxis(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *zAxis)
+void ACoordinateSystemBase::InitCoordinateSystem_Implementation() {}
+
+void ACoordinateSystemBase::SetComponents(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *zAxis)
 {
    POINTERTEST(xAxis);
    POINTERTEST(yAxis);
@@ -64,9 +91,11 @@ void ACoordinateSystemBase::SetAxis(UStaticMeshComponent *xAxis, UStaticMeshComp
    }
 }
 
+
+
 void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
 {
-   ConvertFactor = AxisLength * 100 / UnitCount;
+   if(UnitCount) ConvertFactor = AxisLength * 100 / UnitCount;
 
    FVector scaleVector = {diameter, diameter, 2 * length};
 
@@ -80,6 +109,8 @@ void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
       ZAxis->SetWorldScale3D(scaleVector);
    }
 }
+
+
 
 AGeometryBase *ACoordinateSystemBase::AddGeometry(bool isGuide, TSubclassOf<AGeometryBase> geometry)
 {
@@ -98,24 +129,25 @@ AGeometryBase *ACoordinateSystemBase::AddGeometry(bool isGuide, TSubclassOf<AGeo
    return newGeometry;
 }
 
+
+
 void ACoordinateSystemBase::AddUnits()
 {
-   //for(int i = UnitCount * (-1); i <= UnitCount; i++)
-   //{
-   //   if(i != 0) // No Unit at Origin
-   //   {
+   for(int i = UnitCount * (-1); i <= UnitCount; i++)
+   {
+      if(i != 0) // No Unit at Origin
+      {
          POINTERTEST(XAxis);
          POINTERTEST(YAxis);
          POINTERTEST(ZAxis);
          if(XAxis && YAxis && ZAxis)
          {
-            AddUnits_ToAxis(XAxis, 1);
-            //AddUnits_ToAxis(XAxis, i);
-            //AddUnits_ToAxis(YAxis, i);
-            //AddUnits_ToAxis(ZAxis, i);
+            AddUnits_ToAxis(XAxis, i);
+            AddUnits_ToAxis(YAxis, i);
+            AddUnits_ToAxis(ZAxis, i);
          }
-   //   }
-   //}
+      }
+   }
 }
 
 void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int index)
@@ -130,4 +162,10 @@ void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int inde
    }
 }
 
+
+
+// Extern Access for Actor to call EndPlay() in DebugTools
+#ifdef _UE_BUILD_DEBUG_FLAG_
+ACoordinateSystemBase *g_this = NULL; 
+#endif
 

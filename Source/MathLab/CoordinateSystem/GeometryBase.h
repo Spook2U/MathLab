@@ -13,53 +13,90 @@ class MATHLAB_API AGeometryBase : public AActor
 	
 public:	
 	AGeometryBase();
-	virtual void BeginPlay() override;
-	virtual void Tick( float DeltaSeconds ) override;
+   
+// Unreal Callbacks---------------------------------------------------------------------------------
+   virtual void OnConstruction(const FTransform &Transform) override;
+   virtual void BeginPlay() override;
 
- ////////////////////////////////////////////////////////////////////////////////////////////////////
- // Member Variable  ////////////////////////////////////////////////////////////////////////////////
+// Test Debug Print Function------------------------------------------------------------------------
+   UFUNCTION(BlueprintCallable, Displayname = "Print (DebugOnly)", Category = "string", meta = (Keywords = "print, debug, printdebug", Tooltip = "This method is only working in Debug or Development Mode"))
+   void bp_debug_Screen(FString inString = "Hello", FLinearColor color = FLinearColor::White);
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Member Variable  ////////////////////////////////////////////////////////////////////////////////
 public:
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
    ACoordinateSystemBase *CoordinateSystem;
 
+   //Saves all Components, which have a LaserMaterial
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
    TArray<UStaticMeshComponent *> LaserCompoents;
 
+   //Saves all objects, which are used a guides for the objcet
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
    TArray<AGeometryBase *> Guides;
 
+   //If true, this object is a guide of another object, therefore dont have it's own guides
+   UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
+   bool IsGuide;
+
+   // -------------------------------------------------------------------------------------------------
+
+   //Used to determine the size of the object
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "geometry")
    float Size;
 
-   UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
-   bool IsGuide;
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
-   UFUNCTION(BlueprintCallable, Category = "geometry")
-   void AddGuide(AGeometryBase *guide);
+   //Needs to be overridden in Blueprint. Is used to Initialise the Object
+   UFUNCTION(BlueprintNativeEvent, Category = "geometry|Init")
+   void InitGeometry();
+   void InitGeometry_Implementation();
 
-   UFUNCTION(BlueprintCallable, Category = "geometry")
-   void AddLaserComponent(UStaticMeshComponent *laser);
-   
-   UFUNCTION(BlueprintPure, Category = "geometry")
+   // -------------------------------------------------------------------------------------------------
+
+   //Converts the given Coordinate to the Location in the Scene
+   UFUNCTION(BlueprintPure, Category = "geometry|Util")
    FVector CoordinateToLocation(FVector coordinate);
 
-   UFUNCTION(BlueprintCallable, Category = "geometry")
-   void SetColor(LaserColors color);
+// -------------------------------------------------------------------------------------------------
 
-   UFUNCTION(BlueprintCallable, Category = "geometry")
+   //Called, when the objects need to update the position or other vales
+   UFUNCTION(BlueprintCallable, Category = "geometry|Update")
+   virtual void Update();
+
+   //Updates the visible area of the Material
+   UFUNCTION(BlueprintCallable, Category = "geometry|Update")
+   void UpdateRendering();
+
+   //Sets Location of the object ding on the Coordinate
+   UFUNCTION(BlueprintCallable, Category = "geometry|Setup")
    void SetPosition(FVector coordinate);
 
+   //Sets Color and Glowiness depending to the enum value and changes the Material of all Laser Components in the array
+   UFUNCTION(BlueprintCallable, Category = "geometry|Setup")
+   void SetColor(LaserColors color);
+
+   //Shows or Hides the guide objects
    UFUNCTION(BlueprintCallable, Category = "geometry")
    void ShowGuides(bool show);
 
-   UFUNCTION(BlueprintCallable, Category = "geometry")
-   void Updaterandering();
+   //Adds the Component as LaserComponent
+   UFUNCTION(BlueprintCallable, Category = "geometry|Init")
+   void AddLaserComponent(UStaticMeshComponent *laser);
+   
+
 
 // -------------------------------------------------------------------------------------------------
 protected:
+   void AddGuide(AGeometryBase *guide);
+
    void SetValues(ACoordinateSystemBase *coordinateSystem, LaserColors color);
+
 
 };

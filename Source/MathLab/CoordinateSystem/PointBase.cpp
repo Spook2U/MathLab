@@ -3,17 +3,32 @@
 #include "MathLab.h"
 #include "PointBase.h"
 
-void APointBase::ConstructPoint()
+APointBase::APointBase()
 {
+   Coordinate = FVector();
+}
+
+void APointBase::BeginPlay() { Super::BeginPlay(); }
+
+
+
+void APointBase::SetComponents(UStaticMeshComponent *point)
+{
+   this->Point = point;
    Point->SetWorldScale3D(Point->GetComponentScale()*Size);
 }
 
-void APointBase::SetComponents(UStaticMeshComponent * point)
+
+
+void APointBase::Update()
 {
-   this->Point = point;
+   Super::Update();
+   SetPosition(Coordinate);
 }
 
-void APointBase::SetValuesPoint(ACoordinateSystemBase * coordinateSystem, LaserColors color, FVector coordinate)
+
+
+void APointBase::SetValuesPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate)
 {
    SetValues(coordinateSystem, color);
    this->Coordinate = coordinate;
@@ -23,6 +38,8 @@ void APointBase::SetValuesPoint(ACoordinateSystemBase * coordinateSystem, LaserC
       ShowGuides(false);
    }
 }
+
+
 
 void APointBase::CreateGuidesPoint(LaserColors color)
 {

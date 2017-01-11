@@ -1,11 +1,11 @@
 
 #pragma once
 
-class DebugTools
+class ADebugTools
 {
 public:
-   DebugTools();
-   ~DebugTools();
+   ADebugTools();
+   ~ADebugTools();
 };
 
 
@@ -13,11 +13,14 @@ public:
 #define _UE_BUILD_DEBUG_FLAG_
 
 #ifdef _UE_BUILD_DEBUG_FLAG_
-#define POINTERTEST(x) d_ASSERT((x) != 0, __FILE__, __LINE__ )
-BOOL d_ASSERT(BOOL bCond, LPCSTR pszFile, int nLine);
+#define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
+
+#define POINTERTEST(x) doTest((x) != 0, __FILENAME__, __LINE__, __func__, #x)
+
+void doTest(bool valid, LPCSTR file, int line, LPCSTR func, LPCSTR name);
 
 #else
-#define ASSERT( x )
+#define POINTERTEST(x)
 #endif
 
 
@@ -35,10 +38,8 @@ BOOL d_ASSERT(BOOL bCond, LPCSTR pszFile, int nLine);
 #endif
 
 #ifdef _UE_BUILD_DEBUG_FLAG_
-
 DECLARE_LOG_CATEGORY_EXTERN(MLog, Log, All);
 DECLARE_LOG_CATEGORY_EXTERN(MLogScreen, Log, All);
-
 void debug_uescreen(FString s, FColor color);
 
 #endif

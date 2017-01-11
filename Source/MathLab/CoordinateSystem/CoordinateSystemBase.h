@@ -17,6 +17,9 @@ enum class LaserColors : uint8
    yellow   UMETA(DisplayName = "Yellow")
 };
 
+
+class AGeometryBase;
+
 UCLASS()
 class MATHLAB_API ACoordinateSystemBase : public AActor
 {
@@ -24,46 +27,67 @@ class MATHLAB_API ACoordinateSystemBase : public AActor
 	
 public:	
 	ACoordinateSystemBase();
+   
+// Unreal Callbacks---------------------------------------------------------------------------------
+   virtual void OnConstruction(const FTransform &Transform) override;
 	virtual void BeginPlay() override;
-	virtual void Tick( float DeltaSeconds ) override;
+   virtual void PostInitProperties() override;
+   virtual void Tick( float DeltaSeconds ) override;
+
+// Test Debug Print Function------------------------------------------------------------------------
+   UFUNCTION(BlueprintCallable, Displayname = "Print (DebugOnly)", Category = "string", meta = (Keywords = "print, debug, printdebug", Tooltip = "This method is only working in Debug or Development Mode"))
+   void bp_debug_Screen(FString inString = "Hello", FLinearColor color = FLinearColor::White);
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Member Variable  ////////////////////////////////////////////////////////////////////////////////
 public:
    //Length of each positive and negative side of the axis in m
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "settings", meta = (ClampMin = 0.5, UIMin = 1, UIMax = 9))
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate System|settings", meta = (ClampMin = 0.5, UIMin = 1, UIMax = 9))
    float AxisLength;
 
    //Diameter of the Axis and Unit in m
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "settings", meta = (ClampMin = 0.01, UIMin = 1))
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate System|settings", meta = (ClampMin = 0.01, UIMin = 1))
    float AxisSize;
 
    //Number of Units shown on each positive and negative side of each axis
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "settings", meta = (ClampMin = 1, UIMin = 1, UIMax = 50))
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate System|settings", meta = (ClampMin = 1, UIMin = 1, UIMax = 50))
    int UnitCount;
 
+   //Color of the laser grid from the Units
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate System|settings")
+   LaserColors LaserColor;
+
+// -------------------------------------------------------------------------------------------------
+
    //Size in percent from the AxisSize (diameter)
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "settings", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "coordinate System|settings", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
    float UnitSizeFactor;
 
    //Size in percent from the AxisSize (diameter)
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "settings", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
-   float LaserSizefactor;
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "coordinate System|settings", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
+   float LaserSizeFactor;
 
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "settings")
-   LaserColors LaserColor;
-
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "settings", meta = (ClampMin = 0))
+   //Glowi intensity of the laser of the Units
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "coordinate System|settings", meta = (ClampMin = 0))
    float Glowiness;
+
 // -------------------------------------------------------------------------------------------------
+
+   //Saves all Objects created in the CoordinateSystem
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "coordinate System") 
    TArray<AGeometryBase *> Elements;
 
+   //Used to convert from Coordinate to Location
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "coordinate System")
    float ConvertFactor;
 
+   //Defines the biggest Coordinate still visible
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "coordinate System")
    float MaxCoordinate;
+
+
 
 // -------------------------------------------------------------------------------------------------
 private:
@@ -73,32 +97,53 @@ private:
 
    TSubclassOf<AGeometryBase> PointBP;
    TSubclassOf<AGeometryBase>  UnitBP;
+
+
    
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
-   UFUNCTION(BlueprintCallable, Category = "coordinate System")
-   AGeometryBase * AddGeometry(bool isGuide, TSubclassOf<AGeometryBase> geometry);
-
-   //Spawns Unit Objects at the Coordinate System
-   UFUNCTION(BlueprintCallable, Category = "coordinate System")
-   void AddUnits();
-
-   //Changes size of the axis and updates the ConvertFactor
-   UFUNCTION(BlueprintCallable, Category = "coordinate System")
-   void ScaleAxis(float length, float diameter);
-
-   //Saves the StaticMeshReferences in the source file to work on
-   UFUNCTION(BlueprintCallable, Category = "coordinate System")
-   void SetAxis(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *zAxis);
-
+   //Test Function to easily test Code
    UFUNCTION(BlueprintCallable, Category = "Test")
    void TestFunction();
 
 // -------------------------------------------------------------------------------------------------
+
+   //Needs to be overridden in Blueprint. Is used to Initialise the Object
+   UFUNCTION(BlueprintNativeEvent, Category = "coordinate System|Init")
+   void InitCoordinateSystem();
+
+   void InitCoordinateSystem_Implementation();
+   
+// -------------------------------------------------------------------------------------------------
+
+   //Saves the StaticMeshReferences in the source file to work on
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|Init")
+   void SetComponents(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *zAxis);
+
+   //Changes size of the axis and updates the ConvertFactor
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|Setup")
+   void ScaleAxis(float length, float diameter);
+   
+   //Spawns Unit Objects at the Coordinate System
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|Init")
+   void AddUnits();
+
+// -------------------------------------------------------------------------------------------------
+
+   AGeometryBase * AddGeometry(bool isGuide, TSubclassOf<AGeometryBase> geometry);
+
+
+
+// -------------------------------------------------------------------------------------------------
 private:
-   //Help function for addUnits()
+   //Sub function for AddUnits()
    void AddUnits_ToAxis(UStaticMeshComponent *axis, int index);
-
-
 };
+
+
+
+// Extern Access for Actor to call EndPlay() in DebugTools
+#ifdef _UE_BUILD_DEBUG_FLAG_
+extern ACoordinateSystemBase *g_this;
+#endif

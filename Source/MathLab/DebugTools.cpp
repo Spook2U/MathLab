@@ -1,29 +1,20 @@
 #include "MathLab.h"
 #include "DebugTools.h"
+#include "CoordinateSystem/CoordinateSystemBase.h"
 #include "Engine.h"
 
-DebugTools::DebugTools()  {}
-DebugTools::~DebugTools() {}
-
-
+ADebugTools::ADebugTools()  {}
+ADebugTools::~ADebugTools() {}
 
 #ifdef _UE_BUILD_DEBUG_FLAG_
-BOOL d_ASSERT(BOOL bCond, LPCSTR pszFile, int nLine)
+void doTest(bool valid, LPCSTR file, int line, LPCSTR func, LPCSTR name)
 {
-   if(!bCond)
+   if(!valid)
    {
-      PRINTERR("Pointer = NULL, Line %d", nLine);
-      //if(nResult == IDABORT)
-      //{
-      //   
-      //   //Game StopPlay()
-      //}
-      //else if(nResult == IDRETRY)
-      //{
-      //   return false;
-      //}
+      PRINTERR("%s = NULL, Line: %d in %s() - %s", *FString(name), line, *FString(func), *FString(file));
+      g_this->EndPlay(EEndPlayReason::Quit);
+      //EndPlay()    
    }
-   return true;
 }
 
 
