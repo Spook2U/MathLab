@@ -8,17 +8,28 @@ APointBase::APointBase()
    Coordinate = FVector();
 }
 
-void APointBase::BeginPlay() { Super::BeginPlay(); }
+// Unreal Events -----------------------------------------------------------------------------------
 
-
-
-void APointBase::SetComponents(UStaticMeshComponent *point)
-{
-   this->Point = point;
-   Point->SetWorldScale3D(Point->GetComponentScale()*Size);
+void APointBase::BeginPlay() 
+{ 
+   Super::BeginPlay(); 
 }
 
+// Initialise --------------------------------------------------------------------------------------
 
+void APointBase::SetComponents(UStaticMeshComponent *point, TArray<UStaticMeshComponent *> laserComponents)
+{
+   this->Point = point;
+   
+   Point->SetWorldScale3D(Point->GetComponentScale()*Size);
+  
+   for(UStaticMeshComponent *l : laserComponents)
+   {
+      LaserCompoents.Add(l);
+   }
+}
+
+// Update -------------------------------------------------------------------------------------------
 
 void APointBase::Update()
 {
@@ -26,7 +37,7 @@ void APointBase::Update()
    SetPosition(Coordinate);
 }
 
-
+// -------------------------------------------------------------------------------------------------
 
 void APointBase::SetValuesPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate)
 {
@@ -39,7 +50,7 @@ void APointBase::SetValuesPoint(ACoordinateSystemBase *coordinateSystem, LaserCo
    }
 }
 
-
+// Protected ----------------------------------------------------------------------------------------
 
 void APointBase::CreateGuidesPoint(LaserColors color)
 {

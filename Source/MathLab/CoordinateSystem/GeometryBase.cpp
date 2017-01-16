@@ -16,27 +16,19 @@ AGeometryBase::AGeometryBase()
    Size = 0.075;
 }
 
-void AGeometryBase::OnConstruction(const FTransform &Transform)
-{
-   Super::OnConstruction(Transform);
+void AGeometryBase::BeginPlay() { 
+   Super::BeginPlay();
 }
 
-void AGeometryBase::BeginPlay() { InitGeometry(); Super::BeginPlay(); 
-}
+void AGeometryBase::bp_debug_Screen(FString inString, FLinearColor color) { MLD_BLP(color.ToFColor(true), "%s", *inString); }
 
-void AGeometryBase::bp_debug_Screen(FString inString, FLinearColor color) { PRINTSCN(color.ToFColor(true), "%s", *inString); }
-
-
-
-void AGeometryBase::InitGeometry_Implementation() {}
-
-
+// Pure Functions -----------------------------------------------------------------------------------
 
 FVector AGeometryBase::CoordinateToLocation(FVector coordinate)
 {
    FVector location = coordinate;
 
-   POINTERTEST(CoordinateSystem);
+   MLD_PTR_CHECK(CoordinateSystem);
    if(CoordinateSystem)
    {
       location *= CoordinateSystem->ConvertFactor;
@@ -46,7 +38,7 @@ FVector AGeometryBase::CoordinateToLocation(FVector coordinate)
    return location;
 }
 
-
+// Update -------------------------------------------------------------------------------------------
 
 void AGeometryBase::Update()
 {
@@ -61,13 +53,13 @@ void AGeometryBase::Update()
 
 void AGeometryBase::UpdateRendering()
 {
-   POINTERTEST(CoordinateSystem);
+   MLD_PTR_CHECK(CoordinateSystem);
    if(CoordinateSystem)
    {
       float bound = CoordinateSystem->AxisLength * 200;
       for(UStaticMeshComponent *laser : LaserCompoents)
       {
-         POINTERTEST(laser);
+         MLD_PTR_CHECK(laser);
          if(laser)
          {
             laser->SetVectorParameterValueOnMaterials(TEXT("Location"), CoordinateSystem->GetActorLocation());
@@ -76,6 +68,8 @@ void AGeometryBase::UpdateRendering()
       }
    }
 }
+
+// Setup --------------------------------------------------------------------------------------------
 
 void AGeometryBase::SetPosition(FVector coordinate)
 {
@@ -89,23 +83,20 @@ void AGeometryBase::SetColor(LaserColors color)
 
    switch(color)
    {
-      case LaserColors::blue:    newColor = FLinearColor(0.05f, 0.1f, 1.f, 1.f); glow = 3.f;  break;
-      case LaserColors::green:   newColor = FLinearColor(0.2f, 1.f, 0.05f, 1.f); glow = 1.f;  break;
-      case LaserColors::orange:  newColor = FLinearColor(1.f, 0.4f, 0.05f, 1.f); glow = 1.2f; break;
-      case LaserColors::purple:  newColor = FLinearColor(1.f, 0.05f, 1.f, 1.f); glow = 1.5f; break;
-      case LaserColors::red:     newColor = FLinearColor(1.f, 0.1f, 0.05f, 1.f); glow = 2.5f; break;
-      case LaserColors::white:   newColor = FLinearColor(0.75f, 1.f, 0.05f, 1.f); glow = 1.f;  break;
-      case LaserColors::yellow:  newColor = FLinearColor(1.f, 1.f, 1.f, 1.f); glow = 1.f;  break;
+      case LaserColors::blue:    newColor = FLinearColor(0.05f, 0.1f,  1.f,   1.f); glow = 3.f;  break;
+      case LaserColors::green:   newColor = FLinearColor(0.2f,  1.f,   0.05f, 1.f); glow = 1.f;  break;
+      case LaserColors::orange:  newColor = FLinearColor(1.f,   0.4f,  0.05f, 1.f); glow = 1.2f; break;
+      case LaserColors::purple:  newColor = FLinearColor(1.f,   0.05f, 1.f,   1.f); glow = 1.5f; break;
+      case LaserColors::red:     newColor = FLinearColor(1.f,   0.1f,  0.05f, 1.f); glow = 2.5f; break;
+      case LaserColors::white:   newColor = FLinearColor(0.75f, 1.f,   0.05f, 1.f); glow = 1.f;  break;
+      case LaserColors::yellow:  newColor = FLinearColor(1.f,   1.f,   1.f,   1.f); glow = 1.f;  break;
    }
-   POINTERTEST(CoordinateSystem);
-   if(CoordinateSystem)
-   {
-      glow *= CoordinateSystem->Glowiness;
-   }
+   MLD_PTR_CHECK(CoordinateSystem);
+   if(CoordinateSystem) { glow *= CoordinateSystem->Glowiness; }
 
    for(UStaticMeshComponent *laser : LaserCompoents)
    {
-      POINTERTEST(laser);
+      MLD_PTR_CHECK(laser);
       if(laser)
       {
          laser->SetVectorParameterValueOnMaterials(FName(TEXT("LaserColor")), FVector(newColor));
@@ -114,26 +105,30 @@ void AGeometryBase::SetColor(LaserColors color)
    }
 }
 
+// --------------------------------------------------------------------------------------------------
+
 void AGeometryBase::ShowGuides(bool show)
 {
 }
+
+
+
+// Protected ----------------------------------------------------------------------------------------
 
 void AGeometryBase::AddLaserComponent(UStaticMeshComponent *laser)
 {
    LaserCompoents.Add(laser);
 }
 
-
+void AGeometryBase::AddGuide(AGeometryBase *guide)
+{
+   Guides.Add(guide);
+}
 
 void AGeometryBase::SetValues(ACoordinateSystemBase * coordinateSystem, LaserColors color)
 {
    this->CoordinateSystem = coordinateSystem;
    SetColor(color);
-}
-
-void AGeometryBase::AddGuide(AGeometryBase *guide)
-{
-   Guides.Add(guide);
 }
 
 

@@ -1,9 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MathLab.h"
+
 #include "GeometryBase.h"
+#include "LineBase.h"
+#include "PlaneBase.h"
 #include "PointBase.h"
+#include "SphereBase.h"
 #include "UnitBase.h"
+
 #include "CoordinateSystemBase.h"
 
 ACoordinateSystemBase::ACoordinateSystemBase()      
@@ -28,45 +33,40 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    ZAxis = NULL;
 
    UnitBP = NULL;
-   static ConstructorHelpers::FObjectFinder<UBlueprint> ItemBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Unit.Unit'"));
-   if(ItemBlueprint.Object) { UnitBP = (UClass *)ItemBlueprint.Object->GeneratedClass; }
-   
+   static ConstructorHelpers::FObjectFinder<UBlueprint> UnitBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Unit.Unit'"));
+   if(UnitBlueprint.Object) { UnitBP = (UClass *)UnitBlueprint.Object->GeneratedClass; }
+
+   PointBP = NULL;   
+   static ConstructorHelpers::FObjectFinder<UBlueprint> PointBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Point.Point'"));
+   if(PointBlueprint.Object) { PointBP = (UClass *)PointBlueprint.Object->GeneratedClass; }
+
+   LineBP = NULL;
+   static ConstructorHelpers::FObjectFinder<UBlueprint> LineBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Line.Line'"));
+   if(LineBlueprint.Object) { LineBP = (UClass *)LineBlueprint.Object->GeneratedClass; }
+
 }
 
-void ACoordinateSystemBase::OnConstruction(const FTransform &Transform) { Super::OnConstruction(Transform); }
+// Unreal Events -----------------------------------------------------------------------------------
 
-void ACoordinateSystemBase::PostInitProperties()
+void ACoordinateSystemBase::OnConstruction(const FTransform & Transform)
 {
-   Super::PostInitProperties();
    MaxCoordinate = UnitCount;
 }
 
-void ACoordinateSystemBase::BeginPlay()             
+void ACoordinateSystemBase::BeginPlay()
 {	
 #ifdef _UE_BUILD_DEBUG_FLAG_
    g_this = this;
 #endif
 
-   //TArray<UStaticMeshComponent *> comps;
-   //GetComponents(comps);
-   //for(UStaticMeshComponent *c : comps)
-   //{
-   //   POINTERTEST(c);
-   //   if(c->GetName().Compare("X-Axis") == 0) { XAxis = c; }
-   //   if(c->GetName().Compare("Y-Axis") == 0) { YAxis = c; }
-   //   if(c->GetName().Compare("Z-Axis") == 0) { ZAxis = c; }
-   //}
-   //PRINTLOG("%s", *XAxis->GetName());
-   
-   InitCoordinateSystem();
-   
    Super::BeginPlay();
-   
    TestFunction();
 }
 void ACoordinateSystemBase::Tick( float DeltaTime ) { Super::Tick( DeltaTime ); }
 
-void ACoordinateSystemBase::bp_debug_Screen(FString inString, FLinearColor color) { PRINTSCN(color.ToFColor(true), "%s", *inString); }
+
+
+void ACoordinateSystemBase::bp_debug_Screen(FString inString, FLinearColor color) { MLD_BLP(color.ToFColor(true), "%s", *inString); }
 
 
 
@@ -74,15 +74,13 @@ void ACoordinateSystemBase::TestFunction()
 {
 }
 
-
-
-void ACoordinateSystemBase::InitCoordinateSystem_Implementation() {}
+// Initialise --------------------------------------------------------------------------------------
 
 void ACoordinateSystemBase::SetComponents(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *zAxis)
 {
-   POINTERTEST(xAxis);
-   POINTERTEST(yAxis);
-   POINTERTEST(zAxis);
+   MLD_PTR_CHECK(xAxis);
+   MLD_PTR_CHECK(yAxis);
+   MLD_PTR_CHECK(zAxis);
    if(xAxis && yAxis && zAxis)
    {
       this->XAxis = xAxis;
@@ -91,7 +89,21 @@ void ACoordinateSystemBase::SetComponents(UStaticMeshComponent *xAxis, UStaticMe
    }
 }
 
+float ACoordinateSystemBase::MaxVisibleLength()
+{
+   float length;
+   FVector v = FVector(1, 1, 1);
 
+   length = (v*MaxCoordinate - v*MaxCoordinate*(-1)).Size();
+      
+   return length;   
+}
+
+// Pure Functions -----------------------------------------------------------------------------------
+
+
+
+// Setup --------------------------------------------------------------------------------------------
 
 void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
 {
@@ -99,9 +111,9 @@ void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
 
    FVector scaleVector = {diameter, diameter, 2 * length};
 
-   POINTERTEST(XAxis);
-   POINTERTEST(YAxis);
-   POINTERTEST(ZAxis);
+   MLD_PTR_CHECK(XAxis);
+   MLD_PTR_CHECK(YAxis);
+   MLD_PTR_CHECK(ZAxis);
    if(XAxis && YAxis && ZAxis)
    {
       XAxis->SetWorldScale3D(scaleVector);
@@ -110,7 +122,7 @@ void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
    }
 }
 
-
+// Make ---------------------------------------------------------------------------------------------
 
 AGeometryBase *ACoordinateSystemBase::AddGeometry(bool isGuide, TSubclassOf<AGeometryBase> geometry)
 {
@@ -119,7 +131,7 @@ AGeometryBase *ACoordinateSystemBase::AddGeometry(bool isGuide, TSubclassOf<AGeo
 
    newGeometry = (AGeometryBase *)GetWorld()->SpawnActor(geometry, &transform);
 
-   POINTERTEST(newGeometry);
+   MLD_PTR_CHECK(newGeometry);
    if(newGeometry)
    {
       newGeometry->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
@@ -129,17 +141,15 @@ AGeometryBase *ACoordinateSystemBase::AddGeometry(bool isGuide, TSubclassOf<AGeo
    return newGeometry;
 }
 
-
-
 void ACoordinateSystemBase::AddUnits()
 {
    for(int i = UnitCount * (-1); i <= UnitCount; i++)
    {
       if(i != 0) // No Unit at Origin
       {
-         POINTERTEST(XAxis);
-         POINTERTEST(YAxis);
-         POINTERTEST(ZAxis);
+         MLD_PTR_CHECK(XAxis);
+         MLD_PTR_CHECK(YAxis);
+         MLD_PTR_CHECK(ZAxis);
          if(XAxis && YAxis && ZAxis)
          {
             AddUnits_ToAxis(XAxis, i);
@@ -154,12 +164,36 @@ void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int inde
 {
    AUnitBase *newUnit = (AUnitBase *)AddGeometry(false, UnitBP);
    
-   POINTERTEST(newUnit);
+   MLD_PTR_CHECK(newUnit);
    if(newUnit)
    {
       newUnit->SetValuesPoint(this, LaserColor, axis->GetUpVector()*index);
       newUnit->OrientateToAxis(axis);
    }
+}
+
+APointBase *ACoordinateSystemBase::MakePoint(LaserColors color, bool isGuide, FVector coordinate)
+{
+   APointBase *newPoint = (APointBase *)AddGeometry(isGuide, PointBP);
+   
+   MLD_PTR_CHECK(newPoint);
+   if(newPoint)
+   {
+      newPoint->SetValuesPoint(this, color, coordinate);
+   }
+   return newPoint;
+}
+
+ALineBase * ACoordinateSystemBase::MakeLine(LaserColors color, bool isGuide, FVector position, FVector direction, LineMode mode)
+{
+   ALineBase *newLine = (ALineBase *)AddGeometry(isGuide, LineBP);
+
+   MLD_PTR_CHECK(newLine);
+   if(newLine)
+   {
+      newLine->SetValuesLine(this, color, position, direction, mode);
+   }
+   return nullptr;
 }
 
 

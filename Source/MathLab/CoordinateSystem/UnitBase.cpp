@@ -5,17 +5,22 @@
 
 void AUnitBase::BeginPlay() { Super::BeginPlay(); }
 
+// Initialise --------------------------------------------------------------------------------------
 
-
-void AUnitBase::SetComponents(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *xLaser, UStaticMeshComponent *yLaser)
+void AUnitBase::SetComponents(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *xLaser, UStaticMeshComponent *yLaser, TArray<UStaticMeshComponent *> laserComponents)
 {
    this->XAxis  = xAxis;
    this->YAxis  = yAxis;
    this->XLaser = xLaser;
    this->YLaser = yLaser;
+
+   for(UStaticMeshComponent *l : laserComponents)
+   {
+      LaserCompoents.Add(l);
+   }
 }
 
-
+// Update -------------------------------------------------------------------------------------------
 
 void AUnitBase::Update()
 {
@@ -24,11 +29,11 @@ void AUnitBase::Update()
    ScaleUnitLaser();
 }
 
-
+// Setup --------------------------------------------------------------------------------------------
 
 void AUnitBase::ScaleUnitLaser()
 {
-   POINTERTEST(CoordinateSystem);
+   MLD_PTR_CHECK(CoordinateSystem);
    if(CoordinateSystem)
    {
       ScaleUnitLaser_AtAxis(XAxis, XLaser, CoordinateSystem->LaserSizeFactor);
@@ -43,11 +48,11 @@ void AUnitBase::ScaleUnitLaser_AtAxis(UStaticMeshComponent *axis, UStaticMeshCom
    laser->SetWorldScale3D(FVector(axisScale.X*laserSize, axisScale.Y*laserSize, CoordinateSystem->AxisLength*2));
 }
 
-
+// -------------------------------------------------------------------------------------------------
 
 void AUnitBase::OrientateToAxis(UStaticMeshComponent *axis)
 {
-   POINTERTEST(CoordinateSystem);
+   MLD_PTR_CHECK(CoordinateSystem);
    if(CoordinateSystem)
    {
       float thickness = CoordinateSystem->AxisSize*CoordinateSystem->UnitSizeFactor;

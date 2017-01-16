@@ -3,17 +3,16 @@
 #pragma once
 
 #include "CoordinateSystem/PointBase.h"
-#include "UnitBase.generated.h"
+#include "SphereBase.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class MATHLAB_API AUnitBase : public APointBase
+class MATHLAB_API ASphereBase : public APointBase
 {
 	GENERATED_BODY()
 
 public:
+   ASphereBase();
+
 // Unreal Callbacks---------------------------------------------------------------------------------
    virtual void BeginPlay() override;
 
@@ -21,11 +20,11 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Member Variable  ////////////////////////////////////////////////////////////////////////////////
+public:
+
+
+
 private:
-   UStaticMeshComponent *XAxis;
-   UStaticMeshComponent *YAxis;
-   UStaticMeshComponent *XLaser;
-   UStaticMeshComponent *YLaser;
 
 
 
@@ -33,25 +32,25 @@ private:
 // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
    //Saves the StaticMeshReferences in the source file to work on
-   UFUNCTION(BlueprintCallable, Category = "unit|Init")
-   void SetComponents(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *xLaser, UStaticMeshComponent *yLaser, TArray<UStaticMeshComponent *> laserComponents);
-
-   //Called, when the objects need to update the position or other vales
-   UFUNCTION(BlueprintCallable, Category = "unit|Update")
-   virtual void Update() override;
-
-   //Scales the laser of the Unit to have the same length as the Axis
-   UFUNCTION(BlueprintCallable, Category = "unit|Setup")
-   void ScaleUnitLaser();
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|sphere|Init")
+   void SetComponents(UStaticMeshComponent *sphere, TArray<UStaticMeshComponent *> laserComponents);
 
 // -------------------------------------------------------------------------------------------------
 
-   void OrientateToAxis(UStaticMeshComponent *axis);
+   //Called, when the objects need to update the position or other vales
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|sphere|Update")
+   virtual void Update() override;
+
+// -------------------------------------------------------------------------------------------------
+
+   void SetValuesSphere(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate, float radius);
 
 
 
 // -------------------------------------------------------------------------------------------------
 protected:
-   void ScaleUnitLaser_AtAxis(UStaticMeshComponent *laser, UStaticMeshComponent *axis, float laserSize);
 
+	
+	
+	
 };

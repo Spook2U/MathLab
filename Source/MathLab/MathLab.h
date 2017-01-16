@@ -4,6 +4,7 @@
 #define __MATHLAB_H__
 
 #include "EngineMinimal.h"
+#include "Kismet/KismetMathLibrary.h"
 
 #include "DebugTools.h"
 

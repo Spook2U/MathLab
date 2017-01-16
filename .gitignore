@@ -1,6 +1,7 @@
 Binaries
 DerivedDataCache
 Intermediate
+ipch
 Saved
 *.VC.db
 *.opensdf

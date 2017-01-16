@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoordinateSystem/GeometryBase.h"
-#include "PointBase.generated.h"
+#include "PlaneBase.generated.h"
 
 UCLASS()
-class MATHLAB_API APointBase : public AGeometryBase
+class MATHLAB_API APlaneBase : public AGeometryBase
 {
 	GENERATED_BODY()
 
 public:
-   APointBase();
+   APlaneBase();
 
 // Unreal Callbacks---------------------------------------------------------------------------------
    virtual void BeginPlay() override;
@@ -21,13 +21,10 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Member Variable  ////////////////////////////////////////////////////////////////////////////////
 public:
-   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "point")
-   FVector Coordinate;
 
 
 
 private:
-   UStaticMeshComponent *Point;
 
 
 
@@ -35,26 +32,24 @@ private:
 // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
    //Saves the StaticMeshReferences in the source file to work on
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Init")
-   void SetComponents(UStaticMeshComponent *point, TArray<UStaticMeshComponent *> laserComponents);
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Init")
+   void SetComponents(UStaticMeshComponent *plane, TArray<UStaticMeshComponent *> laserComponents);
 
-// -------------------------------------------------------------------------------------------------
+   // -------------------------------------------------------------------------------------------------
 
    //Called, when the objects need to update the position or other vales
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Update")
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Update")
    virtual void Update() override;
 
-// -------------------------------------------------------------------------------------------------
+   // -------------------------------------------------------------------------------------------------
 
-   void SetValuesPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate);
+   void SetValuesPlane(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector position, FVector direction1, FVector direction2);
 
 
 
-// -------------------------------------------------------------------------------------------------
+   // -------------------------------------------------------------------------------------------------
 protected:
-   void CreateGuidesPoint(LaserColors color);	
 
-	
 	
 	
 };

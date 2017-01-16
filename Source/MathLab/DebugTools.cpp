@@ -11,20 +11,43 @@ void doTest(bool valid, LPCSTR file, int line, LPCSTR func, LPCSTR name)
 {
    if(!valid)
    {
-      PRINTERR("%s = NULL, Line: %d in %s() - %s", *FString(name), line, *FString(func), *FString(file));
+      MLD_ERR("%s - %s = NULL %s() (line %d)", *debug_FunctionPrefix(file), *FString(name), *FString(func), line);
       g_this->EndPlay(EEndPlayReason::Quit);
       //EndPlay()    
    }
 }
 
 
-DEFINE_LOG_CATEGORY(MLog);
-DEFINE_LOG_CATEGORY(MLogScreen);
+DEFINE_LOG_CATEGORY(MLogCode);
+DEFINE_LOG_CATEGORY(MLogBlue);
+DEFINE_LOG_CATEGORY(MLogScrn);
 
-void debug_uescreen(FString s, FColor color)
+void debug_uescreen(FString s, FColor color, int mode)
 {
    GEngine->AddOnScreenDebugMessage(-1, 30, color, s);
-   UE_LOG(MLogScreen, Log, TEXT("%s"), *s);
+   switch(mode)
+   {
+      case MLog::Blue: UE_LOG(MLogBlue, Log, TEXT("%s"), *s); break;
+      case MLog::Scrn: UE_LOG(MLogScrn, Log, TEXT("%s"), *s); break;
+      default:         UE_LOG(MLogCode, Log, TEXT("%s"), *s); break;
+   }
+}
+
+FString debug_FunctionPrefix(FString functionname)
+{
+   FString prefix = "";
+   
+   if     (functionname.Equals(TEXT("CoordinateSystemBase.cpp"))) { prefix = "CoSys"; }
+   else if(functionname.Equals(TEXT("GeometryBase.cpp")))         { prefix = "Geo  "; }
+   else if(functionname.Equals(TEXT("PointBase.cpp")))            { prefix = "Point"; }
+   else if(functionname.Equals(TEXT("UnitBase.cpp")))             { prefix = "Unit "; }
+   else if(functionname.Equals(TEXT("LineBase.cpp")))             { prefix = "Line "; }
+   else if(functionname.Equals(TEXT("PlaneBase.cpp")))            { prefix = "Plane"; }
+   else if(functionname.Equals(TEXT("SphereBase.cpp")))           { prefix = "Spher"; }
+   else if(functionname.Equals(TEXT("LinearEqualaton.cpp")))      { prefix = "LinEq"; }
+   else                                                           { prefix = functionname; }
+
+   return prefix;
 }
 
 #endif

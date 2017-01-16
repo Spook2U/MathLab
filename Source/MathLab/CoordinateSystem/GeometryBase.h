@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "GameFramework/Actor.h"
 #include "CoordinateSystemBase.h"
+#include "GameFramework/Actor.h"
 #include "GeometryBase.generated.h"
 
 UCLASS()
@@ -14,12 +14,13 @@ class MATHLAB_API AGeometryBase : public AActor
 public:	
 	AGeometryBase();
    
-// Unreal Callbacks---------------------------------------------------------------------------------
-   virtual void OnConstruction(const FTransform &Transform) override;
+// Unreal Callbacks --------------------------------------------------------------------------------
    virtual void BeginPlay() override;
 
-// Test Debug Print Function------------------------------------------------------------------------
-   UFUNCTION(BlueprintCallable, Displayname = "Print (DebugOnly)", Category = "string", meta = (Keywords = "print, debug, printdebug", Tooltip = "This method is only working in Debug or Development Mode"))
+
+
+// Test Debug Print Function -----------------------------------------------------------------------
+   UFUNCTION(BlueprintCallable, Displayname = "Print (DebugOnly)", Category = "string", meta = (Keywords = "mld, print, debug, printdebug", Tooltip = "This method is only working in Debug or Development Mode"))
    void bp_debug_Screen(FString inString = "Hello", FLinearColor color = FLinearColor::White);
 
 
@@ -45,7 +46,7 @@ public:
    // -------------------------------------------------------------------------------------------------
 
    //Used to determine the size of the object
-   UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "geometry")
+   UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "geometry")
    float Size;
 
 
@@ -53,42 +54,35 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
-   //Needs to be overridden in Blueprint. Is used to Initialise the Object
-   UFUNCTION(BlueprintNativeEvent, Category = "geometry|Init")
-   void InitGeometry();
-   void InitGeometry_Implementation();
-
-   // -------------------------------------------------------------------------------------------------
-
    //Converts the given Coordinate to the Location in the Scene
-   UFUNCTION(BlueprintPure, Category = "geometry|Util")
+   UFUNCTION(BlueprintPure, Category = "coordinate System|geometry|Util|")
    FVector CoordinateToLocation(FVector coordinate);
 
 // -------------------------------------------------------------------------------------------------
 
    //Called, when the objects need to update the position or other vales
-   UFUNCTION(BlueprintCallable, Category = "geometry|Update")
    virtual void Update();
 
    //Updates the visible area of the Material
-   UFUNCTION(BlueprintCallable, Category = "geometry|Update")
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Update")
    void UpdateRendering();
 
+// -------------------------------------------------------------------------------------------------
+
    //Sets Location of the object ding on the Coordinate
-   UFUNCTION(BlueprintCallable, Category = "geometry|Setup")
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Setup")
    void SetPosition(FVector coordinate);
 
    //Sets Color and Glowiness depending to the enum value and changes the Material of all Laser Components in the array
-   UFUNCTION(BlueprintCallable, Category = "geometry|Setup")
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Setup")
    void SetColor(LaserColors color);
 
+// -------------------------------------------------------------------------------------------------
+
    //Shows or Hides the guide objects
-   UFUNCTION(BlueprintCallable, Category = "geometry")
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry")
    void ShowGuides(bool show);
 
-   //Adds the Component as LaserComponent
-   UFUNCTION(BlueprintCallable, Category = "geometry|Init")
-   void AddLaserComponent(UStaticMeshComponent *laser);
    
 
 
@@ -96,7 +90,10 @@ public:
 protected:
    void AddGuide(AGeometryBase *guide);
 
+   void AddLaserComponent(UStaticMeshComponent *laser);
+
    void SetValues(ACoordinateSystemBase *coordinateSystem, LaserColors color);
+
 
 
 };
