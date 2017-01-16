@@ -44,6 +44,13 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    static ConstructorHelpers::FObjectFinder<UBlueprint> LineBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Line.Line'"));
    if(LineBlueprint.Object) { LineBP = (UClass *)LineBlueprint.Object->GeneratedClass; }
 
+   PlaneBP = NULL;
+   static ConstructorHelpers::FObjectFinder<UBlueprint> PlaneBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Plane.Plane'"));
+   if(PlaneBlueprint.Object) { PlaneBP = (UClass *)PlaneBlueprint.Object->GeneratedClass; }
+
+   SphereBP = NULL;
+   static ConstructorHelpers::FObjectFinder<UBlueprint> SphereBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Sphere.Sphere'"));
+   if(SphereBlueprint.Object) { SphereBP = (UClass *)SphereBlueprint.Object->GeneratedClass; }
 }
 
 // Unreal Events -----------------------------------------------------------------------------------
@@ -89,19 +96,17 @@ void ACoordinateSystemBase::SetComponents(UStaticMeshComponent *xAxis, UStaticMe
    }
 }
 
+// Pure Functions -----------------------------------------------------------------------------------
+
 float ACoordinateSystemBase::MaxVisibleLength()
 {
    float length;
    FVector v = FVector(1, 1, 1);
 
    length = (v*MaxCoordinate - v*MaxCoordinate*(-1)).Size();
-      
-   return length;   
+
+   return length;
 }
-
-// Pure Functions -----------------------------------------------------------------------------------
-
-
 
 // Setup --------------------------------------------------------------------------------------------
 
@@ -119,6 +124,20 @@ void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
       XAxis->SetWorldScale3D(scaleVector);
       YAxis->SetWorldScale3D(scaleVector);
       ZAxis->SetWorldScale3D(scaleVector);
+   }
+}
+
+// Update -------------------------------------------------------------------------------------------
+
+void ACoordinateSystemBase::Update()
+{
+   for(AGeometryBase *g : Elements)
+   {
+      MLD_PTR_CHECK(g);
+      if(g)
+      {
+         g->Update();
+      }
    }
 }
 
@@ -172,10 +191,40 @@ void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int inde
    }
 }
 
-APointBase *ACoordinateSystemBase::MakePoint(LaserColors color, bool isGuide, FVector coordinate)
+APointBase *ACoordinateSystemBase::MakePoint(LaserColors color, FVector coordinate, bool showGuides)
+{
+   APointBase *point = AddPoint(color, false, coordinate);
+   point->ShowGuides(showGuides);
+   return point;
+}
+
+ALineBase *ACoordinateSystemBase::MakeLine(LaserColors color, FVector position, FVector direction, LineMode mode, bool showGuides)
+{
+   ALineBase *line = AddLine(color, false, position, direction, mode);
+   line->ShowGuides(showGuides);
+   return line;
+}
+
+APlaneBase *ACoordinateSystemBase::MakePlane(LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode, bool showGuides)
+{
+   APlaneBase *plane = AddPlane(color, false, position, direction1, direction2, mode);
+   plane->ShowGuides(showGuides);
+   return plane;
+}
+
+ASphereBase *ACoordinateSystemBase::MakeSphere(LaserColors color, FVector position, float radius, bool showGuides)
+{
+   ASphereBase *sphere = AddSphere(color, false, position, radius);
+   sphere->ShowGuides(showGuides);
+   return sphere;
+}
+
+// --------------------------------------------------------------------------------------------------
+
+APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, bool isGuide, FVector coordinate)
 {
    APointBase *newPoint = (APointBase *)AddGeometry(isGuide, PointBP);
-   
+
    MLD_PTR_CHECK(newPoint);
    if(newPoint)
    {
@@ -184,7 +233,7 @@ APointBase *ACoordinateSystemBase::MakePoint(LaserColors color, bool isGuide, FV
    return newPoint;
 }
 
-ALineBase * ACoordinateSystemBase::MakeLine(LaserColors color, bool isGuide, FVector position, FVector direction, LineMode mode)
+ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, bool isGuide, FVector position, FVector direction, LineMode mode)
 {
    ALineBase *newLine = (ALineBase *)AddGeometry(isGuide, LineBP);
 
@@ -193,7 +242,31 @@ ALineBase * ACoordinateSystemBase::MakeLine(LaserColors color, bool isGuide, FVe
    {
       newLine->SetValuesLine(this, color, position, direction, mode);
    }
-   return nullptr;
+   return newLine;
+}
+
+APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, bool isGuide, FVector position, FVector direction1, FVector direction2, PlaneMode mode)
+{
+   APlaneBase *newPlane = (APlaneBase *)AddGeometry(isGuide, PlaneBP);
+
+   MLD_PTR_CHECK(newPlane);
+   if(newPlane)
+   {
+      newPlane->SetValuesPlane(this, color, position, direction1, direction2, mode);
+   }
+   return newPlane;
+}
+
+ASphereBase * ACoordinateSystemBase::AddSphere(LaserColors color, bool isGuide, FVector position, float radius)
+{
+   ASphereBase *newSphere = (ASphereBase *)AddGeometry(isGuide, SphereBP);
+
+   MLD_PTR_CHECK(newSphere);
+   if(newSphere)
+   {
+      newSphere->SetValuesSphere(this, color, position, radius);
+   }
+   return newSphere;
 }
 
 

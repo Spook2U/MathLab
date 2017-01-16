@@ -94,7 +94,8 @@ private:
    TSubclassOf<AGeometryBase> PointBP;
    TSubclassOf<AGeometryBase> UnitBP;
    TSubclassOf<AGeometryBase> LineBP;
-
+   TSubclassOf<AGeometryBase> PlaneBP;
+   TSubclassOf<AGeometryBase> SphereBP;
 
    
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,18 +124,49 @@ public:
 
 // -------------------------------------------------------------------------------------------------
 
+   //Updates the Coordinate System and all of its geometry
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|Update")
+   void Update();
+
+// -------------------------------------------------------------------------------------------------
+
    AGeometryBase * AddGeometry(bool isGuide, TSubclassOf<AGeometryBase> geometry);
 
    //Spawns Unit Objects at the Coordinate System
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
    void AddUnits();
 
+   /**Spawns a Point at the given Coordinate in the Coordinate System*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
-   APointBase *MakePoint(LaserColors color, bool isGuide, FVector coordinate);
+   APointBase *MakePoint(LaserColors color, FVector coordinate, bool showGuides);
 
+   /**
+      Spawns a Line with the defines mode
+      Mode line: Spawns an endless line using position and direction Vector.
+      Mode segment: Spawns a segmented line between 2 points A (position) and B (direction).
+      Mode vector: Spawns a vector pointing to direction, using position as offset from the orign.
+   */
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
-   ALineBase *MakeLine(LaserColors color, bool isGuide, FVector position, FVector direction, LineMode mode);
+   ALineBase *MakeLine(LaserColors color, FVector position, FVector direction, LineMode mode, bool showGuides);
 
+   /**
+      Spawns a Plane with the defines mode
+      Mode plane: Spawns an endless plane using position and 2 direction Vector.
+   */
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
+   APlaneBase *MakePlane(LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode, bool showGuides);
+
+   /**Spawns a Sphere at the given Coordinate with the defined radius*/
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
+   ASphereBase *MakeSphere(LaserColors color, FVector position, float radius, bool showGuides);
+
+
+// -------------------------------------------------------------------------------------------------
+
+   APointBase *AddPoint(LaserColors color, bool isGuide, FVector coordinate);
+   ALineBase *AddLine(LaserColors color, bool isGuide, FVector position, FVector direction, LineMode mode);
+   APlaneBase *AddPlane(LaserColors color, bool isGuide, FVector position, FVector direction1, FVector direction2, PlaneMode mode);
+   ASphereBase *AddSphere(LaserColors color, bool isGuide, FVector position, float radius);
 
 
 // -------------------------------------------------------------------------------------------------

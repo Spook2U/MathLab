@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "MathLabTools.h"
 #include "CoordinateSystemBase.h"
 #include "GameFramework/Actor.h"
 #include "GeometryBase.generated.h"

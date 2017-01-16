@@ -45,9 +45,13 @@ void AGeometryBase::Update()
    UpdateRendering();
    for(AGeometryBase *g : Guides)
    {
-      g->Update();
-      //ist ja eig schon durch die Update()? Testen ob's so geht
-      //g->UpdateRendering 
+      MLD_PTR_CHECK(g);
+      if(g)
+      {
+         g->Update();
+         //ist ja eig schon durch die Update()? Testen ob's so geht
+         //g->UpdateRendering 
+      }
    }
 }
 
@@ -88,8 +92,8 @@ void AGeometryBase::SetColor(LaserColors color)
       case LaserColors::orange:  newColor = FLinearColor(1.f,   0.4f,  0.05f, 1.f); glow = 1.2f; break;
       case LaserColors::purple:  newColor = FLinearColor(1.f,   0.05f, 1.f,   1.f); glow = 1.5f; break;
       case LaserColors::red:     newColor = FLinearColor(1.f,   0.1f,  0.05f, 1.f); glow = 2.5f; break;
-      case LaserColors::white:   newColor = FLinearColor(0.75f, 1.f,   0.05f, 1.f); glow = 1.f;  break;
-      case LaserColors::yellow:  newColor = FLinearColor(1.f,   1.f,   1.f,   1.f); glow = 1.f;  break;
+      case LaserColors::white:   newColor = FLinearColor(1.f,   1.f,   1.f,   1.f); glow = 1.f;  break;
+      case LaserColors::yellow:  newColor = FLinearColor(0.75f, 1.f,   0.05f, 1.f); glow = 1.f;  break;
    }
    MLD_PTR_CHECK(CoordinateSystem);
    if(CoordinateSystem) { glow *= CoordinateSystem->Glowiness; }
@@ -109,6 +113,14 @@ void AGeometryBase::SetColor(LaserColors color)
 
 void AGeometryBase::ShowGuides(bool show)
 {
+   for(AGeometryBase *g : Guides)
+   {
+      MLD_PTR_CHECK(g);
+      if(g)
+      {
+         g->RootComponent->SetVisibility(show, true);
+      }
+   }
 }
 
 

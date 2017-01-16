@@ -24,7 +24,7 @@ void ALineBase::SetComponents(UStaticMeshComponent *line, UStaticMeshComponent *
    this->Arrowhead = arrowhead;
 
    Line->SetWorldScale3D(FVector(Size / 5, Size / 5, Line->GetComponentScale().Z));
-   Arrowhead->SetWorldScale3D(FVector(Arrowhead->GetComponentScale().X, Arrowhead->GetComponentScale().Y, Arrowhead->GetComponentScale().Z * 1.5));
+   Arrowhead->SetWorldScale3D(FVector(Arrowhead->GetComponentScale().X, Arrowhead->GetComponentScale().Y, Arrowhead->GetComponentScale().Z * 1.5)*Size);
    Arrowhead->SetHiddenInGame(true);
 
    for(UStaticMeshComponent *l : laserComponents)
@@ -39,6 +39,21 @@ void ALineBase::Update()
 {
    Super::Update();
    SetPosition(Position);
+   BuildLine();
+}
+
+// -------------------------------------------------------------------------------------------------
+
+void ALineBase::BuildLine()
+{
+   //Make Rotation
+   if(Mode == LineMode::segment) { SetActorRotation(UKismetMathLibrary::FindLookAtRotation(CoordinateToLocation(Position), CoordinateToLocation(Direction))); }
+   else                          { SetActorRotation(UKismetMathLibrary::Conv_VectorToRotator(Direction*FVector(1.f, -1.f, 1.f))); }
+
+   //Make Scale
+   if(     Mode == LineMode::line)    { Line->SetWorldScale3D(FVector(Line->GetComponentScale().X, Line->GetComponentScale().Y, CoordinateSystem->MaxVisibleLength())); }
+   else if(Mode == LineMode::segment) { ScaleLaser(UKismetMathLibrary::VSize(Direction - Position)); }
+   else                               { ScaleLaser(UKismetMathLibrary::VSize(Direction)); }
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -50,8 +65,6 @@ void ALineBase::SetValuesLine(ACoordinateSystemBase * coordinateSystem, LaserCol
    this->Direction = direction;
    this->Mode = mode;
 
- 
-
    switch(Mode)
    {
       case LineMode::line:    CreateGuidesLine(color); break;
@@ -61,22 +74,14 @@ void ALineBase::SetValuesLine(ACoordinateSystemBase * coordinateSystem, LaserCol
 
 }
 
-void ALineBase::BuildLine()
-{
-   //Make Rotation
-   if(Mode == LineMode::segment) { SetActorRotation(UKismetMathLibrary::FindLookAtRotation(CoordinateToLocation(Direction), CoordinateToLocation(Position))); }
-   else                          { SetActorRotation(UKismetMathLibrary::Conv_VectorToRotator(Direction*FVector(1.f, -1.f, 1.f))); }
-
-   //Make Scale
-   if     (Mode == LineMode::line)    { SetActorScale3D(FVector(Line->GetComponentScale().X, Line->GetComponentScale().Y, CoordinateSystem->MaxVisibleLength())); }
-   else if(Mode == LineMode::segment) { ScaleLaser(UKismetMathLibrary::VSize(Direction - Position)); }
-   else                               { ScaleLaser(UKismetMathLibrary::VSize(Direction)); }
-}
-
 // Protected ----------------------------------------------------------------------------------------
 
 void ALineBase::CreateGuidesLine(LaserColors color)
 {
+   if(IsGuide) return;
+
+   AddGuide(CoordinateSystem->AddLine(color, true, FVector(), Position, LineMode::vector));
+   AddGuide(CoordinateSystem->AddLine(color, true, Position, Direction, LineMode::vector));
 }
 
 void ALineBase::ScaleLaser(float length)
@@ -89,7 +94,7 @@ void ALineBase::ScaleLaser(float length)
    }
 
    //Scale from Point A to B
-   SetActorScale3D(FVector(Line->GetComponentScale().X, Line->GetComponentScale().Y, (CoordinateSystem->ConvertFactor/100)*length));
+   Line->SetWorldScale3D(FVector(Line->GetComponentScale().X, Line->GetComponentScale().Y, (CoordinateSystem->ConvertFactor/100)*length));
 }
 
 void ALineBase::MoveLaser(UStaticMeshComponent *laser, float length)

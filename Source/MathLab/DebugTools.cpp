@@ -11,7 +11,7 @@ void doTest(bool valid, LPCSTR file, int line, LPCSTR func, LPCSTR name)
 {
    if(!valid)
    {
-      MLD_ERR("%s - %s = NULL %s() (line %d)", *debug_FunctionPrefix(file), *FString(name), *FString(func), line);
+      MLD_ERR("%s - %s = NULL %s() (line %d)", *debug_ClassPrefix(file), *FString(name), *FString(func), line);
       g_this->EndPlay(EEndPlayReason::Quit);
       //EndPlay()    
    }
@@ -27,13 +27,13 @@ void debug_uescreen(FString s, FColor color, int mode)
    GEngine->AddOnScreenDebugMessage(-1, 30, color, s);
    switch(mode)
    {
-      case MLog::Blue: UE_LOG(MLogBlue, Log, TEXT("%s"), *s); break;
-      case MLog::Scrn: UE_LOG(MLogScrn, Log, TEXT("%s"), *s); break;
-      default:         UE_LOG(MLogCode, Log, TEXT("%s"), *s); break;
+      case MLog::Blue: UE_LOG(MLogBlue, Log, TEXT("%s - %s"), *debug_ClassPrefix(MLD_CLASS_NAME), *s); break;
+      case MLog::Scrn: UE_LOG(MLogScrn, Log, TEXT("%s - %s"), *debug_ClassPrefix(MLD_CLASS_NAME), *s); break;
+      default:         UE_LOG(MLogCode, Log, TEXT("%s - %s"), *debug_ClassPrefix(MLD_CLASS_NAME), *s); break;
    }
 }
 
-FString debug_FunctionPrefix(FString functionname)
+FString debug_ClassPrefix(FString functionname)
 {
    FString prefix = "";
    

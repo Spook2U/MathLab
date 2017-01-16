@@ -27,6 +27,11 @@ enum class LineMode : uint8
    vector  UMETA(DisplayName = "Vector")
 };
 
+UENUM(BlueprintType)
+enum class PlaneMode : uint8
+{
+   plane   UMETA(DisplayName = "Plane")
+};
 
 
 UCLASS()

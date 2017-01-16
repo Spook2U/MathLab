@@ -21,10 +21,13 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Member Variable  ////////////////////////////////////////////////////////////////////////////////
 public:
+   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "sphere")
+   float Radius;
 
 
 
 private:
+   UStaticMeshComponent *Sphere;
 
 
 
@@ -43,14 +46,20 @@ public:
 
 // -------------------------------------------------------------------------------------------------
 
+   //Sets up the Components to display the sphere with the specified radus
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|sphere|Setup")
+   void BuildSphere();
+
+// -------------------------------------------------------------------------------------------------
+
    void SetValuesSphere(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate, float radius);
 
 
 
 // -------------------------------------------------------------------------------------------------
 protected:
+   void CreateGuidesSphere(LaserColors color);
 
-	
 	
 	
 };

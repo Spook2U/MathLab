@@ -2,10 +2,8 @@
 
 #pragma once
 
-#include "MathLabTools.h"
 #include "CoordinateSystem/GeometryBase.h"
 #include "LineBase.generated.h"
-
 
 UCLASS()
 class MATHLAB_API ALineBase : public AGeometryBase
@@ -46,25 +44,26 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|line|Init")
    void SetComponents(UStaticMeshComponent *line, UStaticMeshComponent *arrowHead, TArray<UStaticMeshComponent *> laserComponents);
 
-   // -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "coordinate System|line|Update")
    virtual void Update() override;
 
-   // -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
 
+   //Sets up the Components to display the line in the selected mode
    UFUNCTION(BlueprintCallable, Category = "coordinate System|line|Setup")
    void BuildLine();
 
-   // -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
 
    void SetValuesLine(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector position, FVector direction, LineMode mode);
    
 
 
 
-   // -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
 protected:
    void CreateGuidesLine(LaserColors color);
 

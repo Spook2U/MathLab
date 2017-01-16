@@ -2,6 +2,7 @@
 
 #include "MathLab.h"
 #include "PointBase.h"
+#include "LineBase.h"
 
 APointBase::APointBase()
 {
@@ -43,15 +44,14 @@ void APointBase::SetValuesPoint(ACoordinateSystemBase *coordinateSystem, LaserCo
 {
    SetValues(coordinateSystem, color);
    this->Coordinate = coordinate;
-   if(!IsGuide)
-   {
-      CreateGuidesPoint(color);
-      ShowGuides(false);
-   }
+   CreateGuidesPoint(color);
 }
 
 // Protected ----------------------------------------------------------------------------------------
 
 void APointBase::CreateGuidesPoint(LaserColors color)
 {
+   if(IsGuide) return;
+   //MLD_LOG("%s", *Coordinate.ToString());
+   AddGuide(CoordinateSystem->AddLine(color, true, FVector(), Coordinate, LineMode::vector));
 }
