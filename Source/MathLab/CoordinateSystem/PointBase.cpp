@@ -38,20 +38,59 @@ void APointBase::Update()
    SetPosition(Coordinate);
 }
 
+float APointBase::DistanceToLine(ALineBase * line)
+{
+   float distance = 0.0f;
+   MLD_PTR_CHECK(line);
+   if(line)
+   {
+      distance = UKismetMathLibrary::GetPointDistanceToLine(Coordinate, line->Position, line->Direction);
+   }
+   return distance;
+}
+
+float APointBase::DistanceToPoint(APointBase * point)
+{
+   float distance = 0.0f;
+   MLD_PTR_CHECK(point);
+   if(point)
+   {
+      distance = UKismetMathLibrary::VSize(point->Coordinate - Coordinate);
+   }
+   return distance;
+}
+
+float APointBase::DistanceToPlane(APlaneBase * plane)
+{
+   float distance = 0.0f;
+   MLD_PTR_CHECK(plane);
+   if(plane)
+   {
+      distance = 0.0f;
+   }
+   return distance;
+}
+
+float APointBase::DistanceToSphere(ASphereBase * sphere)
+{
+   return 0.0f;
+}
+
 // -------------------------------------------------------------------------------------------------
 
 void APointBase::SetValuesPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate)
-{
+{  
+   
    SetValues(coordinateSystem, color);
    this->Coordinate = coordinate;
-   CreateGuidesPoint(color);
+   CreateGuides(color);
 }
 
 // Protected ----------------------------------------------------------------------------------------
 
-void APointBase::CreateGuidesPoint(LaserColors color)
+void APointBase::CreateGuides(LaserColors color)
 {
    if(IsGuide) return;
-   //MLD_LOG("%s", *Coordinate.ToString());
-   AddGuide(CoordinateSystem->AddLine(color, true, FVector(), Coordinate, LineMode::vector));
+   AddGuide(CoordinateSystem->AddLine(color, true, FVector(0, 0, 0), Coordinate, LineMode::vector));
 }
+

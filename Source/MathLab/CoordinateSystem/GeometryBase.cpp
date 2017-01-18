@@ -123,6 +123,12 @@ void AGeometryBase::ShowGuides(bool show)
    }
 }
 
+void AGeometryBase::SetValues(ACoordinateSystemBase * coordinateSystem, LaserColors color)
+{
+   this->CoordinateSystem = coordinateSystem;
+   SetColor(color);
+}
+
 
 
 // Protected ----------------------------------------------------------------------------------------
@@ -137,10 +143,8 @@ void AGeometryBase::AddGuide(AGeometryBase *guide)
    Guides.Add(guide);
 }
 
-void AGeometryBase::SetValues(ACoordinateSystemBase * coordinateSystem, LaserColors color)
+void AGeometryBase::CreateGuides(LaserColors color)
 {
-   this->CoordinateSystem = coordinateSystem;
-   SetColor(color);
 }
 
 

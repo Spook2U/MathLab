@@ -40,17 +40,19 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
+// Initialise --------------------------------------------------------------------------------------
+
    //Saves the StaticMeshReferences in the source file to work on
    UFUNCTION(BlueprintCallable, Category = "coordinate System|line|Init")
    void SetComponents(UStaticMeshComponent *line, UStaticMeshComponent *arrowHead, TArray<UStaticMeshComponent *> laserComponents);
 
-// -------------------------------------------------------------------------------------------------
+// Update -------------------------------------------------------------------------------------------
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "coordinate System|line|Update")
    virtual void Update() override;
 
-// -------------------------------------------------------------------------------------------------
+// Setup --------------------------------------------------------------------------------------------
 
    //Sets up the Components to display the line in the selected mode
    UFUNCTION(BlueprintCallable, Category = "coordinate System|line|Setup")
@@ -65,7 +67,7 @@ public:
 
 // -------------------------------------------------------------------------------------------------
 protected:
-   void CreateGuidesLine(LaserColors color);
+   virtual void CreateGuides(LaserColors color) override;
 
    void ScaleLaser(float length);
 

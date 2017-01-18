@@ -64,3 +64,10 @@ void AUnitBase::OrientateToAxis(UStaticMeshComponent *axis)
       SetActorTransform(FTransform(rotation, location, scale));
    }
 }
+
+// -------------------------------------------------------------------------------------------------
+
+void AUnitBase::CreateGuides(LaserColors color)
+{
+   //leave empty to override from Point, so Units dont create Guides
+}

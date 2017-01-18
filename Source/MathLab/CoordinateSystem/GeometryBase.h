@@ -55,11 +55,13 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
+// Pure Functions -----------------------------------------------------------------------------------
+
    //Converts the given Coordinate to the Location in the Scene
    UFUNCTION(BlueprintPure, Category = "coordinate System|geometry|Util|")
    FVector CoordinateToLocation(FVector coordinate);
 
-// -------------------------------------------------------------------------------------------------
+// Update -------------------------------------------------------------------------------------------
 
    //Called, when the objects need to update the position or other vales
    virtual void Update();
@@ -68,9 +70,9 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Update")
    void UpdateRendering();
 
-// -------------------------------------------------------------------------------------------------
+// Setup --------------------------------------------------------------------------------------------
 
-   //Sets Location of the object ding on the Coordinate
+   //Sets Location of the object based on the Coordinate
    UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Setup")
    void SetPosition(FVector coordinate);
 
@@ -84,6 +86,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry")
    void ShowGuides(bool show);
 
+   void SetValues(ACoordinateSystemBase *coordinateSystem, LaserColors color);
    
 
 
@@ -93,8 +96,6 @@ protected:
 
    void AddLaserComponent(UStaticMeshComponent *laser);
 
-   void SetValues(ACoordinateSystemBase *coordinateSystem, LaserColors color);
-
-
+   virtual void CreateGuides(LaserColors color);
 
 };

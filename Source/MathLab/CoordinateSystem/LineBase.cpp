@@ -42,7 +42,7 @@ void ALineBase::Update()
    BuildLine();
 }
 
-// -------------------------------------------------------------------------------------------------
+// Setup --------------------------------------------------------------------------------------------
 
 void ALineBase::BuildLine()
 {
@@ -67,7 +67,7 @@ void ALineBase::SetValuesLine(ACoordinateSystemBase * coordinateSystem, LaserCol
 
    switch(Mode)
    {
-      case LineMode::line:    CreateGuidesLine(color); break;
+      case LineMode::line:    CreateGuides(color); break;
       case LineMode::segment: break;
       case LineMode::vector:  Arrowhead->SetHiddenInGame(false); break;
    }
@@ -76,7 +76,7 @@ void ALineBase::SetValuesLine(ACoordinateSystemBase * coordinateSystem, LaserCol
 
 // Protected ----------------------------------------------------------------------------------------
 
-void ALineBase::CreateGuidesLine(LaserColors color)
+void ALineBase::CreateGuides(LaserColors color)
 {
    if(IsGuide) return;
 

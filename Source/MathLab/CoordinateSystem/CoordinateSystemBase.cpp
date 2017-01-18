@@ -79,6 +79,7 @@ void ACoordinateSystemBase::bp_debug_Screen(FString inString, FLinearColor color
 
 void ACoordinateSystemBase::TestFunction()
 {
+   MLD_LOG("Die Antwort ist 42");
 }
 
 // Initialise --------------------------------------------------------------------------------------
@@ -108,6 +109,20 @@ float ACoordinateSystemBase::MaxVisibleLength()
    return length;
 }
 
+// Update -------------------------------------------------------------------------------------------
+
+void ACoordinateSystemBase::Update()
+{
+   for(AGeometryBase *g : Elements)
+   {
+      MLD_PTR_CHECK(g);
+      if(g)
+      {
+         g->Update();
+      }
+   }
+}
+
 // Setup --------------------------------------------------------------------------------------------
 
 void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
@@ -124,20 +139,6 @@ void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
       XAxis->SetWorldScale3D(scaleVector);
       YAxis->SetWorldScale3D(scaleVector);
       ZAxis->SetWorldScale3D(scaleVector);
-   }
-}
-
-// Update -------------------------------------------------------------------------------------------
-
-void ACoordinateSystemBase::Update()
-{
-   for(AGeometryBase *g : Elements)
-   {
-      MLD_PTR_CHECK(g);
-      if(g)
-      {
-         g->Update();
-      }
    }
 }
 

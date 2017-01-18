@@ -101,6 +101,8 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
+// -------------------------------------------------------------------------------------------------
+
    //Test Function to easily test Code
    UFUNCTION(BlueprintCallable, Category = "Test")
    void TestFunction();
@@ -111,24 +113,24 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Init")
    void SetComponents(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *zAxis);
 
-// -------------------------------------------------------------------------------------------------
+// Pure Functions -----------------------------------------------------------------------------------
    
    UFUNCTION(BlueprintPure, Category = "coordinate System|Util")
    float MaxVisibleLength();
 
-// -------------------------------------------------------------------------------------------------
-
-   //Changes size of the axis and updates the ConvertFactor
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|Setup")
-   void ScaleAxis(float length, float diameter);
-
-// -------------------------------------------------------------------------------------------------
+// Update -------------------------------------------------------------------------------------------
 
    //Updates the Coordinate System and all of its geometry
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Update")
    void Update();
 
-// -------------------------------------------------------------------------------------------------
+// Setup --------------------------------------------------------------------------------------------
+
+   //Changes size of the axis and updates the ConvertFactor
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|Setup")
+   void ScaleAxis(float length, float diameter);
+
+// Make ---------------------------------------------------------------------------------------------
 
    AGeometryBase * AddGeometry(bool isGuide, TSubclassOf<AGeometryBase> geometry);
 

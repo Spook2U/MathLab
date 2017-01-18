@@ -32,13 +32,19 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
+// Initialise --------------------------------------------------------------------------------------
+
    //Saves the StaticMeshReferences in the source file to work on
    UFUNCTION(BlueprintCallable, Category = "unit|Init")
    void SetComponents(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *xLaser, UStaticMeshComponent *yLaser, TArray<UStaticMeshComponent *> laserComponents);
 
+// Update -------------------------------------------------------------------------------------------
+
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "unit|Update")
    virtual void Update() override;
+
+// Setup --------------------------------------------------------------------------------------------
 
    //Scales the laser of the Unit to have the same length as the Axis
    UFUNCTION(BlueprintCallable, Category = "unit|Setup")
@@ -53,5 +59,7 @@ public:
 // -------------------------------------------------------------------------------------------------
 protected:
    void ScaleUnitLaser_AtAxis(UStaticMeshComponent *laser, UStaticMeshComponent *axis, float laserSize);
+
+   virtual void CreateGuides(LaserColors color) override;
 
 };

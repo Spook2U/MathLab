@@ -5,6 +5,9 @@
 #include "CoordinateSystem/GeometryBase.h"
 #include "PointBase.generated.h"
 
+class ALineBase;
+class APlaneBase;
+
 UCLASS()
 class MATHLAB_API APointBase : public AGeometryBase
 {
@@ -34,15 +37,29 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
+// Initialise --------------------------------------------------------------------------------------
+
    //Saves the StaticMeshReferences in the source file to work on
    UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Init")
    void SetComponents(UStaticMeshComponent *point, TArray<UStaticMeshComponent *> laserComponents);
 
-// -------------------------------------------------------------------------------------------------
+// Update -------------------------------------------------------------------------------------------
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Update")
    virtual void Update() override;
+
+// -------------------------------------------------------------------------------------------------
+
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Calculate")
+   float DistanceToLine(ALineBase *line);
+
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Calculate")
+   float DistanceToPoint(APointBase *point);
+
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Calculate")
+   float DistanceToPlane(APlaneBase *plane);
+   float DistanceToSphere(ASphereBase *sphere);
 
 // -------------------------------------------------------------------------------------------------
 
@@ -52,7 +69,7 @@ public:
 
 // -------------------------------------------------------------------------------------------------
 protected:
-   void CreateGuidesPoint(LaserColors color);	
+   virtual void CreateGuides(LaserColors color) override;	
 
 	
 	

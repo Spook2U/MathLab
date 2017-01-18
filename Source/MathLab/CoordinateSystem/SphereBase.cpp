@@ -38,7 +38,7 @@ void ASphereBase::Update()
    BuildSphere();
 }
 
-// -------------------------------------------------------------------------------------------------
+// Setup --------------------------------------------------------------------------------------------
 
 void ASphereBase::BuildSphere()
 {
@@ -51,12 +51,12 @@ void ASphereBase::SetValuesSphere(ACoordinateSystemBase* coordinateSystem, Laser
 {
    SetValuesPoint(coordinateSystem, color, coordinate);
    this->Radius = radius;
-   CreateGuidesSphere(color);
+   CreateGuides(color);
 }
 
 // Protected ----------------------------------------------------------------------------------------
 
-void ASphereBase::CreateGuidesSphere(LaserColors color)
+void ASphereBase::CreateGuides(LaserColors color)
 {
    if(IsGuide) return;
 

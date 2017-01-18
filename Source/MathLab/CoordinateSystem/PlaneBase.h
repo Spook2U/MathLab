@@ -46,17 +46,19 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
+// Initialise --------------------------------------------------------------------------------------
+
    //Saves the StaticMeshReferences in the source file to work on
    UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Init")
    void SetComponents(UStaticMeshComponent *plane, TArray<UStaticMeshComponent *> laserComponents);
 
-// -------------------------------------------------------------------------------------------------
+// Update -------------------------------------------------------------------------------------------
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Update")
    virtual void Update() override;
 
-// -------------------------------------------------------------------------------------------------
+// Setup --------------------------------------------------------------------------------------------
 
    //Sets up the Components to display the plane in the selected mode
    UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Setup")
@@ -70,7 +72,7 @@ public:
 
 // -------------------------------------------------------------------------------------------------
 protected:
-   void CreateGuidesPlane(LaserColors color);
+   virtual void CreateGuides(LaserColors color) override;
 
 	
 	

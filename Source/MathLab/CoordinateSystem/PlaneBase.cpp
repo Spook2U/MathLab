@@ -42,7 +42,7 @@ void APlaneBase::Update()
    BuildPlane();
 }
 
-// -------------------------------------------------------------------------------------------------
+// Setup --------------------------------------------------------------------------------------------
 
 void APlaneBase::BuildPlane()
 {
@@ -64,14 +64,14 @@ void APlaneBase::SetValuesPlane(ACoordinateSystemBase *coordinateSystem, LaserCo
 
    switch(mode)
    {
-      case PlaneMode::plane: CreateGuidesPlane(color); break;
+      case PlaneMode::plane: CreateGuides(color); break;
    }
 
 }
 
 // Protected ----------------------------------------------------------------------------------------
 
-void APlaneBase::CreateGuidesPlane(LaserColors color)
+void APlaneBase::CreateGuides(LaserColors color)
 {
    if(IsGuide) return;
 
