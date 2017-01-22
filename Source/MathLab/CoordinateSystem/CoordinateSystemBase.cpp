@@ -79,7 +79,6 @@ void ACoordinateSystemBase::bp_debug_Screen(FString inString, FLinearColor color
 
 void ACoordinateSystemBase::TestFunction()
 {
-   MLD_LOG("Die Antwort ist 42");
 }
 
 // Initialise --------------------------------------------------------------------------------------

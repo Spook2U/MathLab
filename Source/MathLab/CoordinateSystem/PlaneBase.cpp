@@ -22,15 +22,15 @@ void APlaneBase::BeginPlay()
 
 // Initialise --------------------------------------------------------------------------------------
 
-void APlaneBase::SetComponents(UStaticMeshComponent *plane, TArray<UStaticMeshComponent *> laserComponents)
+void APlaneBase::SetComponents(TArray<UStaticMeshComponent *> components)
 {
-   this->Plane = plane;
-   this->Plane->SetScalarParameterValueOnMaterials("Transparency", 0.1f);
-
-   for(UStaticMeshComponent *l : laserComponents)
+   for(UStaticMeshComponent *c : components)
    {
-      LaserCompoents.Add(l);
+      if(c->GetName().Equals("Plane")) { this->Plane = c; }
    }
+
+   SetLaserMatTransparency(Plane, 0.1f);
+   AddLaserComponent(Plane);
 }
 
 // Update -------------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ void APlaneBase::CreateGuides(LaserColors color)
    AddGuide(CoordinateSystem->AddPoint(color, true, Position + Direction1));
    AddGuide(CoordinateSystem->AddPoint(color, true, Position + Direction2));
 
-   AddGuide(CoordinateSystem->AddLine(color, true, FVector(), Position,  LineMode::vector));
+   AddGuide(CoordinateSystem->AddLine(color, true, FVector::ZeroVector, Position,  LineMode::vector));
    AddGuide(CoordinateSystem->AddLine(color, true, Position, Direction1, LineMode::vector));
    AddGuide(CoordinateSystem->AddLine(color, true, Position, Direction2, LineMode::vector));
    AddGuide(CoordinateSystem->AddLine(color, true, Position, Normal,     LineMode::vector));

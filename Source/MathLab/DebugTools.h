@@ -25,6 +25,15 @@ DECLARE_LOG_CATEGORY_EXTERN(MLogScrn, Log, All);
 
 
 #ifdef _UE_BUILD_DEBUG_FLAG_
+FString debug_ClassPrefix(FString classname);
+FString debug_BuildText(FString classname, FString ausgabe);
+void doTest(bool valid, LPCSTR file, int line, LPCSTR func, LPCSTR name);
+void debug_uescreen(FString classname, FString ausgabe, FColor color, int mode);
+#endif
+
+
+
+#ifdef _UE_BUILD_DEBUG_FLAG_
 enum MLog
 {
    Code,
@@ -32,16 +41,16 @@ enum MLog
    Blue
 };
 
-#define MLD_PTR_CHECK(x) doTest((x) != 0, __FILENAME__, __LINE__, __func__, #x)
+#define MLD_PTR_CHECK(x)            doTest((x) != 0, __FILENAME__, __LINE__, __func__, #x)
 
 #define MLD_LOG(string, ...)        UE_LOG(MLogCode, Log,     TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__)))
-#define MLD_WAR(string, ...)        UE_LOG(MLogCode, Warning, TEXT("%s%s"), *debug_ClassPrefix(MLD_CLASS_NAME), *FString::Printf(TEXT(string),##__VA_ARGS__))
-#define MLD_ERR(string, ...)        UE_LOG(MLogCode, Error,   TEXT("%s%s"), *debug_ClassPrefix(MLD_CLASS_NAME), *FString::Printf(TEXT(string),##__VA_ARGS__))
+#define MLD_WAR(string, ...)        UE_LOG(MLogCode, Warning, TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__)))
+#define MLD_ERR(string, ...)        UE_LOG(MLogCode, Error,   TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__)))
 
-#define MLD_SCN(color, string, ...) debug_uescreen(*FString::Printf(TEXT(string),##__VA_ARGS__), debug_ClassPrefix(MLD_CLASS_NAME), color, MLog::Scrn)
-#define MLD_BLP(color, string, ...) debug_uescreen(*FString::Printf(TEXT(string),##__VA_ARGS__), debug_ClassPrefix(MLD_CLASS_NAME), color, MLog::Blue)
+#define MLD_SCN(color, string, ...)                                         debug_uescreen(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__), color, MLog::Scrn)
+#define MLD_BLP(color, string, ...)                                         debug_uescreen(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__), color, MLog::Blue)
 
-#define MLD_CALLTEST(string, ...)   UE_LOG(MLogCode, Log,     TEXT("%s%s() %s"), *debug_ClassPrefix(MLD_CLASS_NAME), MLD_FUNCTION_NAME, *FString::Printf(TEXT(string),##__VA_ARGS__))
+#define MLD_CALLTEST(string, ...)   UE_LOG(MLogCode, Log,     TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT("%s() %s"), MLD_FUNCTION_NAME, *FString::Printf(TEXT(string),##__VA_ARGS__)))) 
 #else
 #define MLD_PTR_CHECK(x)
 #define MLD_LOG(string, ...) 
@@ -51,13 +60,3 @@ enum MLog
 #define MLD_BLP(color, string, ...)
 #define MLD_CALLTEST(string, ...)
 #endif
-
-
-
-#ifdef _UE_BUILD_DEBUG_FLAG_
-FString debug_ClassPrefix(FString classname);
-FString debug_BuildText(FString classname, FString s);
-void doTest(bool valid, LPCSTR file, int line, LPCSTR func, LPCSTR name);
-void debug_uescreen(FString s, FString classname, FColor color, int mode);
-#endif
-

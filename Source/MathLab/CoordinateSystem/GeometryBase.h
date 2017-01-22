@@ -15,19 +15,14 @@ class MATHLAB_API AGeometryBase : public AActor
 public:	
 	AGeometryBase();
    
-// Unreal Callbacks --------------------------------------------------------------------------------
    virtual void BeginPlay() override;
 
-
-
-// Test Debug Print Function -----------------------------------------------------------------------
+   // Test Debug Print Function
    UFUNCTION(BlueprintCallable, Displayname = "Print (DebugOnly)", Category = "string", meta = (Keywords = "mld, print, debug, printdebug", Tooltip = "This method is only working in Debug or Development Mode"))
    void bp_debug_Screen(FString inString = "Hello", FLinearColor color = FLinearColor::White);
 
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Member Variable  ////////////////////////////////////////////////////////////////////////////////
 public:
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
    ACoordinateSystemBase *CoordinateSystem;
@@ -44,24 +39,16 @@ public:
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
    bool IsGuide;
 
-   // -------------------------------------------------------------------------------------------------
-
    //Used to determine the size of the object
    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "geometry")
    float Size;
 
+// -------------------------------------------------------------------------------------------------
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
-// Pure Functions -----------------------------------------------------------------------------------
-
    //Converts the given Coordinate to the Location in the Scene
    UFUNCTION(BlueprintPure, Category = "coordinate System|geometry|Util|")
    FVector CoordinateToLocation(FVector coordinate);
-
-// Update -------------------------------------------------------------------------------------------
 
    //Called, when the objects need to update the position or other vales
    virtual void Update();
@@ -69,8 +56,6 @@ public:
    //Updates the visible area of the Material
    UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Update")
    void UpdateRendering();
-
-// Setup --------------------------------------------------------------------------------------------
 
    //Sets Location of the object based on the Coordinate
    UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Setup")
@@ -80,8 +65,6 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Setup")
    void SetColor(LaserColors color);
 
-// -------------------------------------------------------------------------------------------------
-
    //Shows or Hides the guide objects
    UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry")
    void ShowGuides(bool show);
@@ -90,7 +73,6 @@ public:
    
 
 
-// -------------------------------------------------------------------------------------------------
 protected:
    void AddGuide(AGeometryBase *guide);
 
@@ -98,4 +80,9 @@ protected:
 
    virtual void CreateGuides(LaserColors color);
 
+   void InitScalePoint(UStaticMeshComponent *point);
+   void InitScaleLine(UStaticMeshComponent *line);
+   void InitScaleArrowhead(UStaticMeshComponent *arrowhead);
+
+   void SetLaserMatTransparency(UStaticMeshComponent *plane, float value);
 };

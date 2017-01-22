@@ -16,40 +16,25 @@ class MATHLAB_API APointBase : public AGeometryBase
 public:
    APointBase();
 
-// Unreal Callbacks---------------------------------------------------------------------------------
    virtual void BeginPlay() override;
 
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Member Variable  ////////////////////////////////////////////////////////////////////////////////
 public:
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "point")
    FVector Coordinate;
 
-
-
 private:
    UStaticMeshComponent *Point;
 
+// -------------------------------------------------------------------------------------------------
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
-// Initialise --------------------------------------------------------------------------------------
-
    //Saves the StaticMeshReferences in the source file to work on
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Init")
-   void SetComponents(UStaticMeshComponent *point, TArray<UStaticMeshComponent *> laserComponents);
-
-// Update -------------------------------------------------------------------------------------------
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Init")
+   void SetComponents(TArray<UStaticMeshComponent *> components);
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Update")
    virtual void Update() override;
-
-// -------------------------------------------------------------------------------------------------
 
    UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Calculate")
    float DistanceToLine(ALineBase *line);
@@ -59,15 +44,11 @@ public:
 
    UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Calculate")
    float DistanceToPlane(APlaneBase *plane);
-   float DistanceToSphere(ASphereBase *sphere);
 
-// -------------------------------------------------------------------------------------------------
+   float DistanceToSphere(ASphereBase *sphere);
 
    void SetValuesPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate);
 
-
-
-// -------------------------------------------------------------------------------------------------
 protected:
    virtual void CreateGuides(LaserColors color) override;	
 

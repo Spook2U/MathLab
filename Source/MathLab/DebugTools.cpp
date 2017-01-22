@@ -32,9 +32,10 @@ FString debug_ClassPrefix(FString classname)
    return prefix;
 }
 
-FString debug_BuildText(FString classname, FString s)
+FString debug_BuildText(FString classname, FString ausgabe)
 {
-   return TEXT("a %s test %s"), *debug_ClassPrefix(classname), *s;
+   FString result = FString::Printf(TEXT("%s%s"), *debug_ClassPrefix(classname), *ausgabe);
+   return result;
 }
 
 
@@ -49,14 +50,14 @@ void doTest(bool valid, LPCSTR file, int line, LPCSTR func, LPCSTR name)
    }
 }
 
-void debug_uescreen(FString s, FString classname, FColor color, int mode)
+void debug_uescreen(FString classname, FString ausgabe, FColor color, int mode)
 {
-   GEngine->AddOnScreenDebugMessage(-1, 30, color, s);
+   GEngine->AddOnScreenDebugMessage(-1, 30, color, ausgabe);
    switch(mode)
    {
-      case MLog::Blue: UE_LOG(MLogBlue, Log, TEXT("%s - %s"), *classname, *s); break;
-      case MLog::Scrn: UE_LOG(MLogScrn, Log, TEXT("%s - %s"), *classname, *s); break;
-      default:         UE_LOG(MLogCode, Log, TEXT("%s - %s"), *classname, *s); break;
+      case MLog::Blue: UE_LOG(MLogBlue, Log, TEXT("%s"), *debug_BuildText(classname, ausgabe)); break;
+      case MLog::Scrn: UE_LOG(MLogScrn, Log, TEXT("%s"), *debug_BuildText(classname, ausgabe)); break;
+      default:         UE_LOG(MLogCode, Log, TEXT("%s"), *debug_BuildText(classname, ausgabe)); break;
    }
 }
 

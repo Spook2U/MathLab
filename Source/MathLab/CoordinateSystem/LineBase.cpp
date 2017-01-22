@@ -18,19 +18,21 @@ void ALineBase::BeginPlay()
 
 // Initialise --------------------------------------------------------------------------------------
 
-void ALineBase::SetComponents(UStaticMeshComponent *line, UStaticMeshComponent *arrowhead, TArray<UStaticMeshComponent *> laserComponents)
+void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
 {
-   this->Line = line;
-   this->Arrowhead = arrowhead;
+   for(UStaticMeshComponent *c : components)
+   {
+      if(c->GetName().Equals("Line"))      { this->Line      = c; }
+      if(c->GetName().Equals("Arrowhead")) { this->Arrowhead = c; }
+   }
 
-   Line->SetWorldScale3D(FVector(Size / 5, Size / 5, Line->GetComponentScale().Z));
-   Arrowhead->SetWorldScale3D(FVector(Arrowhead->GetComponentScale().X, Arrowhead->GetComponentScale().Y, Arrowhead->GetComponentScale().Z * 1.5)*Size);
+   InitScaleLine(Line);
+   InitScaleArrowhead(Arrowhead);
+   AddLaserComponent(Line);
+   AddLaserComponent(Arrowhead);
+
    Arrowhead->SetHiddenInGame(true);
 
-   for(UStaticMeshComponent *l : laserComponents)
-   {
-      LaserCompoents.Add(l);
-   }
 }
 
 // Update -------------------------------------------------------------------------------------------
@@ -80,7 +82,7 @@ void ALineBase::CreateGuides(LaserColors color)
 {
    if(IsGuide) return;
 
-   AddGuide(CoordinateSystem->AddLine(color, true, FVector(), Position, LineMode::vector));
+   AddGuide(CoordinateSystem->AddLine(color, true, FVector(0, 0, 0), Position, LineMode::vector));
    AddGuide(CoordinateSystem->AddLine(color, true, Position, Direction, LineMode::vector));
 }
 

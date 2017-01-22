@@ -19,15 +19,15 @@ void ASphereBase::BeginPlay()
 
 // Initialise --------------------------------------------------------------------------------------
 
-void ASphereBase::SetComponents(UStaticMeshComponent* sphere, TArray<UStaticMeshComponent*> laserComponents)
+void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components)
 {
-   this->Sphere = sphere;
-   Sphere->SetScalarParameterValueOnMaterials("Transparency", 0.1f);
-
-   for(UStaticMeshComponent *l : laserComponents)
+   for(UStaticMeshComponent *c : components)
    {
-      LaserCompoents.Add(l);
+      if(c->GetName().Equals("Sphere")) { this->Sphere = c; }
    }
+
+   SetLaserMatTransparency(Sphere, 0.1f);
+   AddLaserComponent(Sphere);
 }
 
 // Update -------------------------------------------------------------------------------------------

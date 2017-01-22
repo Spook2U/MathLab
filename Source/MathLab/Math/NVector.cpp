@@ -11,11 +11,11 @@ UNVector::UNVector()
 UNVector *UNVector::MakeNVector(TArray<float> coordinates)
 {
    UNVector *v = NewObject<UNVector>();
-   MLD_PTR_CHECK(v);
-   if(v)
-   {
-      v->Init(coordinates);
-   }
+
+   MLD_PTR_CHECK(v); if(!v) return nullptr;
+
+   v->Init(coordinates);
+
    return v;
 }
 
@@ -23,7 +23,7 @@ FString UNVector::ToString()
 {
    FString s = "";
    
-   s += "{";
+   s += "nVector: {";
    for(int i = 0, max = Coordinates.Num(); i < max; i++)
    {
       s += FString::SanitizeFloat(Coordinates[i]);
@@ -35,6 +35,8 @@ FString UNVector::ToString()
    s += "}";
    return s;
 }
+
+// Protected ----------------------------------------------------------------------------------------
 
 void UNVector::Init(TArray<float> coordinates)
 {

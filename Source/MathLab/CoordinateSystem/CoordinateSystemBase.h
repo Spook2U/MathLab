@@ -4,6 +4,7 @@
 
 #include "MathLabTools.h"
 #include "GameFramework/Actor.h"
+#include "Math/LinearEqualation.h"
 #include "CoordinateSystemBase.generated.h"
 
 class AGeometryBase;
@@ -83,6 +84,8 @@ public:
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "coordinate System")
    float MaxCoordinate;
 
+   UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "coordinate System")
+   AGeometryBase *gb;
 
 
 // -------------------------------------------------------------------------------------------------

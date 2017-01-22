@@ -18,16 +18,15 @@ void APointBase::BeginPlay()
 
 // Initialise --------------------------------------------------------------------------------------
 
-void APointBase::SetComponents(UStaticMeshComponent *point, TArray<UStaticMeshComponent *> laserComponents)
+void APointBase::SetComponents(TArray<UStaticMeshComponent*> components)
 {
-   this->Point = point;
-   
-   Point->SetWorldScale3D(Point->GetComponentScale()*Size);
-  
-   for(UStaticMeshComponent *l : laserComponents)
+   for(UStaticMeshComponent *c : components)
    {
-      LaserCompoents.Add(l);
+      if(c->GetName().Equals("Point")) { this->Point = c; }
    }
+
+   InitScalePoint(Point);
+   AddLaserComponent(Point);
 }
 
 // Update -------------------------------------------------------------------------------------------

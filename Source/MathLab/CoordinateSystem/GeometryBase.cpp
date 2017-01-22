@@ -147,5 +147,25 @@ void AGeometryBase::CreateGuides(LaserColors color)
 {
 }
 
+void AGeometryBase::InitScalePoint(UStaticMeshComponent *point)
+{
+   point->SetWorldScale3D(point->GetComponentScale()*Size);
+}
+
+void AGeometryBase::InitScaleLine(UStaticMeshComponent *line)
+{
+   line->SetWorldScale3D(FVector(Size / 5, Size / 5, line->GetComponentScale().Z));
+}
+
+void AGeometryBase::InitScaleArrowhead(UStaticMeshComponent *arrowhead)
+{
+   arrowhead->SetWorldScale3D(FVector(arrowhead->GetComponentScale().X, arrowhead->GetComponentScale().Y, arrowhead->GetComponentScale().Z * 1.5)*Size);
+}
+
+void AGeometryBase::SetLaserMatTransparency(UStaticMeshComponent *plane, float value)
+{
+   plane->SetScalarParameterValueOnMaterials("Transparency", value);
+}
+
 
 

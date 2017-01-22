@@ -7,17 +7,18 @@ void AUnitBase::BeginPlay() { Super::BeginPlay(); }
 
 // Initialise --------------------------------------------------------------------------------------
 
-void AUnitBase::SetComponents(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *xLaser, UStaticMeshComponent *yLaser, TArray<UStaticMeshComponent *> laserComponents)
+void AUnitBase::SetComponents(TArray<UStaticMeshComponent *> components)
 {
-   this->XAxis  = xAxis;
-   this->YAxis  = yAxis;
-   this->XLaser = xLaser;
-   this->YLaser = yLaser;
-
-   for(UStaticMeshComponent *l : laserComponents)
+   for(UStaticMeshComponent *c : components)
    {
-      LaserCompoents.Add(l);
+      if(c->GetName().Equals("X-Unit"))  { this->XAxis  = c; }
+      if(c->GetName().Equals("Y-Unit"))  { this->YAxis  = c; }
+      if(c->GetName().Equals("X-Laser")) { this->XLaser = c; }
+      if(c->GetName().Equals("Y-Laser")) { this->YLaser = c; }
    }
+
+   AddLaserComponent(XLaser);
+   AddLaserComponent(YLaser);
 }
 
 // Update -------------------------------------------------------------------------------------------
