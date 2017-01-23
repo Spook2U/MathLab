@@ -16,26 +16,39 @@ void APointBase::BeginPlay()
    Super::BeginPlay(); 
 }
 
-// Initialise --------------------------------------------------------------------------------------
+
 
 void APointBase::SetComponents(TArray<UStaticMeshComponent*> components)
 {
    for(UStaticMeshComponent *c : components)
    {
-      if(c->GetName().Equals("Point")) { this->Point = c; }
+      MLD_PTR_CHECK(c);
+      if(c) { if(c->GetName().Equals("Point")) { this->Point = c; } }
    }
-
-   InitScalePoint(Point);
+   
+   MLD_PTR_CHECK(Point); if(!Point) return;
+   ScalePointInit(Point);
    AddLaserComponent(Point);
 }
 
-// Update -------------------------------------------------------------------------------------------
+
+
+void APointBase::SetValuesPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate)
+{  
+   SetValues(coordinateSystem, color);
+   this->Coordinate = coordinate;
+   CreateGuides(color);
+}
+
+
 
 void APointBase::Update()
 {
    Super::Update();
    SetPosition(Coordinate);
 }
+
+
 
 float APointBase::DistanceToLine(ALineBase * line)
 {
@@ -75,15 +88,7 @@ float APointBase::DistanceToSphere(ASphereBase * sphere)
    return 0.0f;
 }
 
-// -------------------------------------------------------------------------------------------------
 
-void APointBase::SetValuesPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate)
-{  
-   
-   SetValues(coordinateSystem, color);
-   this->Coordinate = coordinate;
-   CreateGuides(color);
-}
 
 // Protected ----------------------------------------------------------------------------------------
 

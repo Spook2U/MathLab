@@ -80,9 +80,16 @@ protected:
 
    virtual void CreateGuides(LaserColors color);
 
-   void InitScalePoint(UStaticMeshComponent *point);
-   void InitScaleLine(UStaticMeshComponent *line);
-   void InitScaleArrowhead(UStaticMeshComponent *arrowhead);
+   void ScalePointInit(UStaticMeshComponent *point);
+   void ScaleLineInit(UStaticMeshComponent *line);
+   void ScaleArrowheadInit(UStaticMeshComponent *arrowhead);
 
    void SetLaserMatTransparency(UStaticMeshComponent *plane, float value);
+   void MoveLaser(UStaticMeshComponent *laser, float length);
+   void ScaleLaserLenght(UStaticMeshComponent *laser, float factor);
+   
+   void ScaleLine(UStaticMeshComponent *line, float length);
+   void ScaleVector(UStaticMeshComponent *line, UStaticMeshComponent *arrowhead, float lenght);
+   void RotateLine(FVector from, FVector to);
+   void RotateLine(FVector direction);
 };

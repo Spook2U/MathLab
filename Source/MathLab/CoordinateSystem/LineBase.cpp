@@ -5,8 +5,10 @@
 
 ALineBase::ALineBase()
 {
-   Position  = FVector();
-   Direction = FVector();
+   Position  = FVector::ZeroVector;
+   Direction = FVector::ZeroVector;
+   Line = nullptr;
+   Arrowhead = nullptr;
 }
 
 // Unreal Events -----------------------------------------------------------------------------------
@@ -16,7 +18,7 @@ void ALineBase::BeginPlay()
    Super::BeginPlay();
 }
 
-// Initialise --------------------------------------------------------------------------------------
+
 
 void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
 {
@@ -26,8 +28,12 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
       if(c->GetName().Equals("Arrowhead")) { this->Arrowhead = c; }
    }
 
-   InitScaleLine(Line);
-   InitScaleArrowhead(Arrowhead);
+   MLD_PTR_CHECK(Line);
+   MLD_PTR_CHECK(Arrowhead);
+   if(!(Line && Arrowhead)) return;
+
+   ScaleLineInit(Line);
+   ScaleArrowheadInit(Arrowhead);
    AddLaserComponent(Line);
    AddLaserComponent(Arrowhead);
 
@@ -35,30 +41,7 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
 }
 
-// Update -------------------------------------------------------------------------------------------
 
-void ALineBase::Update()
-{
-   Super::Update();
-   SetPosition(Position);
-   BuildLine();
-}
-
-// Setup --------------------------------------------------------------------------------------------
-
-void ALineBase::BuildLine()
-{
-   //Make Rotation
-   if(Mode == LineMode::segment) { SetActorRotation(UKismetMathLibrary::FindLookAtRotation(CoordinateToLocation(Position), CoordinateToLocation(Direction))); }
-   else                          { SetActorRotation(UKismetMathLibrary::Conv_VectorToRotator(Direction*FVector(1.f, -1.f, 1.f))); }
-
-   //Make Scale
-   if(     Mode == LineMode::line)    { Line->SetWorldScale3D(FVector(Line->GetComponentScale().X, Line->GetComponentScale().Y, CoordinateSystem->MaxVisibleLength())); }
-   else if(Mode == LineMode::segment) { ScaleLaser(UKismetMathLibrary::VSize(Direction - Position)); }
-   else                               { ScaleLaser(UKismetMathLibrary::VSize(Direction)); }
-}
-
-// -------------------------------------------------------------------------------------------------
 
 void ALineBase::SetValuesLine(ACoordinateSystemBase * coordinateSystem, LaserColors color, FVector position, FVector direction, LineMode mode)
 {
@@ -76,6 +59,33 @@ void ALineBase::SetValuesLine(ACoordinateSystemBase * coordinateSystem, LaserCol
 
 }
 
+
+
+void ALineBase::Update()
+{
+   Super::Update();
+   SetPosition(Position);
+   BuildLine();
+}
+
+
+
+void ALineBase::BuildLine()
+{
+   MLD_PTR_CHECK(Line);
+   MLD_PTR_CHECK(Arrowhead);
+   if(!(Line && Arrowhead)) return;
+
+   //Make Rotation
+   if(Mode == LineMode::segment) { RotateLine(Position, Direction); }
+   else                          { RotateLine(Direction); }
+
+   //Make Scale
+   if(     Mode == LineMode::line)    { ScaleLaserLenght(Line, CoordinateSystem->MaxVisibleLength()); }
+   else if(Mode == LineMode::segment) { ScaleLine(Line, UKismetMathLibrary::VSize(Direction - Position)); }
+   else                               { ScaleVector(Line, Arrowhead, UKismetMathLibrary::VSize(Direction)); }
+}
+
 // Protected ----------------------------------------------------------------------------------------
 
 void ALineBase::CreateGuides(LaserColors color)
@@ -85,22 +95,3 @@ void ALineBase::CreateGuides(LaserColors color)
    AddGuide(CoordinateSystem->AddLine(color, true, FVector(0, 0, 0), Position, LineMode::vector));
    AddGuide(CoordinateSystem->AddLine(color, true, Position, Direction, LineMode::vector));
 }
-
-void ALineBase::ScaleLaser(float length)
-{
-   //Move line to the centerpoint between point A (diection) and B (position)
-   MoveLaser(Line, length/2);
-   if(Mode == LineMode::vector)
-   {
-      MoveLaser(Arrowhead, length-Size);
-   }
-
-   //Scale from Point A to B
-   Line->SetWorldScale3D(FVector(Line->GetComponentScale().X, Line->GetComponentScale().Y, (CoordinateSystem->ConvertFactor/100)*length));
-}
-
-void ALineBase::MoveLaser(UStaticMeshComponent *laser, float length)
-{
-   laser->SetWorldLocation(((CoordinateSystem->ConvertFactor*length)*laser->GetUpVector()) + GetActorLocation());
-}
-

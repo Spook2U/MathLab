@@ -147,25 +147,64 @@ void AGeometryBase::CreateGuides(LaserColors color)
 {
 }
 
-void AGeometryBase::InitScalePoint(UStaticMeshComponent *point)
+
+
+void AGeometryBase::ScalePointInit(UStaticMeshComponent *point)
 {
    point->SetWorldScale3D(point->GetComponentScale()*Size);
 }
 
-void AGeometryBase::InitScaleLine(UStaticMeshComponent *line)
+void AGeometryBase::ScaleLineInit(UStaticMeshComponent *line)
 {
    line->SetWorldScale3D(FVector(Size / 5, Size / 5, line->GetComponentScale().Z));
 }
 
-void AGeometryBase::InitScaleArrowhead(UStaticMeshComponent *arrowhead)
+void AGeometryBase::ScaleArrowheadInit(UStaticMeshComponent *arrowhead)
 {
-   arrowhead->SetWorldScale3D(FVector(arrowhead->GetComponentScale().X, arrowhead->GetComponentScale().Y, arrowhead->GetComponentScale().Z * 1.5)*Size);
+   arrowhead->SetWorldScale3D(arrowhead->GetComponentScale() * FVector(1.f, 1.f, 1.5f) * Size);
 }
+
+
 
 void AGeometryBase::SetLaserMatTransparency(UStaticMeshComponent *plane, float value)
 {
    plane->SetScalarParameterValueOnMaterials("Transparency", value);
 }
+
+void AGeometryBase::MoveLaser(UStaticMeshComponent *laser, float length)
+{
+   laser->SetWorldLocation(((CoordinateSystem->ConvertFactor*length)*laser->GetUpVector()) + GetActorLocation());
+}
+
+void AGeometryBase::ScaleLaserLenght(UStaticMeshComponent *laser, float scale)
+{
+   laser->SetWorldScale3D(FVector(laser->GetComponentScale().X, laser->GetComponentScale().Y, scale));
+}
+
+
+
+void AGeometryBase::ScaleLine(UStaticMeshComponent *line, float length)
+{
+   MoveLaser(line, length/2);
+   ScaleLaserLenght(line, (CoordinateSystem->ConvertFactor/100)*length);
+}
+
+void AGeometryBase::ScaleVector(UStaticMeshComponent *line, UStaticMeshComponent *arrowhead, float lenght)
+{
+   MoveLaser(arrowhead, lenght-Size);
+   ScaleLine(line, lenght);
+}
+
+void AGeometryBase::RotateLine(FVector from, FVector to)
+{
+   SetActorRotation(UKismetMathLibrary::FindLookAtRotation(CoordinateToLocation(from), CoordinateToLocation(to)));
+}
+
+void AGeometryBase::RotateLine(FVector direction)
+{
+   SetActorRotation(UKismetMathLibrary::Conv_VectorToRotator(direction*FVector(1.f, -1.f, 1.f)));
+}
+
 
 
 

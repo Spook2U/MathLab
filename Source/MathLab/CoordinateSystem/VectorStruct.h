@@ -11,6 +11,9 @@ class MATHLAB_API AVectorStruct : public AGeometryBase
 	GENERATED_BODY()
 	
 public:
+   AVectorStruct();
+
+public:
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "vectorStruct")
    FVector A;
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "vectorStruct")
@@ -40,6 +43,9 @@ public:
    UFUNCTION(BlueprintCallable, Category = "vectorStruct")
    void SetVisibilityArrowhead(bool visibility);
 
+   UFUNCTION(BlueprintCallable, Category = "vectorStruct")
+   void SetVisibility(bool visibility);
+   
    void SetValuesVectorStruct(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector a, FVector b);
 
 	

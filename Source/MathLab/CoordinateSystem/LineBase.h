@@ -30,25 +30,20 @@ private:
 // -------------------------------------------------------------------------------------------------
 
 public:
-   //Saves the StaticMeshReferences in the source file to work on
+   /**Saves the StaticMeshReferences in the source file to work on*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Init")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   //Called, when the objects need to update the position or other vales
+   void SetValuesLine(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector position, FVector direction, LineMode mode);
+
+   /**Called, when the objects need to update the position or other vales*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|line|Update")
    virtual void Update() override;
 
-   //Sets up the Components to display the line in the selected mode
+   /**Sets up the Components to display the line in the selected mode*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|line|Setup")
    void BuildLine();
-
-   void SetValuesLine(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector position, FVector direction, LineMode mode);
    
 protected:
    virtual void CreateGuides(LaserColors color) override;
-
-   void ScaleLaser(float length);
-
-   void MoveLaser(UStaticMeshComponent *laser, float length);
-
 };
