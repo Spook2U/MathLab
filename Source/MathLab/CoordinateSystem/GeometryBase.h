@@ -7,6 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "GeometryBase.generated.h"
 
+class AVectorStruct;
+
 UCLASS()
 class MATHLAB_API AGeometryBase : public AActor
 {
@@ -33,11 +35,7 @@ public:
 
    //Saves all objects, which are used a guides for the objcet
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
-   TArray<AGeometryBase *> Guides;
-
-   //If true, this object is a guide of another object, therefore dont have it's own guides
-   UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
-   bool IsGuide;
+   TArray<AVectorStruct *> VectorGuides;
 
    //Used to determine the size of the object
    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "geometry")
@@ -67,29 +65,35 @@ public:
 
    //Shows or Hides the guide objects
    UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry")
-   void ShowGuides(bool show);
+   void ShowVectorGuides(bool show);
 
-   void SetValues(ACoordinateSystemBase *coordinateSystem, LaserColors color);
+   void SetValuesGeometry(ACoordinateSystemBase *coordinateSystem, LaserColors color);
    
 
 
 protected:
-   void AddGuide(AGeometryBase *guide);
+   void AddVectorGuide(AVectorStruct *vectorGuide);
 
    void AddLaserComponent(UStaticMeshComponent *laser);
 
-   virtual void CreateGuides(LaserColors color);
+   virtual void CreateVectorGuides(LaserColors color);
 
-   void ScalePointInit(UStaticMeshComponent *point);
-   void ScaleLineInit(UStaticMeshComponent *line);
-   void ScaleArrowheadInit(UStaticMeshComponent *arrowhead);
 
-   void SetLaserMatTransparency(UStaticMeshComponent *plane, float value);
-   void MoveLaser(UStaticMeshComponent *laser, float length);
-   void ScaleLaserLenght(UStaticMeshComponent *laser, float factor);
-   
+
+   void InitScalePoint(UStaticMeshComponent *point);
+   void InitScaleLine(UStaticMeshComponent *line);
+   void InitScaleArrowhead(UStaticMeshComponent *arrowhead);
+
+   void SetLaserMatTransparency(UStaticMeshComponent *laser, float value);
+   void MoveLaser(UStaticMeshComponent *laser, Direction dir, float length);
+   void RotateLaserLookAt(FVector from, FVector to);
+   /**When x, y or z should not be changed use NULL. Value 0 not possible as new scale*/
+   void SetLaserScale(UStaticMeshComponent *laser, FVector scale);
+
+   void RotateLine(FVector direction);
+
    void ScaleLine(UStaticMeshComponent *line, float length);
    void ScaleVector(UStaticMeshComponent *line, UStaticMeshComponent *arrowhead, float lenght);
-   void RotateLine(FVector from, FVector to);
-   void RotateLine(FVector direction);
+   void ScalePlane(UStaticMeshComponent *plane, float lenght);
+   void ScaleSphere(UStaticMeshComponent *sphere, float radius);
 };

@@ -14,11 +14,13 @@ public:
    AVectorStruct();
 
 public:
-   UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "vectorStruct")
+   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "vectorStruct")
    FVector A;
-   UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "vectorStruct")
+   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "vectorStruct")
    FVector B;
-   
+   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "vectorStruct")
+   VectorStructMode Mode;
+
 private:
    UStaticMeshComponent *PointA;
    UStaticMeshComponent *PointB;
@@ -28,25 +30,38 @@ private:
 // -------------------------------------------------------------------------------------------------
 
 public:
-   UFUNCTION(BlueprintCallable, Category = "vectorStruct")
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|vectorStruct")
    void SetComponents(TArray<UStaticMeshComponent *> laserComponents);
-   
-   UFUNCTION(BlueprintCallable, Category = "vectorStruct")
+
+   void SetValuesVectorStruct(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector a, FVector b, VectorStructMode mode = VectorStructMode::general);
+
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|vectorStruct|Visibility")
    void SetVisibilityPointA(bool visibility);
 
-   UFUNCTION(BlueprintCallable, Category = "vectorStruct")
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|vectorStruct|Visibility")
    void SetVisibilityPointB(bool visibility);
 
-   UFUNCTION(BlueprintCallable, Category = "vectorStruct")
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|vectorStruct|Visibility")
    void SetVisibilityLine(bool visibility);
 
-   UFUNCTION(BlueprintCallable, Category = "vectorStruct")
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|vectorStruct|Visibility")
    void SetVisibilityArrowhead(bool visibility);
 
-   UFUNCTION(BlueprintCallable, Category = "vectorStruct")
-   void SetVisibility(bool visibility);
-   
-   void SetValuesVectorStruct(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector a, FVector b);
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|vectorStruct|Visibility")
+   void SetVisibilityForAll(bool visibility);
 
-	
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|vectorStruct|Visibility")
+   void SetVisibility(bool showPointA, bool showPointB, bool showLine, bool showArrowhead);
+
+   /**Called, when the objects need to update the position or other vales*/
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|vectorStruct")
+   virtual void Update() override;
+
+   /**Sets up the Components to display the line in the selected mode*/
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|vectorStruct")
+   void BuildLine();
+
+   /**Moves PointB to the defined coordinate*/
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|vectorStruct")
+   void SetPointB();
 };

@@ -8,17 +8,6 @@ UNVector::UNVector()
    Coordinates.Empty();
 }
 
-UNVector *UNVector::MakeNVector(TArray<float> coordinates)
-{
-   UNVector *v = NewObject<UNVector>();
-
-   MLD_PTR_CHECK(v); if(!v) return nullptr;
-
-   v->Init(coordinates);
-
-   return v;
-}
-
 FString UNVector::ToString()
 {
    FString s = "";

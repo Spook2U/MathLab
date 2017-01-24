@@ -37,6 +37,8 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Init")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
+   void SetValuesPlane(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode);
+
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Update")
    virtual void Update() override;
@@ -45,10 +47,8 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Setup")
    void BuildPlane();
 
-   void SetValuesPlane(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode);
-
 protected:
-   virtual void CreateGuides(LaserColors color) override;
+   virtual void CreateVectorGuides(LaserColors color) override;
 
 	
 	

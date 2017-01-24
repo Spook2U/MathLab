@@ -22,7 +22,7 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    LaserColor = LaserColors::green;
 
    UnitSizeFactor = 0.5f;
-   LaserSizeFactor = 0.5f;
+   LaserSizeFactor = 0.4f;
    Glowiness = 10.f;
 
    Elements;
@@ -86,7 +86,7 @@ void ACoordinateSystemBase::TestFunction()
 {
 }
 
-// Initialise --------------------------------------------------------------------------------------
+
 
 void ACoordinateSystemBase::SetComponents(UStaticMeshComponent *xAxis, UStaticMeshComponent *yAxis, UStaticMeshComponent *zAxis)
 {
@@ -148,18 +148,17 @@ void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
 
 // Make ---------------------------------------------------------------------------------------------
 
-AGeometryBase *ACoordinateSystemBase::AddGeometry(bool isGuide, TSubclassOf<AGeometryBase> geometry)
+AGeometryBase *ACoordinateSystemBase::AddGeometry(TSubclassOf<AGeometryBase> geometry)
 {  
    AGeometryBase *newGeometry;
    FTransform transform = GetTransform();
 
    newGeometry = (AGeometryBase *)GetWorld()->SpawnActor(geometry, &transform);
 
-   MLD_PTR_CHECK(newGeometry);
-   if(!newGeometry) return nullptr;
+   MLD_PTR_CHECK(newGeometry); if(!newGeometry) return nullptr;
    newGeometry->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
-   newGeometry->IsGuide = isGuide;
-   if(!isGuide) Elements.Add(newGeometry);
+   Elements.Add(newGeometry);
+   
    return newGeometry;
 }
 
@@ -184,83 +183,91 @@ void ACoordinateSystemBase::AddUnits()
 
 void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int index)
 {
-   AUnitBase *newUnit = (AUnitBase *)AddGeometry(false, UnitBP);
+   AUnitBase *newUnit = (AUnitBase *)AddGeometry(UnitBP);
    MLD_PTR_CHECK(newUnit); if(!newUnit) return;
-   newUnit->SetValuesPoint(this, LaserColor, axis->GetUpVector()*index);
+   newUnit->InitPoint(this, LaserColor, axis->GetUpVector()*index);
    newUnit->OrientateToAxis(axis);
 }
 
 APointBase *ACoordinateSystemBase::MakePoint(LaserColors color, FVector coordinate, bool showGuides)
 {  
-   APointBase *point = AddPoint(color, false, coordinate);
+   APointBase *point = AddPoint(color, showGuides, coordinate);
    MLD_PTR_CHECK(point); if(!point) return nullptr;
-   point->ShowGuides(showGuides);
    return point;
 }
 
 ALineBase *ACoordinateSystemBase::MakeLine(LaserColors color, FVector position, FVector direction, LineMode mode, bool showGuides)
 {
-   ALineBase *line = AddLine(color, false, position, direction, mode);
+   ALineBase *line = AddLine(color, showGuides, position, direction, mode);
    MLD_PTR_CHECK(line); if(!line) return nullptr;
-   line->ShowGuides(showGuides);
    return line;
 }
 
 APlaneBase *ACoordinateSystemBase::MakePlane(LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode, bool showGuides)
 {
-   APlaneBase *plane = AddPlane(color, false, position, direction1, direction2, mode);
+   APlaneBase *plane = AddPlane(color, showGuides, position, direction1, direction2, mode);
    MLD_PTR_CHECK(plane); if(!plane) return nullptr;
-   plane->ShowGuides(showGuides);
    return plane;
 }
 
-ASphereBase *ACoordinateSystemBase::MakeSphere(LaserColors color, FVector position, float radius, bool showGuides)
+ASphereBase *ACoordinateSystemBase::MakeSphere(LaserColors color, FVector coordinate, float radius, bool showGuides)
 {
-   ASphereBase *sphere = AddSphere(color, false, position, radius);
+   ASphereBase *sphere = AddSphere(color, showGuides, coordinate, radius);
    MLD_PTR_CHECK(sphere); if(!sphere) return nullptr;
-   sphere->ShowGuides(showGuides);
    return sphere;
 }
 
 // --------------------------------------------------------------------------------------------------
 
-APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, bool isGuide, FVector coordinate)
+APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, bool showGuides, FVector coordinate)
 {  
-   APointBase *newPoint = (APointBase *)AddGeometry(isGuide, PointBP);
+   APointBase *newPoint = (APointBase *)AddGeometry(PointBP);
    MLD_PTR_CHECK(newPoint); if(!newPoint) return nullptr;
-   newPoint->SetValuesPoint(this, color, coordinate);
+   newPoint->InitPoint(this, color, coordinate);
+   newPoint->ShowVectorGuides(showGuides);
    return newPoint;
 }
 
-ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, bool isGuide, FVector position, FVector direction, LineMode mode)
+ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, bool showGuides, FVector position, FVector direction, LineMode mode)
 {
-   ALineBase *newLine = (ALineBase *)AddGeometry(isGuide, LineBP);
+   ALineBase *newLine = (ALineBase *)AddGeometry(LineBP);
    MLD_PTR_CHECK(newLine); if(!newLine) return nullptr;
    newLine->SetValuesLine(this, color, position, direction, mode);
+   newLine->ShowVectorGuides(showGuides);
    return newLine;
 }
 
-APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, bool isGuide, FVector position, FVector direction1, FVector direction2, PlaneMode mode)
+APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, bool showGuides, FVector position, FVector direction1, FVector direction2, PlaneMode mode)
 {
-   APlaneBase *newPlane = (APlaneBase *)AddGeometry(isGuide, PlaneBP);
+   APlaneBase *newPlane = (APlaneBase *)AddGeometry(PlaneBP);
    MLD_PTR_CHECK(newPlane); if(!newPlane) return nullptr;
    newPlane->SetValuesPlane(this, color, position, direction1, direction2, mode);
+   newPlane->ShowVectorGuides(showGuides);
    return newPlane;
 }
 
-ASphereBase * ACoordinateSystemBase::AddSphere(LaserColors color, bool isGuide, FVector position, float radius)
+ASphereBase * ACoordinateSystemBase::AddSphere(LaserColors color, bool showGuides, FVector coordinate, float radius)
 {
-   ASphereBase *newSphere = (ASphereBase *)AddGeometry(isGuide, SphereBP);
+   ASphereBase *newSphere = (ASphereBase *)AddGeometry(SphereBP);
    MLD_PTR_CHECK(newSphere); if(!newSphere) return nullptr; 
-   newSphere->SetValuesSphere(this, color, position, radius);
+   newSphere->SetValuesSphere(this, color, coordinate, radius);
+   newSphere->ShowVectorGuides(showGuides);
    return newSphere;
 }
 
-AVectorStruct *ACoordinateSystemBase::AddVectorStruct(LaserColors color, FVector pointA, FVector pointB)
+AVectorStruct *ACoordinateSystemBase::AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode)
 {
-   AVectorStruct *newVectorStruct = (AVectorStruct *)AddGeometry(false, VectorStructBP);
+   AVectorStruct *newVectorStruct = (AVectorStruct *)AddGeometry(VectorStructBP);
    MLD_PTR_CHECK(newVectorStruct); if(!newVectorStruct) return nullptr;
-   newVectorStruct->SetValuesVectorStruct(this, color, pointA, pointB);
+   newVectorStruct->SetValuesVectorStruct(this, color, pointA, pointB, mode);
+   switch(mode)
+   {
+      case VectorStructMode::point:       newVectorStruct->SetVisibility(false, true, false, false); break;
+      case VectorStructMode::segment:     newVectorStruct->SetVisibility(false, false, true, false); break;
+      case VectorStructMode::vector:      newVectorStruct->SetVisibility(false, false, true, true);  break;
+      case VectorStructMode::vectorPoint: newVectorStruct->SetVisibility(false, true, true, true);   break;
+      case VectorStructMode::general:     newVectorStruct->SetVisibilityForAll(false);               break;
+   }
    return newVectorStruct;
 }
 

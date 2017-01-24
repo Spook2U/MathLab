@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MathLab.h"
+#include "VectorStruct.h"
 #include "GeometryBase.h"
 
 
@@ -10,8 +11,6 @@ AGeometryBase::AGeometryBase()
 
    CoordinateSystem = NULL;
    LaserCompoents;
-   Guides;
-   IsGuide = false;
 
    Size = 0.075;
 }
@@ -22,28 +21,28 @@ void AGeometryBase::BeginPlay() {
 
 void AGeometryBase::bp_debug_Screen(FString inString, FLinearColor color) { MLD_BLP(color.ToFColor(true), "%s", *inString); }
 
+
+
 // Pure Functions -----------------------------------------------------------------------------------
 
 FVector AGeometryBase::CoordinateToLocation(FVector coordinate)
 {
    FVector location = coordinate;
 
-   MLD_PTR_CHECK(CoordinateSystem);
-   if(CoordinateSystem)
-   {
-      location *= CoordinateSystem->ConvertFactor;
-      location *= FVector(1.f, -1.f, 1.f);
-      location += CoordinateSystem->GetActorLocation();
-   }
+   MLD_PTR_CHECK(CoordinateSystem); if(!CoordinateSystem) return FVector::ZeroVector;
+   location *= CoordinateSystem->ConvertFactor;
+   location *= FVector(1.f, -1.f, 1.f);
+   location += CoordinateSystem->GetActorLocation();
+
    return location;
 }
 
-// Update -------------------------------------------------------------------------------------------
+
 
 void AGeometryBase::Update()
 {
    UpdateRendering();
-   for(AGeometryBase *g : Guides)
+   for(AVectorStruct *g : VectorGuides)
    {
       MLD_PTR_CHECK(g);
       if(g)
@@ -57,10 +56,9 @@ void AGeometryBase::Update()
 
 void AGeometryBase::UpdateRendering()
 {
-   MLD_PTR_CHECK(CoordinateSystem);
-   if(CoordinateSystem)
-   {
-      float bound = CoordinateSystem->AxisLength * 200;
+   MLD_PTR_CHECK(CoordinateSystem); if(!CoordinateSystem) return;
+
+   float bound = CoordinateSystem->AxisLength * 200;
       for(UStaticMeshComponent *laser : LaserCompoents)
       {
          MLD_PTR_CHECK(laser);
@@ -70,10 +68,9 @@ void AGeometryBase::UpdateRendering()
             laser->SetVectorParameterValueOnMaterials(TEXT("Bounds"), FVector(bound, bound, bound));
          }
       }
-   }
 }
 
-// Setup --------------------------------------------------------------------------------------------
+
 
 void AGeometryBase::SetPosition(FVector coordinate)
 {
@@ -95,8 +92,8 @@ void AGeometryBase::SetColor(LaserColors color)
       case LaserColors::white:   newColor = FLinearColor(1.f,   1.f,   1.f,   1.f); glow = 1.f;  break;
       case LaserColors::yellow:  newColor = FLinearColor(0.75f, 1.f,   0.05f, 1.f); glow = 1.f;  break;
    }
-   MLD_PTR_CHECK(CoordinateSystem);
-   if(CoordinateSystem) { glow *= CoordinateSystem->Glowiness; }
+   MLD_PTR_CHECK(CoordinateSystem); if(!CoordinateSystem) return;
+   glow *= CoordinateSystem->Glowiness;
 
    for(UStaticMeshComponent *laser : LaserCompoents)
    {
@@ -111,19 +108,16 @@ void AGeometryBase::SetColor(LaserColors color)
 
 // --------------------------------------------------------------------------------------------------
 
-void AGeometryBase::ShowGuides(bool show)
+void AGeometryBase::ShowVectorGuides(bool show)
 {
-   for(AGeometryBase *g : Guides)
+   for(AVectorStruct *g : VectorGuides)
    {
-      MLD_PTR_CHECK(g);
-      if(g)
-      {
-         g->RootComponent->SetVisibility(show, true);
-      }
+      MLD_PTR_CHECK(g); if(!g) continue;
+      g->RootComponent->SetHiddenInGame(!show, true);
    }
 }
 
-void AGeometryBase::SetValues(ACoordinateSystemBase * coordinateSystem, LaserColors color)
+void AGeometryBase::SetValuesGeometry(ACoordinateSystemBase *coordinateSystem, LaserColors color)
 {
    this->CoordinateSystem = coordinateSystem;
    SetColor(color);
@@ -138,72 +132,89 @@ void AGeometryBase::AddLaserComponent(UStaticMeshComponent *laser)
    LaserCompoents.Add(laser);
 }
 
-void AGeometryBase::AddGuide(AGeometryBase *guide)
+void AGeometryBase::AddVectorGuide(AVectorStruct *guide)
 {
-   Guides.Add(guide);
+   VectorGuides.Add(guide);
 }
 
-void AGeometryBase::CreateGuides(LaserColors color)
+void AGeometryBase::CreateVectorGuides(LaserColors color)
 {
 }
 
+// Build Components----------------------------------------------------------------------------------
 
 
-void AGeometryBase::ScalePointInit(UStaticMeshComponent *point)
+void AGeometryBase::SetLaserMatTransparency(UStaticMeshComponent *laser, float value)
 {
-   point->SetWorldScale3D(point->GetComponentScale()*Size);
+   MLD_PTR_CHECK(laser); if(!laser) return;
+   laser->SetScalarParameterValueOnMaterials("Transparency", value);
 }
 
-void AGeometryBase::ScaleLineInit(UStaticMeshComponent *line)
+void AGeometryBase::MoveLaser(UStaticMeshComponent *laser, Direction dir, float length)
 {
-   line->SetWorldScale3D(FVector(Size / 5, Size / 5, line->GetComponentScale().Z));
-}
+   MLD_PTR_CHECK(laser); if(!laser) return;
+   MLD_PTR_CHECK(CoordinateSystem); if(!CoordinateSystem) return;
 
-void AGeometryBase::ScaleArrowheadInit(UStaticMeshComponent *arrowhead)
-{
-   arrowhead->SetWorldScale3D(arrowhead->GetComponentScale() * FVector(1.f, 1.f, 1.5f) * Size);
-}
-
-
-
-void AGeometryBase::SetLaserMatTransparency(UStaticMeshComponent *plane, float value)
-{
-   plane->SetScalarParameterValueOnMaterials("Transparency", value);
-}
-
-void AGeometryBase::MoveLaser(UStaticMeshComponent *laser, float length)
-{
-   laser->SetWorldLocation(((CoordinateSystem->ConvertFactor*length)*laser->GetUpVector()) + GetActorLocation());
-}
-
-void AGeometryBase::ScaleLaserLenght(UStaticMeshComponent *laser, float scale)
-{
-   laser->SetWorldScale3D(FVector(laser->GetComponentScale().X, laser->GetComponentScale().Y, scale));
-}
-
-
-
-void AGeometryBase::ScaleLine(UStaticMeshComponent *line, float length)
-{
-   MoveLaser(line, length/2);
-   ScaleLaserLenght(line, (CoordinateSystem->ConvertFactor/100)*length);
-}
-
-void AGeometryBase::ScaleVector(UStaticMeshComponent *line, UStaticMeshComponent *arrowhead, float lenght)
-{
-   MoveLaser(arrowhead, lenght-Size);
-   ScaleLine(line, lenght);
-}
-
-void AGeometryBase::RotateLine(FVector from, FVector to)
-{
-   SetActorRotation(UKismetMathLibrary::FindLookAtRotation(CoordinateToLocation(from), CoordinateToLocation(to)));
+   FVector moveDirection = FVector::ZeroVector;
+   switch(dir)
+   {
+      case Direction::forward: moveDirection = laser->GetForwardVector(); break;
+      case Direction::right:   moveDirection = laser->GetRightVector();break;
+      case Direction::up:      moveDirection = laser->GetUpVector();break;
+   }
+   laser->SetWorldLocation(((CoordinateSystem->ConvertFactor*length)*moveDirection) + GetActorLocation());
 }
 
 void AGeometryBase::RotateLine(FVector direction)
 {
    SetActorRotation(UKismetMathLibrary::Conv_VectorToRotator(direction*FVector(1.f, -1.f, 1.f)));
 }
+void AGeometryBase::RotateLaserLookAt(FVector from, FVector to)
+{
+   SetActorRotation(UKismetMathLibrary::FindLookAtRotation(CoordinateToLocation(from), CoordinateToLocation(to)));
+}
+
+void AGeometryBase::InitScalePoint(UStaticMeshComponent *point)
+{
+   SetLaserScale(point, FVector(1.f, 1.f, 1.f) * Size);
+}
+void AGeometryBase::InitScaleLine(UStaticMeshComponent *line)
+{
+   SetLaserScale(line, FVector(Size/5, Size/5, NULL));
+}
+void AGeometryBase::InitScaleArrowhead(UStaticMeshComponent *arrowhead)
+{
+   SetLaserScale(arrowhead, FVector(1.f, 1.f, 1.5f) * Size);
+}
+
+void AGeometryBase::SetLaserScale(UStaticMeshComponent *laser, FVector scale)
+{
+   MLD_PTR_CHECK(laser); if(!laser) return;
+   laser->SetWorldScale3D(FVector((scale.X ? scale.X : laser->GetComponentScale().X), 
+                                  (scale.Y ? scale.Y : laser->GetComponentScale().Y), 
+                                  (scale.Z ? scale.Z : laser->GetComponentScale().Z)
+                                 ));
+}
+
+void AGeometryBase::ScaleLine(UStaticMeshComponent *line, float length)
+{
+   MoveLaser(line, Direction::up, length/2);
+   SetLaserScale(line, FVector(NULL, NULL, (CoordinateSystem->ConvertFactor/100)*length));
+}
+void AGeometryBase::ScaleVector(UStaticMeshComponent *line, UStaticMeshComponent *arrowhead, float lenght)
+{
+   MoveLaser(arrowhead, Direction::up, lenght-Size);
+   ScaleLine(line, lenght);
+}
+void AGeometryBase::ScalePlane(UStaticMeshComponent *plane, float lenght)
+{
+}
+
+void AGeometryBase::ScaleSphere(UStaticMeshComponent *sphere, float radius)
+{
+   SetLaserScale(sphere, FVector(1.f, 1.f, 1.f) * ((radius*2) * CoordinateSystem->ConvertFactor/100));
+}
+
 
 
 

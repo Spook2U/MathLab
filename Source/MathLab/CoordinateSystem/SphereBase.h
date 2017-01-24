@@ -29,6 +29,8 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|sphere|Init")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
+   void SetValuesSphere(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate, float radius);
+
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "coordinate System|sphere|Update")
    virtual void Update() override;
@@ -37,10 +39,8 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|sphere|Setup")
    void BuildSphere();
 
-   void SetValuesSphere(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate, float radius);
-
 protected:
-   virtual void CreateGuides(LaserColors color) override;
+   virtual void CreateVectorGuides(LaserColors color) override;
 
 	
 	

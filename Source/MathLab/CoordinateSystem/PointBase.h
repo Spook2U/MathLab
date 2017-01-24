@@ -32,7 +32,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Init")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void SetValuesPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate);
+   void InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate);
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Update")
@@ -48,7 +48,7 @@ public:
    float DistanceToSphere(ASphereBase *sphere);
 
 protected:
-   virtual void CreateGuides(LaserColors color) override;	
+   virtual void CreateVectorGuides(LaserColors color) override;	
 
 	
 	

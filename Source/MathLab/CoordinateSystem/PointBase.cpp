@@ -6,10 +6,9 @@
 
 APointBase::APointBase()
 {
-   Coordinate = FVector();
+   Coordinate = FVector::ZeroVector;
+   Point = nullptr;
 }
-
-// Unreal Events -----------------------------------------------------------------------------------
 
 void APointBase::BeginPlay() 
 { 
@@ -23,21 +22,24 @@ void APointBase::SetComponents(TArray<UStaticMeshComponent*> components)
    for(UStaticMeshComponent *c : components)
    {
       MLD_PTR_CHECK(c);
-      if(c) { if(c->GetName().Equals("Point")) { this->Point = c; } }
+      if(c) 
+      { 
+         if(c->GetName().Equals("Point")) { this->Point = c; }
+      }
    }
    
    MLD_PTR_CHECK(Point); if(!Point) return;
-   ScalePointInit(Point);
+   InitScalePoint(Point);
    AddLaserComponent(Point);
 }
 
 
 
-void APointBase::SetValuesPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate)
+void APointBase::InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate)
 {  
-   SetValues(coordinateSystem, color);
+   SetValuesGeometry(coordinateSystem, color);
    this->Coordinate = coordinate;
-   CreateGuides(color);
+   CreateVectorGuides(color);
 }
 
 
@@ -92,9 +94,10 @@ float APointBase::DistanceToSphere(ASphereBase * sphere)
 
 // Protected ----------------------------------------------------------------------------------------
 
-void APointBase::CreateGuides(LaserColors color)
+void APointBase::CreateVectorGuides(LaserColors color)
 {
-   if(IsGuide) return;
-   AddGuide(CoordinateSystem->AddLine(color, true, FVector(0, 0, 0), Coordinate, LineMode::vector));
+   MLD_PTR_CHECK(CoordinateSystem); if(!CoordinateSystem) return;
+
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, Coordinate, VectorStructMode::vector));
 }
 

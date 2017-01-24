@@ -4,33 +4,46 @@
 #include "SphereBase.h"
 #include "PointBase.h"
 #include "LineBase.h"
+#include "VectorStruct.h"
 
 ASphereBase::ASphereBase()
 {
    Radius = 0.f;
+   Sphere = nullptr;
 }
-
-// Unreal Events -----------------------------------------------------------------------------------
 
 void ASphereBase::BeginPlay()
 {
    Super::BeginPlay();
 }
 
-// Initialise --------------------------------------------------------------------------------------
+
 
 void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components)
 {
    for(UStaticMeshComponent *c : components)
    {
-      if(c->GetName().Equals("Sphere")) { this->Sphere = c; }
+      MLD_PTR_CHECK(c);
+      if(c) 
+      { 
+         if(c->GetName().Equals("Sphere")) { this->Sphere = c; }
+      }
    }
 
+   MLD_PTR_CHECK(Sphere); if(!Sphere) return;
    SetLaserMatTransparency(Sphere, 0.1f);
    AddLaserComponent(Sphere);
 }
 
-// Update -------------------------------------------------------------------------------------------
+
+
+void ASphereBase::SetValuesSphere(ACoordinateSystemBase* coordinateSystem, LaserColors color, FVector coordinate, float radius)
+{
+   this->Radius = radius;
+   InitPoint(coordinateSystem, color, coordinate);
+}
+
+
 
 void ASphereBase::Update()
 {
@@ -38,31 +51,39 @@ void ASphereBase::Update()
    BuildSphere();
 }
 
-// Setup --------------------------------------------------------------------------------------------
+
 
 void ASphereBase::BuildSphere()
 {
-   Sphere->SetWorldScale3D(FVector(1, 1, 1) * (Radius*CoordinateSystem->ConvertFactor/100));
-}
+   MLD_PTR_CHECK(Sphere); if(!Sphere) return;
 
-// -------------------------------------------------------------------------------------------------
-
-void ASphereBase::SetValuesSphere(ACoordinateSystemBase* coordinateSystem, LaserColors color, FVector coordinate, float radius)
-{
-   SetValuesPoint(coordinateSystem, color, coordinate);
-   this->Radius = radius;
-   CreateGuides(color);
+   ScaleSphere(Sphere, Radius);
 }
 
 // Protected ----------------------------------------------------------------------------------------
 
-void ASphereBase::CreateGuides(LaserColors color)
+void ASphereBase::CreateVectorGuides(LaserColors color)
 {
-   if(IsGuide) return;
+   Super::CreateVectorGuides(color);
+   MLD_PTR_CHECK(CoordinateSystem); if(!CoordinateSystem) return;
 
-   AddGuide(CoordinateSystem->AddPoint(color, true, Coordinate));
+   AVectorStruct *pointVectorStruct = nullptr;
 
-   AddGuide(CoordinateSystem->AddLine(color, true, Coordinate, Coordinate + FVector(Radius, 0, 0), LineMode::segment));
+   for(AVectorStruct *v : VectorGuides)
+   {
+      MLD_PTR_CHECK(v); 
+      if(v) 
+      { 
+         if(v->A.Equals(FVector::ZeroVector) && v->B.Equals(Coordinate))
+         {
+            pointVectorStruct = v;
+            break;
+         } 
+      }
+   }
+   pointVectorStruct->SetVisibilityPointB(true);
+
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, Coordinate, Coordinate + FVector(Radius, 0, 0), VectorStructMode::segment));
 }
 
 

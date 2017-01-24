@@ -45,5 +45,5 @@ public:
    void BuildLine();
    
 protected:
-   virtual void CreateGuides(LaserColors color) override;
+   virtual void CreateVectorGuides(LaserColors color) override;
 };

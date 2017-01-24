@@ -5,15 +5,14 @@
 #include "CoordinateSystem/PointBase.h"
 #include "UnitBase.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class MATHLAB_API AUnitBase : public APointBase
 {
 	GENERATED_BODY()
 
 public:
+   AUnitBase();
+
    virtual void BeginPlay() override;
 
 private:
@@ -42,6 +41,6 @@ public:
 protected:
    void ScaleUnitLaser_AtAxis(UStaticMeshComponent *laser, UStaticMeshComponent *axis, float laserSize);
 
-   virtual void CreateGuides(LaserColors color) override;
+   virtual void CreateVectorGuides(LaserColors color) override;
 
 };

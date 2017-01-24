@@ -9,30 +9,22 @@ UCLASS()
 class MATHLAB_API UNVector : public UObject
 {
    GENERATED_BODY()
+
+public:
    UNVector();
    // Unreal Callbacks---------------------------------------------------------------------------------
 
-   ////////////////////////////////////////////////////////////////////////////////////////////////////
-   // Member Variable  ////////////////////////////////////////////////////////////////////////////////
 public:
    TArray<float> Coordinates;
 
 private:
 
-   ////////////////////////////////////////////////////////////////////////////////////////////////////
-   // Functions  //////////////////////////////////////////////////////////////////////////////////////
 public:
-   //Creates a nVector instance
-   UFUNCTION(BlueprintPure, Category = "nVector")
-   static UNVector *MakeNVector(TArray<float> coordinates);
-
    //Converts the nVector into a FString format
    UFUNCTION(BlueprintPure, Category = "nVector")
    FString ToString();
 
-
-
-   // -------------------------------------------------------------------------------------------------
-protected:
    void Init(TArray<float> coordinates);
+
+protected:
 };

@@ -7,55 +7,41 @@
 
 APlaneBase::APlaneBase()
 {
-   Position = FVector();
-   Direction1 = FVector();
-   Direction2 = FVector();
-   Normal = FVector();
+   Position   = FVector::ZeroVector;
+   Direction1 = FVector::ZeroVector;
+   Direction2 = FVector::ZeroVector;
+   Normal     = FVector::ZeroVector;
+   Plane = nullptr;
 }
-
-// Unreal Events -----------------------------------------------------------------------------------
 
 void APlaneBase::BeginPlay()
 {
    Super::BeginPlay();
 }
 
-// Initialise --------------------------------------------------------------------------------------
+
 
 void APlaneBase::SetComponents(TArray<UStaticMeshComponent *> components)
 {
    for(UStaticMeshComponent *c : components)
    {
-      if(c->GetName().Equals("Plane")) { this->Plane = c; }
+      MLD_PTR_CHECK(c);
+      if(c) 
+      { 
+         if(c->GetName().Equals("Plane")) { this->Plane = c; }
+      }
    }
 
+   MLD_PTR_CHECK(Plane); if(!Plane) return;
    SetLaserMatTransparency(Plane, 0.1f);
    AddLaserComponent(Plane);
 }
 
-// Update -------------------------------------------------------------------------------------------
 
-void APlaneBase::Update()
-{
-   Super::Update();
-   SetPosition(Position);
-   BuildPlane();
-}
-
-// Setup --------------------------------------------------------------------------------------------
-
-void APlaneBase::BuildPlane()
-{
-   SetActorRotation(UKismetMathLibrary::FindLookAtRotation(CoordinateToLocation(Position), CoordinateToLocation(Position + Normal)));
-   
-   Plane->SetWorldScale3D(FVector(CoordinateSystem->MaxVisibleLength(), CoordinateSystem->MaxVisibleLength(), Plane->GetComponentScale().Z));
-}
-
-// -------------------------------------------------------------------------------------------------
 
 void APlaneBase::SetValuesPlane(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode)
 {
-   SetValues(coordinateSystem, color);
+   SetValuesGeometry(coordinateSystem, color);
    this->Position = position;
    this->Direction1 = direction1;
    this->Direction2 = direction2;
@@ -64,23 +50,41 @@ void APlaneBase::SetValuesPlane(ACoordinateSystemBase *coordinateSystem, LaserCo
 
    switch(mode)
    {
-      case PlaneMode::plane: CreateGuides(color); break;
+      case PlaneMode::plane: CreateVectorGuides(color); break;
    }
 
 }
 
+
+
+void APlaneBase::Update()
+{
+   Super::Update();
+   SetPosition(Position);
+   BuildPlane();
+}
+
+
+
+void APlaneBase::BuildPlane()
+{
+   MLD_PTR_CHECK(Plane); if(!Plane) return;
+   
+   if(Mode == PlaneMode::plane)
+   {
+      RotateLaserLookAt(Position, Position + Normal);
+      SetLaserScale(Plane, FVector(CoordinateSystem->MaxVisibleLength(), CoordinateSystem->MaxVisibleLength(), NULL));
+   }
+}
+
 // Protected ----------------------------------------------------------------------------------------
 
-void APlaneBase::CreateGuides(LaserColors color)
+void APlaneBase::CreateVectorGuides(LaserColors color)
 {
-   if(IsGuide) return;
+   MLD_PTR_CHECK(CoordinateSystem); if(!CoordinateSystem) return;
 
-   AddGuide(CoordinateSystem->AddPoint(color, true, Position));
-   AddGuide(CoordinateSystem->AddPoint(color, true, Position + Direction1));
-   AddGuide(CoordinateSystem->AddPoint(color, true, Position + Direction2));
-
-   AddGuide(CoordinateSystem->AddLine(color, true, FVector::ZeroVector, Position,  LineMode::vector));
-   AddGuide(CoordinateSystem->AddLine(color, true, Position, Direction1, LineMode::vector));
-   AddGuide(CoordinateSystem->AddLine(color, true, Position, Direction2, LineMode::vector));
-   AddGuide(CoordinateSystem->AddLine(color, true, Position, Normal,     LineMode::vector));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, Position, VectorStructMode::vectorPoint));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, Position, Direction1, VectorStructMode::vectorPoint));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, Position, Direction2, VectorStructMode::vectorPoint));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, Position, Normal, VectorStructMode::vector));
 }

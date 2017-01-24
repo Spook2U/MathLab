@@ -5,7 +5,7 @@
 #include "UObject/NoExportTypes.h"
 #include "MathLabTools.generated.h"
 
-
+class UNVector;
 
 UENUM(BlueprintType)
 enum class LaserColors : uint8
@@ -33,9 +33,33 @@ enum class PlaneMode : uint8
    plane   UMETA(DisplayName = "Plane")
 };
 
+UENUM(BlueprintType)
+enum class VectorStructMode : uint8
+{
+   point        UMETA(DisplayName = "Point"),
+   segment      UMETA(DisplayName = "Segment"),
+   vector       UMETA(DisplayName = "Vector"),
+   vectorPoint  UMETA(DisplayName = "Vector pointing to Point"),
+   general      UMETA(DisplayName = "General")
+};
+
+UENUM(BlueprintType)
+enum class Direction : uint8
+{
+   forward UMETA(DisplayName = "Forward"),
+   right   UMETA(DisplayName = "Right"),
+   up      UMETA(DisplayName = "Up")
+};
 
 UCLASS()
-class MATHLAB_API UMathLabTools : public UObject
+class MATHLAB_API UMathLabTools : public UObject //public UBlueprintFunctionLibrary
 {
-	GENERATED_BODY()
+   GENERATED_BODY()
+   //GENERATED_UCLASS_BODY()
+
+public:
+   //Creates a nVector instance
+   UFUNCTION(BlueprintPure, Category = "nVector")
+   static UNVector* MakeNVector(TArray<float> coordinates);
+
 };

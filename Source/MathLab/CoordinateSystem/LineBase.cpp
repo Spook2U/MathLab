@@ -11,8 +11,6 @@ ALineBase::ALineBase()
    Arrowhead = nullptr;
 }
 
-// Unreal Events -----------------------------------------------------------------------------------
-
 void ALineBase::BeginPlay()
 {
    Super::BeginPlay();
@@ -24,37 +22,40 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
 {
    for(UStaticMeshComponent *c : components)
    {
-      if(c->GetName().Equals("Line"))      { this->Line      = c; }
-      if(c->GetName().Equals("Arrowhead")) { this->Arrowhead = c; }
+      MLD_PTR_CHECK(c);
+      if(c) 
+      { 
+         if(c->GetName().Equals("Line"))      { this->Line      = c; }
+         if(c->GetName().Equals("Arrowhead")) { this->Arrowhead = c; }
+      }
    }
 
    MLD_PTR_CHECK(Line);
    MLD_PTR_CHECK(Arrowhead);
    if(!(Line && Arrowhead)) return;
 
-   ScaleLineInit(Line);
-   ScaleArrowheadInit(Arrowhead);
+   InitScaleLine(Line);
+   InitScaleArrowhead(Arrowhead);
    AddLaserComponent(Line);
    AddLaserComponent(Arrowhead);
 
-   Arrowhead->SetHiddenInGame(true);
-
+   Arrowhead->SetVisibility(false);
 }
 
 
 
 void ALineBase::SetValuesLine(ACoordinateSystemBase * coordinateSystem, LaserColors color, FVector position, FVector direction, LineMode mode)
 {
-   SetValues(coordinateSystem, color);
+   SetValuesGeometry(coordinateSystem, color);
    this->Position = position;
    this->Direction = direction;
    this->Mode = mode;
 
    switch(Mode)
    {
-      case LineMode::line:    CreateGuides(color); break;
+      case LineMode::line:    CreateVectorGuides(color); break;
       case LineMode::segment: break;
-      case LineMode::vector:  Arrowhead->SetHiddenInGame(false); break;
+      case LineMode::vector:  Arrowhead->SetVisibility(true); break;
    }
 
 }
@@ -77,21 +78,21 @@ void ALineBase::BuildLine()
    if(!(Line && Arrowhead)) return;
 
    //Make Rotation
-   if(Mode == LineMode::segment) { RotateLine(Position, Direction); }
+   if(Mode == LineMode::segment) { RotateLaserLookAt(Position, Direction); }
    else                          { RotateLine(Direction); }
 
    //Make Scale
-   if(     Mode == LineMode::line)    { ScaleLaserLenght(Line, CoordinateSystem->MaxVisibleLength()); }
+   if(     Mode == LineMode::line)    { SetLaserScale(Line, FVector(NULL, NULL, CoordinateSystem->MaxVisibleLength())); }
    else if(Mode == LineMode::segment) { ScaleLine(Line, UKismetMathLibrary::VSize(Direction - Position)); }
    else                               { ScaleVector(Line, Arrowhead, UKismetMathLibrary::VSize(Direction)); }
 }
 
 // Protected ----------------------------------------------------------------------------------------
 
-void ALineBase::CreateGuides(LaserColors color)
+void ALineBase::CreateVectorGuides(LaserColors color)
 {
-   if(IsGuide) return;
+   MLD_PTR_CHECK(CoordinateSystem); if(!CoordinateSystem) return;
 
-   AddGuide(CoordinateSystem->AddLine(color, true, FVector(0, 0, 0), Position, LineMode::vector));
-   AddGuide(CoordinateSystem->AddLine(color, true, Position, Direction, LineMode::vector));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, Position, VectorStructMode::vector));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, Position, Direction, VectorStructMode::vector));
 }

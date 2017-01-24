@@ -13,6 +13,8 @@ AVectorStruct::AVectorStruct()
    Arrowhead = nullptr;
 }
 
+
+
 void AVectorStruct::SetComponents(TArray<UStaticMeshComponent*> components)
 {
    for(UStaticMeshComponent *c : components)
@@ -29,28 +31,35 @@ void AVectorStruct::SetComponents(TArray<UStaticMeshComponent*> components)
    MLD_PTR_CHECK(Arrowhead);
    if(!(PointA && PointB && Line && Arrowhead)) return;
 
-   ScalePointInit(PointA);
-   ScalePointInit(PointB);
-   ScaleLineInit(Line);
-   ScaleArrowheadInit(Arrowhead);
+   InitScalePoint(PointA);
+   InitScalePoint(PointB);
+   InitScaleLine(Line);
+   InitScaleArrowhead(Arrowhead);
 
-   PointA->SetHiddenInGame(true);
-   PointB->SetHiddenInGame(true);
-   Line->SetHiddenInGame(true);
-   Arrowhead->SetHiddenInGame(true);
-   
    AddLaserComponent(PointA);
    AddLaserComponent(PointB);
    AddLaserComponent(Line);
    AddLaserComponent(Arrowhead);
 }
 
-void AVectorStruct::SetVisibilityPointA(bool visibility)    { PointA->SetVisibility(visibility);    }
-void AVectorStruct::SetVisibilityPointB(bool visibility)    { PointB->SetVisibility(visibility);    }
-void AVectorStruct::SetVisibilityLine(bool visibility)      { Line->SetVisibility(visibility);      }
-void AVectorStruct::SetVisibilityArrowhead(bool visibility) { Arrowhead->SetVisibility(visibility); }
 
-void AVectorStruct::SetVisibility(bool visibility)
+
+void AVectorStruct::SetValuesVectorStruct(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector a, FVector b, VectorStructMode mode)
+{
+   SetValuesGeometry(coordinateSystem, color);
+   this->A = a;
+   this->B = b;
+   this->Mode = mode;
+}
+
+
+
+void AVectorStruct::SetVisibilityPointA(bool visibility)    { MLD_PTR_CHECK(PointA);    if(!PointA) return;    PointA->SetVisibility(visibility);    }
+void AVectorStruct::SetVisibilityPointB(bool visibility)    { MLD_PTR_CHECK(PointB);    if(!PointB) return;    PointB->SetVisibility(visibility);    }
+void AVectorStruct::SetVisibilityLine(bool visibility)      { MLD_PTR_CHECK(Line);      if(!Line) return;      Line->SetVisibility(visibility);      }
+void AVectorStruct::SetVisibilityArrowhead(bool visibility) { MLD_PTR_CHECK(Arrowhead); if(!Arrowhead) return; Arrowhead->SetVisibility(visibility); }
+
+void AVectorStruct::SetVisibilityForAll(bool visibility)
 {
    SetVisibilityPointA(visibility);
    SetVisibilityPointB(visibility);
@@ -58,10 +67,43 @@ void AVectorStruct::SetVisibility(bool visibility)
    SetVisibilityArrowhead(visibility);
 }
 
-void AVectorStruct::SetValuesVectorStruct(ACoordinateSystemBase * coordinateSystem, LaserColors color, FVector a, FVector b)
+void AVectorStruct::SetVisibility(bool showPointA, bool showPointB, bool showLine, bool showArrowhead)
 {
-   SetValues(coordinateSystem, color);
-   this->A = a;
-   this->B = b;
-   SetVisibility(false);
+   SetVisibilityPointA(showPointA);
+   SetVisibilityPointB(showPointB);
+   SetVisibilityLine(showLine);
+   SetVisibilityArrowhead(showArrowhead);
 }
+
+
+
+void AVectorStruct::Update()
+{
+   Super::Update();
+   SetPosition(A);
+   BuildLine();
+   SetPointB();
+}
+
+void AVectorStruct::BuildLine()
+{
+   MLD_PTR_CHECK(Line);
+   MLD_PTR_CHECK(Arrowhead);
+   if(!(Line && Arrowhead)) return;
+
+   //Make Rotation
+   if(Mode == VectorStructMode::segment) { RotateLaserLookAt(A, B); }
+   else                                  { RotateLine(B); }
+
+   //Make Scale
+   if(Mode == VectorStructMode::segment) { ScaleLine(Line, UKismetMathLibrary::VSize(B - A)); }
+   else                                  { ScaleVector(Line, Arrowhead, UKismetMathLibrary::VSize(B)); }
+}
+
+void AVectorStruct::SetPointB()
+{
+   if(Mode == VectorStructMode::segment) { PointB->SetWorldLocation(CoordinateToLocation(B)); }
+   else                                  { PointB->SetWorldLocation(CoordinateToLocation(B + A)); }
+}
+
+

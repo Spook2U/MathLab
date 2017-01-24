@@ -15,12 +15,11 @@ class ASphereBase;
 class AUnitBase;
 class AVectorStruct;
 
-
 UCLASS()
 class MATHLAB_API ACoordinateSystemBase : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:	
 	ACoordinateSystemBase();
    
@@ -103,7 +102,7 @@ public:
 
 
 
-   AGeometryBase * AddGeometry(bool isGuide, TSubclassOf<AGeometryBase> geometry);
+   AGeometryBase * AddGeometry(TSubclassOf<AGeometryBase> geometry);
    
    //Spawns Unit Objects at the Coordinate System
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
@@ -127,13 +126,14 @@ public:
    
    /**Spawns a Sphere at the given Coordinate with the defined radius*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
-   ASphereBase *MakeSphere(LaserColors color, FVector position, float radius, bool showGuides);
+   ASphereBase *MakeSphere(LaserColors color, FVector coordinate, float radius, bool showGuides);
 
-   APointBase  *AddPoint( LaserColors color, bool isGuide, FVector coordinate);
-   ALineBase   *AddLine(  LaserColors color, bool isGuide, FVector position, FVector direction, LineMode mode);
-   APlaneBase  *AddPlane( LaserColors color, bool isGuide, FVector position, FVector direction1, FVector direction2, PlaneMode mode);
-   ASphereBase *AddSphere(LaserColors color, bool isGuide, FVector position, float radius);
-   AVectorStruct *AddVectorStruct(LaserColors color, FVector pointA, FVector pointB);
+   APointBase  *AddPoint( LaserColors color, bool showGuides, FVector coordinate);
+   ALineBase   *AddLine(  LaserColors color, bool showGuides, FVector position, FVector direction, LineMode mode);
+   APlaneBase  *AddPlane( LaserColors color, bool showGuides, FVector position, FVector direction1, FVector direction2, PlaneMode mode);
+   ASphereBase *AddSphere(LaserColors color, bool showGuides, FVector coordinate, float radius);
+   
+   AVectorStruct *AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode = VectorStructMode::general);
 
 private:
    //Sub function for AddUnits()
