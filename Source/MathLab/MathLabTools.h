@@ -3,9 +3,9 @@
 #pragma once
 
 #include "UObject/NoExportTypes.h"
-#include "MathLabTools.generated.h"
+//#include "Math/NVector.h"
 
-class UNVector;
+#include "MathLabTools.generated.h"
 
 UENUM(BlueprintType)
 enum class LaserColors : uint8
@@ -51,15 +51,10 @@ enum class Direction : uint8
    up      UMETA(DisplayName = "Up")
 };
 
+
 UCLASS()
-class MATHLAB_API UMathLabTools : public UObject //public UBlueprintFunctionLibrary
+class MATHLAB_API UMathLabTools : public UObject 
 {
    GENERATED_BODY()
-   //GENERATED_UCLASS_BODY()
-
-public:
-   //Creates a nVector instance
-   UFUNCTION(BlueprintPure, Category = "nVector")
-   static UNVector* MakeNVector(TArray<float> coordinates);
 
 };

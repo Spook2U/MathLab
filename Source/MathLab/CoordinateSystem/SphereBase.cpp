@@ -23,11 +23,8 @@ void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components)
 {
    for(UStaticMeshComponent *c : components)
    {
-      MLD_PTR_CHECK(c);
-      if(c) 
-      { 
-         if(c->GetName().Equals("Sphere")) { this->Sphere = c; }
-      }
+      MLD_PTR_CHECK(c); if(!c) continue;
+      if(c->GetName().Equals("Sphere")) { this->Sphere = c; }
    }
 
    MLD_PTR_CHECK(Sphere); if(!Sphere) return;
@@ -39,6 +36,8 @@ void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
 void ASphereBase::SetValuesSphere(ACoordinateSystemBase* coordinateSystem, LaserColors color, FVector coordinate, float radius)
 {
+   MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
+
    this->Radius = radius;
    InitPoint(coordinateSystem, color, coordinate);
 }
@@ -55,8 +54,6 @@ void ASphereBase::Update()
 
 void ASphereBase::BuildSphere()
 {
-   MLD_PTR_CHECK(Sphere); if(!Sphere) return;
-
    ScaleSphere(Sphere, Radius);
 }
 
@@ -65,21 +62,16 @@ void ASphereBase::BuildSphere()
 void ASphereBase::CreateVectorGuides(LaserColors color)
 {
    Super::CreateVectorGuides(color);
-   MLD_PTR_CHECK(CoordinateSystem); if(!CoordinateSystem) return;
-
    AVectorStruct *pointVectorStruct = nullptr;
 
    for(AVectorStruct *v : VectorGuides)
    {
-      MLD_PTR_CHECK(v); 
-      if(v) 
-      { 
-         if(v->A.Equals(FVector::ZeroVector) && v->B.Equals(Coordinate))
-         {
-            pointVectorStruct = v;
-            break;
-         } 
-      }
+      MLD_PTR_CHECK(v); if(!v) continue;
+      if(v->A.Equals(FVector::ZeroVector) && v->B.Equals(Coordinate))
+      {
+         pointVectorStruct = v;
+         break;
+      } 
    }
    pointVectorStruct->SetVisibilityPointB(true);
 

@@ -11,7 +11,7 @@
 #include "VectorStruct.h"
 
 #include "CoordinateSystemBase.h"
-
+ 
 ACoordinateSystemBase::ACoordinateSystemBase()      
 { 
    PrimaryActorTick.bCanEverTick = true;
@@ -60,7 +60,7 @@ ACoordinateSystemBase::ACoordinateSystemBase()
 
 // Unreal Events -----------------------------------------------------------------------------------
 
-void ACoordinateSystemBase::OnConstruction(const FTransform & Transform)
+void ACoordinateSystemBase::OnConstruction(const FTransform &Transform)
 {
    MaxCoordinate = UnitCount;
 }
@@ -78,12 +78,12 @@ void ACoordinateSystemBase::Tick( float DeltaTime ) { Super::Tick( DeltaTime ); 
 
 
 
-void ACoordinateSystemBase::bp_debug_Screen(FString inString, FLinearColor color) { MLD_BLP(color.ToFColor(true), "%s", *inString); }
-
-
-
 void ACoordinateSystemBase::TestFunction()
 {
+   //FLinearEqualation le = FLinearEqualation(FNMatrix({FNVector({2, -4, 2}), FNVector({4, -6, 4}), FNVector({-4, -2, 4}),FNVector({-4, 0, 4})}));
+   //MLD_LOG("%s", *le.ToString());
+   //le.Solve();
+
 }
 
 
@@ -93,12 +93,10 @@ void ACoordinateSystemBase::SetComponents(UStaticMeshComponent *xAxis, UStaticMe
    MLD_PTR_CHECK(xAxis);
    MLD_PTR_CHECK(yAxis);
    MLD_PTR_CHECK(zAxis);
-   if(xAxis && yAxis && zAxis)
-   {
-      this->XAxis = xAxis;
-      this->YAxis = yAxis;
-      this->ZAxis = zAxis;
-   }
+   if(!(xAxis && yAxis && zAxis)) return;
+   this->XAxis = xAxis;
+   this->YAxis = yAxis;
+   this->ZAxis = zAxis;
 }
 
 // Pure Functions -----------------------------------------------------------------------------------
@@ -119,11 +117,8 @@ void ACoordinateSystemBase::Update()
 {
    for(AGeometryBase *g : Elements)
    {
-      MLD_PTR_CHECK(g);
-      if(g)
-      {
-         g->Update();
-      }
+      MLD_PTR_CHECK(g); if(!g) return;
+      g->Update();
    }
 }
 
@@ -135,15 +130,9 @@ void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
 
    FVector scaleVector = {diameter, diameter, 2 * length};
 
-   MLD_PTR_CHECK(XAxis);
-   MLD_PTR_CHECK(YAxis);
-   MLD_PTR_CHECK(ZAxis);
-   if(XAxis && YAxis && ZAxis)
-   {
-      XAxis->SetWorldScale3D(scaleVector);
-      YAxis->SetWorldScale3D(scaleVector);
-      ZAxis->SetWorldScale3D(scaleVector);
-   }
+   XAxis->SetWorldScale3D(scaleVector);
+   YAxis->SetWorldScale3D(scaleVector);
+   ZAxis->SetWorldScale3D(scaleVector);
 }
 
 // Make ---------------------------------------------------------------------------------------------
@@ -168,15 +157,9 @@ void ACoordinateSystemBase::AddUnits()
    {
       if(i != 0) // No Unit at Origin
       {
-         MLD_PTR_CHECK(XAxis);
-         MLD_PTR_CHECK(YAxis);
-         MLD_PTR_CHECK(ZAxis);
-         if(XAxis && YAxis && ZAxis)
-         {
-            AddUnits_ToAxis(XAxis, i);
-            AddUnits_ToAxis(YAxis, i);
-            AddUnits_ToAxis(ZAxis, i);
-         }
+         AddUnits_ToAxis(XAxis, i);
+         AddUnits_ToAxis(YAxis, i);
+         AddUnits_ToAxis(ZAxis, i);
       }
    }
 }
@@ -191,29 +174,39 @@ void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int inde
 
 APointBase *ACoordinateSystemBase::MakePoint(LaserColors color, FVector coordinate, bool showGuides)
 {  
-   APointBase *point = AddPoint(color, showGuides, coordinate);
+   APointBase *point = (APointBase *)AddGeometry(PointBP);
+   
    MLD_PTR_CHECK(point); if(!point) return nullptr;
+   point->InitPoint(this, color, coordinate);
+   point->ShowVectorGuides(showGuides);
    return point;
 }
 
 ALineBase *ACoordinateSystemBase::MakeLine(LaserColors color, FVector position, FVector direction, LineMode mode, bool showGuides)
 {
-   ALineBase *line = AddLine(color, showGuides, position, direction, mode);
+   ALineBase *line = (ALineBase *)AddGeometry(LineBP);
+
    MLD_PTR_CHECK(line); if(!line) return nullptr;
+   line->SetValuesLine(this, color, position, direction, mode);
+   line->ShowVectorGuides(showGuides);
    return line;
 }
 
 APlaneBase *ACoordinateSystemBase::MakePlane(LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode, bool showGuides)
 {
-   APlaneBase *plane = AddPlane(color, showGuides, position, direction1, direction2, mode);
+   APlaneBase *plane = (APlaneBase *)AddGeometry(PlaneBP);
    MLD_PTR_CHECK(plane); if(!plane) return nullptr;
+   plane->SetValuesPlane(this, color, position, direction1, direction2, mode);
+   plane->ShowVectorGuides(showGuides);
    return plane;
 }
 
 ASphereBase *ACoordinateSystemBase::MakeSphere(LaserColors color, FVector coordinate, float radius, bool showGuides)
 {
-   ASphereBase *sphere = AddSphere(color, showGuides, coordinate, radius);
+   ASphereBase *sphere = (ASphereBase *)AddGeometry(SphereBP);
    MLD_PTR_CHECK(sphere); if(!sphere) return nullptr;
+   sphere->SetValuesSphere(this, color, coordinate, radius);
+   sphere->ShowVectorGuides(showGuides);
    return sphere;
 }
 
@@ -269,6 +262,36 @@ AVectorStruct *ACoordinateSystemBase::AddVectorStruct(LaserColors color, FVector
       case VectorStructMode::general:     newVectorStruct->SetVisibilityForAll(false);               break;
    }
    return newVectorStruct;
+}
+
+
+
+
+
+
+void ACoordinateSystemBase::bp_debug_Screen(FString inString, FLinearColor color) 
+{ 
+   MLD_BLP(color.ToFColor(true), "%s", *inString); 
+}
+
+FString ACoordinateSystemBase::FNVectorToString(FNVector inNVector)
+{
+   return inNVector.ToString();
+}
+
+FString ACoordinateSystemBase::FNMatrixToString(FNMatrix inNMatrix)
+{
+   return inNMatrix.ToString();
+}
+
+FString ACoordinateSystemBase::FLinearEqualationToString(FLinearEqualation inLinearEqualation)
+{
+   return inLinearEqualation.ToString();
+}
+
+void ACoordinateSystemBase::LE_Solve(FLinearEqualation inLinearEqualation)
+{
+   inLinearEqualation.Solve();
 }
 
 

@@ -54,10 +54,10 @@ void AVectorStruct::SetValuesVectorStruct(ACoordinateSystemBase *coordinateSyste
 
 
 
-void AVectorStruct::SetVisibilityPointA(bool visibility)    { MLD_PTR_CHECK(PointA);    if(!PointA) return;    PointA->SetVisibility(visibility);    }
-void AVectorStruct::SetVisibilityPointB(bool visibility)    { MLD_PTR_CHECK(PointB);    if(!PointB) return;    PointB->SetVisibility(visibility);    }
-void AVectorStruct::SetVisibilityLine(bool visibility)      { MLD_PTR_CHECK(Line);      if(!Line) return;      Line->SetVisibility(visibility);      }
-void AVectorStruct::SetVisibilityArrowhead(bool visibility) { MLD_PTR_CHECK(Arrowhead); if(!Arrowhead) return; Arrowhead->SetVisibility(visibility); }
+void AVectorStruct::SetVisibilityPointA(bool visibility)    { PointA->SetVisibility(visibility);    }
+void AVectorStruct::SetVisibilityPointB(bool visibility)    { PointB->SetVisibility(visibility);    }
+void AVectorStruct::SetVisibilityLine(bool visibility)      { Line->SetVisibility(visibility);      }
+void AVectorStruct::SetVisibilityArrowhead(bool visibility) { Arrowhead->SetVisibility(visibility); }
 
 void AVectorStruct::SetVisibilityForAll(bool visibility)
 {
@@ -87,15 +87,9 @@ void AVectorStruct::Update()
 
 void AVectorStruct::BuildLine()
 {
-   MLD_PTR_CHECK(Line);
-   MLD_PTR_CHECK(Arrowhead);
-   if(!(Line && Arrowhead)) return;
-
-   //Make Rotation
    if(Mode == VectorStructMode::segment) { RotateLaserLookAt(A, B); }
    else                                  { RotateLine(B); }
 
-   //Make Scale
    if(Mode == VectorStructMode::segment) { ScaleLine(Line, UKismetMathLibrary::VSize(B - A)); }
    else                                  { ScaleVector(Line, Arrowhead, UKismetMathLibrary::VSize(B)); }
 }

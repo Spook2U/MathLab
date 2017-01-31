@@ -18,16 +18,14 @@ void ALineBase::BeginPlay()
 
 
 
+
 void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
 {
    for(UStaticMeshComponent *c : components)
    {
-      MLD_PTR_CHECK(c);
-      if(c) 
-      { 
-         if(c->GetName().Equals("Line"))      { this->Line      = c; }
-         if(c->GetName().Equals("Arrowhead")) { this->Arrowhead = c; }
-      }
+      MLD_PTR_CHECK(c); if(!c) continue;
+      if(c->GetName().Equals("Line"))      { this->Line      = c; }
+      if(c->GetName().Equals("Arrowhead")) { this->Arrowhead = c; }
    }
 
    MLD_PTR_CHECK(Line);
@@ -46,6 +44,8 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
 void ALineBase::SetValuesLine(ACoordinateSystemBase * coordinateSystem, LaserColors color, FVector position, FVector direction, LineMode mode)
 {
+   MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
+
    SetValuesGeometry(coordinateSystem, color);
    this->Position = position;
    this->Direction = direction;
@@ -73,15 +73,9 @@ void ALineBase::Update()
 
 void ALineBase::BuildLine()
 {
-   MLD_PTR_CHECK(Line);
-   MLD_PTR_CHECK(Arrowhead);
-   if(!(Line && Arrowhead)) return;
-
-   //Make Rotation
    if(Mode == LineMode::segment) { RotateLaserLookAt(Position, Direction); }
    else                          { RotateLine(Direction); }
 
-   //Make Scale
    if(     Mode == LineMode::line)    { SetLaserScale(Line, FVector(NULL, NULL, CoordinateSystem->MaxVisibleLength())); }
    else if(Mode == LineMode::segment) { ScaleLine(Line, UKismetMathLibrary::VSize(Direction - Position)); }
    else                               { ScaleVector(Line, Arrowhead, UKismetMathLibrary::VSize(Direction)); }
@@ -91,8 +85,6 @@ void ALineBase::BuildLine()
 
 void ALineBase::CreateVectorGuides(LaserColors color)
 {
-   MLD_PTR_CHECK(CoordinateSystem); if(!CoordinateSystem) return;
-
    AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, Position, VectorStructMode::vector));
    AddVectorGuide(CoordinateSystem->AddVectorStruct(color, Position, Direction, VectorStructMode::vector));
 }

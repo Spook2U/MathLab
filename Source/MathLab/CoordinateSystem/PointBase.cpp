@@ -21,11 +21,8 @@ void APointBase::SetComponents(TArray<UStaticMeshComponent*> components)
 {
    for(UStaticMeshComponent *c : components)
    {
-      MLD_PTR_CHECK(c);
-      if(c) 
-      { 
-         if(c->GetName().Equals("Point")) { this->Point = c; }
-      }
+      MLD_PTR_CHECK(c); if(!c) continue;
+      if(c->GetName().Equals("Point")) { this->Point = c; }
    }
    
    MLD_PTR_CHECK(Point); if(!Point) return;
@@ -37,6 +34,8 @@ void APointBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
 void APointBase::InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate)
 {  
+   MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
+
    SetValuesGeometry(coordinateSystem, color);
    this->Coordinate = coordinate;
    CreateVectorGuides(color);
@@ -62,7 +61,6 @@ float APointBase::DistanceToLine(ALineBase * line)
    }
    return distance;
 }
-
 float APointBase::DistanceToPoint(APointBase * point)
 {
    float distance = 0.0f;
@@ -73,7 +71,6 @@ float APointBase::DistanceToPoint(APointBase * point)
    }
    return distance;
 }
-
 float APointBase::DistanceToPlane(APlaneBase * plane)
 {
    float distance = 0.0f;
@@ -84,7 +81,6 @@ float APointBase::DistanceToPlane(APlaneBase * plane)
    }
    return distance;
 }
-
 float APointBase::DistanceToSphere(ASphereBase * sphere)
 {
    return 0.0f;
@@ -96,8 +92,6 @@ float APointBase::DistanceToSphere(ASphereBase * sphere)
 
 void APointBase::CreateVectorGuides(LaserColors color)
 {
-   MLD_PTR_CHECK(CoordinateSystem); if(!CoordinateSystem) return;
-
    AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, Coordinate, VectorStructMode::vector));
 }
 

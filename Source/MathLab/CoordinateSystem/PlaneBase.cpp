@@ -25,11 +25,8 @@ void APlaneBase::SetComponents(TArray<UStaticMeshComponent *> components)
 {
    for(UStaticMeshComponent *c : components)
    {
-      MLD_PTR_CHECK(c);
-      if(c) 
-      { 
-         if(c->GetName().Equals("Plane")) { this->Plane = c; }
-      }
+      MLD_PTR_CHECK(c); if(!c) continue;
+      if(c->GetName().Equals("Plane")) { this->Plane = c; }
    }
 
    MLD_PTR_CHECK(Plane); if(!Plane) return;
@@ -41,6 +38,8 @@ void APlaneBase::SetComponents(TArray<UStaticMeshComponent *> components)
 
 void APlaneBase::SetValuesPlane(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode)
 {
+   MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
+
    SetValuesGeometry(coordinateSystem, color);
    this->Position = position;
    this->Direction1 = direction1;
@@ -68,8 +67,6 @@ void APlaneBase::Update()
 
 void APlaneBase::BuildPlane()
 {
-   MLD_PTR_CHECK(Plane); if(!Plane) return;
-   
    if(Mode == PlaneMode::plane)
    {
       RotateLaserLookAt(Position, Position + Normal);
@@ -81,8 +78,6 @@ void APlaneBase::BuildPlane()
 
 void APlaneBase::CreateVectorGuides(LaserColors color)
 {
-   MLD_PTR_CHECK(CoordinateSystem); if(!CoordinateSystem) return;
-
    AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, Position, VectorStructMode::vectorPoint));
    AddVectorGuide(CoordinateSystem->AddVectorStruct(color, Position, Direction1, VectorStructMode::vectorPoint));
    AddVectorGuide(CoordinateSystem->AddVectorStruct(color, Position, Direction2, VectorStructMode::vectorPoint));

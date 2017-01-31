@@ -1,3 +1,5 @@
+#pragma once
+
 #include "MathLab.h"
 #include "DebugTools.h"
 #include "CoordinateSystem/CoordinateSystemBase.h"
@@ -17,17 +19,18 @@ FString debug_ClassPrefix(FString classname)
 {
    FString prefix = "";
 
-   if(classname.Equals(TEXT("CoordinateSystemBase.cpp")))   { prefix = "CSyst - "; }
-   else if(classname.Equals(TEXT("GeometryBase.cpp")))      { prefix = "Geo   - "; }
-   else if(classname.Equals(TEXT("PointBase.cpp")))         { prefix = "Point - "; }
-   else if(classname.Equals(TEXT("UnitBase.cpp")))          { prefix = "Unit  - "; }
-   else if(classname.Equals(TEXT("LineBase.cpp")))          { prefix = "Line  - "; }
-   else if(classname.Equals(TEXT("PlaneBase.cpp")))         { prefix = "Plane - "; }
-   else if(classname.Equals(TEXT("SphereBase.cpp")))        { prefix = "Spher - "; }
-   else if(classname.Equals(TEXT("LinearEqualation.cpp")))  { prefix = "LinEq - "; }
-   else if(classname.Equals(TEXT("NVector.cpp")))           { prefix = "nVect - "; }
-   else if(classname.Equals(TEXT("DebugTools.cpp")))        { prefix = ""; }
-   else                                                     { prefix = classname + " - "; }
+   if(classname.Equals(TEXT("CoordinateSystemBase.cpp")))     { prefix = "CSyst - "; }
+   else if(classname.Equals(TEXT("GeometryBase.cpp")))        { prefix = "Geo   - "; }
+   else if(classname.Equals(TEXT("PointBase.cpp")))           { prefix = "Point - "; }
+   else if(classname.Equals(TEXT("UnitBase.cpp")))            { prefix = "Unit  - "; }
+   else if(classname.Equals(TEXT("LineBase.cpp")))            { prefix = "Line  - "; }
+   else if(classname.Equals(TEXT("PlaneBase.cpp")))           { prefix = "Plane - "; }
+   else if(classname.Equals(TEXT("SphereBase.cpp")))          { prefix = "Spher - "; }
+   else if(classname.Equals(TEXT("Math/LinearEqualation.h"))) { prefix = "LinEq - "; }
+   else if(classname.Equals(TEXT("Math/NVector.h")))          { prefix = "nVect - "; }
+   else if(classname.Equals(TEXT("Math/NMatrix.h")))          { prefix = "nMat  - "; }
+   else if(classname.Equals(TEXT("DebugTools.cpp")))          { prefix = ""; }
+   else                                                       { prefix = classname + " - "; }
 
    return prefix;
 }

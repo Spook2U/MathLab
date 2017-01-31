@@ -19,12 +19,6 @@ public:
    
    virtual void BeginPlay() override;
 
-   // Test Debug Print Function
-   UFUNCTION(BlueprintCallable, Displayname = "Print (DebugOnly)", Category = "string", meta = (Keywords = "mld, print, debug, printdebug", Tooltip = "This method is only working in Debug or Development Mode"))
-   void bp_debug_Screen(FString inString = "Hello", FLinearColor color = FLinearColor::White);
-
-
-
 public:
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
    ACoordinateSystemBase *CoordinateSystem;
