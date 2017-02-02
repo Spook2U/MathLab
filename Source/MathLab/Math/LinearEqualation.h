@@ -14,15 +14,21 @@ struct FLinearEqualation
 {
    GENERATED_BODY()
 
-   FNMatrix CoefficientMatrix_solved;
-
-   bool isSolved = false;
-
 public:      
    /* LinearEqualation components. */
    UPROPERTY(BlueprintReadWrite, Category = "Math Lab|nMatrix")
    FNMatrix CoefficientMatrix;
 
+private: 
+   bool isSolved = false;
+
+   // Help variables to solve the linear equalation
+   float pivot;
+   int   pivotIndex;
+   float rowPivot;
+   int   rowPivotIndex;
+
+public:      
    /* Default constructor (no initialization). */
    FORCEINLINE FLinearEqualation();
 
@@ -35,9 +41,24 @@ public:
    /* Checks if the given nMatrix has the correct format: n+1 columns, n rows. */
    bool ValidCheck(FNMatrix inMatrix) const;
 
+   /* Solves this linear equalation. */
    void Solve();
 
+   /* Get a textual representation of this linear equalation. */
    FString ToString() const;
+
+private:
+   bool CheckColumnZeroFromTo(int from, int to);
+   bool CheckRowZeroFromTo(int from, int to);
+
+   void SetPivot();
+   bool LastPivot();
+   bool SwitchRow();
+   bool CheckColumnZero();
+   void PivotToOne();
+   bool MakeRowPivotToZero();
+   bool CheckCoefficentZero();
+   bool CheckRowZero();
 };
 
 FORCEINLINE FLinearEqualation::FLinearEqualation() {}
@@ -66,33 +87,6 @@ FORCEINLINE bool FLinearEqualation::ValidCheck() const
    ValidCheck(CoefficientMatrix);
 }
 
-/*
-m_index;
-m_max;
-
-   GetFirst()
-   {
-      m_max = Berechnen;
-      m_index = -1;
-
-      GetNext();
-   }
-
-   GetNext()
-   {
-      ++m_index;
-      if(m_index < m_max)
-      {
-         arrayBlabla(m_index)
-      }
-
-      return(array_satz);
-   }
-
-   GetIndex()
-   GetRecord()
-
-*/
 
 
 /*
@@ -149,99 +143,134 @@ m_max;
    }
 */
 
+#define FINISH_NO_SOLUTON        pivotIndex = maxRows; /*ergebnis definieren*/ break
+#define FINISH_ENDLESS_SOLUTIONS pivotIndex = maxRows; /*ergebnis definieren*/ break
+#define REPEAT_WITH_SAME_INDEX   pivotIndex--; continue
+#define SKIP                     continue
 
 FORCEINLINE void FLinearEqualation::Solve()
 {
+   int maxRows = CoefficientMatrix.RowNum();
+
    isSolved = true;
 
-   float pivot;
-   float rowPivot;
-   
-   bool pivotNotZero = true;
-   bool rowIsZero;
-
-   for(int pivotIndex = 0, pMax = CoefficientMatrix.RowNum(); pivotIndex < pMax; pivotIndex++)
+   for(pivotIndex = 0; pivotIndex < maxRows; pivotIndex++)
    {
-      pivot = CoefficientMatrix.GetElement(pivotIndex, pivotIndex);
-      MLD_LOG("Pivot: %f", pivot);
+      SetPivot(); 
       
-      // Special case if pivot = 0;Row needs ot be switcehd, so pivot isn't 0
       if(pivot == 0)
       {
-         int rowIndex = pivotIndex+1;
-         bool found = false;
+         if(LastPivot())       { FINISH_NO_SOLUTON; }
+         if(SwitchRow())       { REPEAT_WITH_SAME_INDEX; }
+         if(CheckColumnZero()) { SKIP; }
          
-         pivotNotZero = false;
+         //This Code should never be reached
+         MLD_WAR("Not checked case of Pivot = 0 occured");
+      }
+      else if(pivot != 1)
+      {
+         PivotToOne();
+      }
+   
+      for(rowPivotIndex = 0; rowPivotIndex < maxRows; rowPivotIndex++)
+      {
+         if(rowPivotIndex == pivotIndex) continue;
          
-         // Search other rows under pivotRow for row with not 0 in pivotIndex column
-         for(int rMax = CoefficientMatrix.RowNum(); rowIndex < rMax; rowIndex++)
+         if(MakeRowPivotToZero())
          {
-            if(CoefficientMatrix.GetElement(pivotIndex, rowIndex) != 0)
-            {
-               found = true;
-               break;
-            }
-         }
-
-         // If found row, than switch pivot row with found row
-         if(found)
-         {
-            FNVector pivotRow = CoefficientMatrix.GetRow(pivotIndex);
-            CoefficientMatrix.SetRow(pivotIndex, CoefficientMatrix.GetRow(rowIndex));
-            CoefficientMatrix.SetRow(rowIndex, pivotRow);
-            MLD_LOG("switch rows: %s", *ToString());
-            
-            pivot = CoefficientMatrix.GetElement(pivotIndex, pivotIndex);
-            MLD_LOG("New Pivot: %f", pivot);
-
-            pivotNotZero = true;
-         }
-
-      }
-
-      // Make pivot element to 1
-      if(pivotNotZero)
-      {
-         if(pivot != 1)
-         { 
-            CoefficientMatrix.SetRow(pivotIndex, CoefficientMatrix.GetRow(pivotIndex) / pivot);
+            if(CheckCoefficentZero()) { FINISH_NO_SOLUTON; }
+            if(CheckRowZero())        { FINISH_ENDLESS_SOLUTIONS; }
          }
       }
-      else
-      {
-         //
-         continue;
-      }
-      
-      // Make all elements in same column as pivot 0
-      for(int row = 0, rMax = CoefficientMatrix.RowNum(); row < rMax; row++)
-      {
-         if(row == pivotIndex) continue;
-
-         rowPivot = CoefficientMatrix.GetElement(pivotIndex, row);
-         MLD_LOG("Row Pivot: %f", rowPivot);
-
-         if(rowPivot == 0) continue;
-
-         // Make element in colum from pivot 0
-         CoefficientMatrix.SetRow(row, CoefficientMatrix.GetRow(row) + CoefficientMatrix.GetRow(pivotIndex) * ((-1) * rowPivot));
-         MLD_LOG("%s", *ToString());
-
-         // Check if one row has all elements on 0, except the last result row (e.g. 0 0 0 4)
-         rowIsZero = true;
-         for(int column = 0, cMax = CoefficientMatrix.ColumnNum()-1; column < cMax; column++)
-         {
-            if(CoefficientMatrix.GetElement(column, row) != 0)
-            {
-               rowIsZero = false;
-            }
-         }
-         if(rowIsZero) break;
-      }
-      if(rowIsZero) break;
    }
 
+
+   
+   //bool pivotNotZero = true;
+   //bool rowIsZero;
+   //
+   //for(int pivotIndex = 0, pMax = CoefficientMatrix.RowNum(); pivotIndex < pMax; pivotIndex++)
+   //{
+   //   pivot = CoefficientMatrix.GetElement(pivotIndex, pivotIndex);
+   //   MLD_LOG("Pivot: %f", pivot);
+   //   
+   //   // Special case if pivot = 0;Row needs ot be switcehd, so pivot isn't 0
+   //   if(pivot == 0)
+   //   {
+   //      int rowIndex = pivotIndex+1;
+   //      bool found = false;
+   //      
+   //      pivotNotZero = false;
+   //      
+   //      // Search other rows under pivotRow for row with not 0 in pivotIndex column
+   //      for(int rMax = CoefficientMatrix.RowNum(); rowIndex < rMax; rowIndex++)
+   //      {
+   //         if(CoefficientMatrix.GetElement(pivotIndex, rowIndex) != 0)
+   //         {
+   //            found = true;
+   //            break;
+   //         }
+   //      }
+   //
+   //      // If found row, than switch pivot row with found row
+   //      if(found)
+   //      {
+   //         FNVector pivotRow = CoefficientMatrix.GetRow(pivotIndex);
+   //         CoefficientMatrix.SetRow(pivotIndex, CoefficientMatrix.GetRow(rowIndex));
+   //         CoefficientMatrix.SetRow(rowIndex, pivotRow);
+   //         MLD_LOG("switch rows: %s", *ToString());
+   //         
+   //         pivot = CoefficientMatrix.GetElement(pivotIndex, pivotIndex);
+   //         MLD_LOG("New Pivot: %f", pivot);
+   //
+   //         pivotNotZero = true;
+   //      }
+   //
+   //   }
+   //
+   //   // Make pivot element to 1
+   //   if(pivotNotZero)
+   //   {
+   //      if(pivot != 1)
+   //      { 
+   //         CoefficientMatrix.SetRow(pivotIndex, CoefficientMatrix.GetRow(pivotIndex) / pivot);
+   //      }
+   //   }
+   //   else
+   //   {
+   //      //
+   //      continue;
+   //   }
+   //   
+   //   // Make all elements in same column as pivot 0
+   //   for(int row = 0, rMax = CoefficientMatrix.RowNum(); row < rMax; row++)
+   //   {
+   //      if(row == pivotIndex) continue;
+   //
+   //      rowPivot = CoefficientMatrix.GetElement(pivotIndex, row);
+   //      MLD_LOG("Row Pivot: %f", rowPivot);
+   //
+   //      if(rowPivot == 0) continue;
+   //
+   //      // Make element in colum from pivot 0
+   //      CoefficientMatrix.SetRow(row, CoefficientMatrix.GetRow(row) + CoefficientMatrix.GetRow(pivotIndex) * ((-1) * rowPivot));
+   //      MLD_LOG("%s", *ToString());
+   //
+   //      // Check if one row has all elements on 0, except the last result row (e.g. 0 0 0 4)
+   //      rowIsZero = true;
+   //      for(int column = 0, cMax = CoefficientMatrix.ColumnNum()-1; column < cMax; column++)
+   //      {
+   //         if(CoefficientMatrix.GetElement(column, row) != 0)
+   //         {
+   //            rowIsZero = false;
+   //         }
+   //      }
+   //      if(rowIsZero) break;
+   //   }
+   //   if(rowIsZero) break;
+   //}
 }
+
 
 
 FORCEINLINE FString FLinearEqualation::ToString() const
@@ -254,4 +283,116 @@ FORCEINLINE FString FLinearEqualation::ToString() const
    }   
 
    return s;
+}
+
+
+
+FORCEINLINE bool FLinearEqualation::CheckColumnZeroFromTo(int from, int to)
+{
+   bool isZero = true;
+
+   if(from < 0)                             { MLD_ERR("CheckColumnZeroFromTo(int from, int to) invalid value for from = %d", from); }
+   else if(to > CoefficientMatrix.RowNum()) { MLD_ERR("CheckColumnZeroFromTo(int from, int to) invalid value for to = %d", to); }
+   else
+   {
+      for(int row = from; row < to; row++)
+      {
+         if(CoefficientMatrix.GetElement(pivotIndex, row) != 0)
+         {
+            isZero = false;
+            break;
+         }
+      }
+   }
+   return isZero;
+}
+
+FORCEINLINE bool FLinearEqualation::CheckRowZeroFromTo(int from, int to)
+{
+   bool isZero = true;
+   if(from < 0)                                { MLD_ERR("CheckColumnZeroFromTo(int from, int to) invalid value for from = %d", from); }
+   else if(to > CoefficientMatrix.ColumnNum()) { MLD_ERR("CheckColumnZeroFromTo(int from, int to) invalid value for to = %d", to); }
+   else
+   {
+      for(int column = from; column < to; column++)
+      {
+         if(CoefficientMatrix.GetElement(column, rowPivotIndex) != 0)
+         {
+            isZero = false;
+            break;
+         }
+      }
+   }
+   return isZero;
+
+}
+
+FORCEINLINE void FLinearEqualation::SetPivot()
+{
+   pivot = CoefficientMatrix.GetElement(pivotIndex, pivotIndex);
+}
+
+FORCEINLINE bool FLinearEqualation::LastPivot()
+{
+   return pivotIndex == (CoefficientMatrix.RowNum() - 1);
+}
+
+FORCEINLINE bool FLinearEqualation::SwitchRow()
+{
+   int rowIndex = pivotIndex + 1;
+   bool canSwitch = false;
+
+   // Search other rows under pivotRow for row with not 0 in pivotIndex column
+   for(int rMax = CoefficientMatrix.RowNum(); rowIndex < rMax; rowIndex++)
+   {
+      if(CoefficientMatrix.GetElement(pivotIndex, rowIndex) != 0)
+      {
+         canSwitch = true;
+         break;
+      }
+   }
+
+   // Switch rows
+   if(canSwitch)
+   {
+      FNVector pivotRow = CoefficientMatrix.GetRow(pivotIndex);
+      CoefficientMatrix.SetRow(pivotIndex, CoefficientMatrix.GetRow(rowIndex));
+      CoefficientMatrix.SetRow(rowIndex, pivotRow);
+   }
+
+   return canSwitch;
+}
+
+FORCEINLINE bool FLinearEqualation::CheckColumnZero()
+{
+   return CheckColumnZeroFromTo(0, CoefficientMatrix.ColumnNum());
+}
+
+FORCEINLINE void FLinearEqualation::PivotToOne()
+{
+   if(pivot) CoefficientMatrix.SetRow(pivotIndex, CoefficientMatrix.GetRow(pivotIndex) / pivot);
+}
+
+FORCEINLINE bool FLinearEqualation::MakeRowPivotToZero()
+{
+   bool didChange = false;
+
+   rowPivot = CoefficientMatrix.GetElement(pivotIndex, rowPivotIndex);
+   if(rowPivot != 0)
+   {
+      CoefficientMatrix.SetRow(rowPivotIndex, CoefficientMatrix.GetRow(rowPivotIndex) + CoefficientMatrix.GetRow(pivotIndex) * ((-1) * rowPivot));
+      didChange = true;
+   }
+
+   return didChange;
+}
+
+FORCEINLINE bool FLinearEqualation::CheckCoefficentZero()
+{
+   return CheckRowZeroFromTo(0, CoefficientMatrix.RowNum()-1);
+}
+
+FORCEINLINE bool FLinearEqualation::CheckRowZero()
+{
+   return CheckRowZeroFromTo(0, CoefficientMatrix.RowNum());
 }
