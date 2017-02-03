@@ -17,9 +17,11 @@ public:
 #define MLD_FUNCTION_NAME  *FString(__func__)
 #define MLD_CLASS_NAME     *FString(__FILENAME__)
 
-DECLARE_LOG_CATEGORY_EXTERN(MLogCode, Log, All);
-DECLARE_LOG_CATEGORY_EXTERN(MLogBlue, Log, All);
-DECLARE_LOG_CATEGORY_EXTERN(MLogScrn, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(MLogLog, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(MLogWar, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(MLogErr, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(MLogBlu, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(MLogScr, Log, All);
 #endif
 
 
@@ -43,14 +45,14 @@ enum MLog
 
 #define MLD_PTR_CHECK(x)            doTest((x) != 0, __FILENAME__, __LINE__, __func__, #x)
 
-#define MLD_LOG(string, ...)        UE_LOG(MLogCode, Log,     TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__)))
-#define MLD_WAR(string, ...)        UE_LOG(MLogCode, Warning, TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__)))
-#define MLD_ERR(string, ...)        UE_LOG(MLogCode, Error,   TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__)))
+#define MLD_LOG(string, ...)        UE_LOG(MLogLog, Log,     TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__)))
+#define MLD_WAR(string, ...)        UE_LOG(MLogWar, Warning, TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__)))
+#define MLD_ERR(string, ...)        UE_LOG(MLogErr, Error,   TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__)))
 
-#define MLD_SCN(color, string, ...)                                         debug_uescreen(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__), color, MLog::Scrn)
-#define MLD_BLP(color, string, ...)                                         debug_uescreen(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__), color, MLog::Blue)
+#define MLD_SCN(color, string, ...)                                        debug_uescreen(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__), color, MLog::Scrn)
+#define MLD_BLP(color, string, ...)                                        debug_uescreen(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__), color, MLog::Blue)
 
-#define MLD_CALLTEST(string, ...)   UE_LOG(MLogCode, Log,     TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT("%s() %s"), MLD_FUNCTION_NAME, *FString::Printf(TEXT(string),##__VA_ARGS__)))) 
+#define MLD_CALLTEST(string, ...)   UE_LOG(MLogLog, Log,     TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT("%s() %s"), MLD_FUNCTION_NAME, *FString::Printf(TEXT(string),##__VA_ARGS__)))) 
 #else
 #define MLD_PTR_CHECK(x)
 #define MLD_LOG(string, ...) 

@@ -20,12 +20,13 @@ public:
    FNMatrix CoefficientMatrix;
 
 private: 
-   bool isSolved = false;
+   SolutionType solution = SolutionType::notSolved;
+
+   bool debugging = true;
 
    // Help variables to solve the linear equalation
    float pivot;
    int   pivotIndex;
-   float rowPivot;
    int   rowPivotIndex;
 
 public:      
@@ -44,13 +45,20 @@ public:
    /* Solves this linear equalation. */
    void Solve();
 
+   SolutionType HasSolution() const;
+   FNVector GetResults() const;
+
    /* Get a textual representation of this linear equalation. */
    FString ToString() const;
+   /* Returns an Array of strings for each row of this linear equalation. */
+   TArray<FString> ToStringRows() const;
 
 private:
+   bool IsSolved() const;
+
+   //Help functions for Solve()
    bool CheckColumnZeroFromTo(int from, int to);
    bool CheckRowZeroFromTo(int from, int to);
-
    void SetPivot();
    bool LastPivot();
    bool SwitchRow();
@@ -59,6 +67,7 @@ private:
    bool MakeRowPivotToZero();
    bool CheckCoefficentZero();
    bool CheckRowZero();
+   void Solve_DebugLog(int row, FString notice);
 };
 
 FORCEINLINE FLinearEqualation::FLinearEqualation() {}
@@ -143,16 +152,18 @@ FORCEINLINE bool FLinearEqualation::ValidCheck() const
    }
 */
 
-#define FINISH_NO_SOLUTON        pivotIndex = maxRows; /*ergebnis definieren*/ break
-#define FINISH_ENDLESS_SOLUTIONS pivotIndex = maxRows; /*ergebnis definieren*/ break
+#define FINISH_NO_SOLUTON        pivotIndex = maxRows; solution = SolutionType::no; break
+#define FINISH_ENDLESS_SOLUTIONS pivotIndex = maxRows; solution = SolutionType::endless; break
 #define REPEAT_WITH_SAME_INDEX   pivotIndex--; continue
 #define SKIP                     continue
 
+#define SOLVELOG(row, string)    Solve_DebugLog(row, string)
+
 FORCEINLINE void FLinearEqualation::Solve()
 {
-   int maxRows = CoefficientMatrix.RowNum();
+   if(IsSolved()) return;
 
-   isSolved = true;
+   int maxRows = CoefficientMatrix.RowNum();
 
    for(pivotIndex = 0; pivotIndex < maxRows; pivotIndex++)
    {
@@ -163,9 +174,6 @@ FORCEINLINE void FLinearEqualation::Solve()
          if(LastPivot())       { FINISH_NO_SOLUTON; }
          if(SwitchRow())       { REPEAT_WITH_SAME_INDEX; }
          if(CheckColumnZero()) { SKIP; }
-         
-         //This Code should never be reached
-         MLD_WAR("Not checked case of Pivot = 0 occured");
       }
       else if(pivot != 1)
       {
@@ -183,8 +191,8 @@ FORCEINLINE void FLinearEqualation::Solve()
          }
       }
    }
-
-
+   
+   if(!IsSolved()) { solution = SolutionType::one; }
    
    //bool pivotNotZero = true;
    //bool rowIsZero;
@@ -271,13 +279,34 @@ FORCEINLINE void FLinearEqualation::Solve()
    //}
 }
 
+FORCEINLINE SolutionType FLinearEqualation::HasSolution() const
+{
+   return solution;
+}
+
+FORCEINLINE FNVector FLinearEqualation::GetResults() const
+{
+   FNVector results;
+
+   switch(solution)
+   {
+      case SolutionType::one:       results = CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1); break;
+      case SolutionType::endless:   MLD_WAR("Noch nicht eingebaut, gucken was ich hier mache");             break;
+      case SolutionType::notSolved: MLD_WAR("Linear Equalation not yet solved. Call Solve()."); 
+      case SolutionType::no:        
+      default:                      results = FNVector();
+   }
+
+   return results;
+}
+
 
 
 FORCEINLINE FString FLinearEqualation::ToString() const
 {
    FString s = CoefficientMatrix.ToString();
 
-   if(isSolved)
+   if(IsSolved())
    {
       s += ": ";
    }   
@@ -285,6 +314,15 @@ FORCEINLINE FString FLinearEqualation::ToString() const
    return s;
 }
 
+FORCEINLINE TArray<FString> FLinearEqualation::ToStringRows() const
+{
+   return CoefficientMatrix.ToStringRows();
+}
+
+FORCEINLINE bool FLinearEqualation::IsSolved() const
+{
+   return solution != SolutionType::notSolved;
+}
 
 
 FORCEINLINE bool FLinearEqualation::CheckColumnZeroFromTo(int from, int to)
@@ -310,6 +348,7 @@ FORCEINLINE bool FLinearEqualation::CheckColumnZeroFromTo(int from, int to)
 FORCEINLINE bool FLinearEqualation::CheckRowZeroFromTo(int from, int to)
 {
    bool isZero = true;
+
    if(from < 0)                                { MLD_ERR("CheckColumnZeroFromTo(int from, int to) invalid value for from = %d", from); }
    else if(to > CoefficientMatrix.ColumnNum()) { MLD_ERR("CheckColumnZeroFromTo(int from, int to) invalid value for to = %d", to); }
    else
@@ -330,11 +369,20 @@ FORCEINLINE bool FLinearEqualation::CheckRowZeroFromTo(int from, int to)
 FORCEINLINE void FLinearEqualation::SetPivot()
 {
    pivot = CoefficientMatrix.GetElement(pivotIndex, pivotIndex);
+   
+   SOLVELOG(pivotIndex, FString::Printf(TEXT("Pivot = %.1f"), pivot));
 }
 
 FORCEINLINE bool FLinearEqualation::LastPivot()
 {
-   return pivotIndex == (CoefficientMatrix.RowNum() - 1);
+   bool isLast = pivotIndex == (CoefficientMatrix.RowNum() - 1);
+   if(isLast)
+   {
+      SOLVELOG(pivotIndex, "Last Pivot = 0");
+      MLD_LOG("End - No Solution");
+      MLD_LOG("");
+   }
+   return isLast;
 }
 
 FORCEINLINE bool FLinearEqualation::SwitchRow()
@@ -355,9 +403,14 @@ FORCEINLINE bool FLinearEqualation::SwitchRow()
    // Switch rows
    if(canSwitch)
    {
+      SOLVELOG(pivotIndex, FString::Printf(TEXT("Switch (%d) with (%d)"), pivotIndex+1, rowIndex+1));
       FNVector pivotRow = CoefficientMatrix.GetRow(pivotIndex);
       CoefficientMatrix.SetRow(pivotIndex, CoefficientMatrix.GetRow(rowIndex));
       CoefficientMatrix.SetRow(rowIndex, pivotRow);
+   }
+   else
+   {
+      SOLVELOG(pivotIndex, "Skip changing Pivot, cause Pivot = 0");
    }
 
    return canSwitch;
@@ -365,23 +418,36 @@ FORCEINLINE bool FLinearEqualation::SwitchRow()
 
 FORCEINLINE bool FLinearEqualation::CheckColumnZero()
 {
-   return CheckColumnZeroFromTo(0, CoefficientMatrix.ColumnNum());
+   bool isZero = CheckColumnZeroFromTo(0, CoefficientMatrix.RowNum());
+   if(isZero) 
+   {
+      SOLVELOG(pivotIndex, FString::Printf(TEXT("Column %d is empty"), pivotIndex));
+      MLD_LOG("Skip");
+      MLD_LOG("");
+   }
+   return isZero;
 }
 
 FORCEINLINE void FLinearEqualation::PivotToOne()
 {
+   if(pivot) SOLVELOG(pivotIndex, FString::Printf(TEXT(": %.1f"), pivot));
    if(pivot) CoefficientMatrix.SetRow(pivotIndex, CoefficientMatrix.GetRow(pivotIndex) / pivot);
 }
 
 FORCEINLINE bool FLinearEqualation::MakeRowPivotToZero()
 {
    bool didChange = false;
+   float rowPivot = CoefficientMatrix.GetElement(pivotIndex, rowPivotIndex);
 
-   rowPivot = CoefficientMatrix.GetElement(pivotIndex, rowPivotIndex);
    if(rowPivot != 0)
    {
+      SOLVELOG(rowPivotIndex, FString::Printf(TEXT("+ %.1f*(%d)"), rowPivot*(-1), pivotIndex+1));
       CoefficientMatrix.SetRow(rowPivotIndex, CoefficientMatrix.GetRow(rowPivotIndex) + CoefficientMatrix.GetRow(pivotIndex) * ((-1) * rowPivot));
       didChange = true;
+   }
+   else
+   {
+      SOLVELOG(rowPivotIndex, "Skip cause 0");
    }
 
    return didChange;
@@ -389,10 +455,44 @@ FORCEINLINE bool FLinearEqualation::MakeRowPivotToZero()
 
 FORCEINLINE bool FLinearEqualation::CheckCoefficentZero()
 {
-   return CheckRowZeroFromTo(0, CoefficientMatrix.RowNum()-1);
+   bool isZero = CheckRowZeroFromTo(0, CoefficientMatrix.ColumnNum()-1);
+   if(isZero)
+   {
+      SOLVELOG(rowPivotIndex, "All coefficient 0");
+      MLD_LOG("End - No Solution");
+      MLD_LOG("");
+   }
+   return isZero;
 }
 
 FORCEINLINE bool FLinearEqualation::CheckRowZero()
 {
-   return CheckRowZeroFromTo(0, CoefficientMatrix.RowNum());
+   bool isZero = CheckRowZeroFromTo(0, CoefficientMatrix.ColumnNum());
+   if(isZero)
+   {
+      SOLVELOG(pivotIndex, "Row is 0");
+      MLD_LOG("End - Endless Solutions");
+      MLD_LOG("");
+   }
+   return isZero;
+}
+
+FORCEINLINE void FLinearEqualation::Solve_DebugLog(int row, FString notice)
+{
+   if(debugging) 
+   {
+      FString output = "";
+      TArray<FString> matrixStrings = CoefficientMatrix.ToStringRows();
+
+      for(int i = 0; i < CoefficientMatrix.RowNum(); i++)
+      {
+         output = FString::Printf(TEXT("(%d) %s"), i+1, *matrixStrings[i]);
+         if(i == row)
+         {
+            output += " | " + notice;
+         }
+         MLD_LOG("%s", *output);
+      }
+      MLD_LOG("");
+   }
 }

@@ -21,11 +21,9 @@ public:
    /* Default constructor (no initialization). */
    FORCEINLINE FNVector();
    /* Constructor to make a nvector with n-Dimensions. */
-   FORCEINLINE FNVector(const TArray<float> inCoordinates);
+   FORCEINLINE FNVector(TArray<float> inCoordinates);
    /* Constructor to make a zero nVector with n-Dimensions. */
    FORCEINLINE FNVector(int dimenion);
-   /* Constructor to make a nVector with all coordinates set to value with n-Dimensions. */
-   FORCEINLINE FNVector(float value, int dimenion);
 
    bool ValidCheck(FNVector inNVector) const;
 
@@ -91,13 +89,12 @@ public:
 
 
 FORCEINLINE FNVector::FNVector() {}
-FORCEINLINE FNVector::FNVector(const TArray<float> inCoordinates) : Coordinates(inCoordinates) {}
-FORCEINLINE FNVector::FNVector(int dimension) : FNVector(0.f, dimension) {}
-FORCEINLINE FNVector::FNVector(float value, int dimension) 
+FORCEINLINE FNVector::FNVector(TArray<float> inCoordinates) : Coordinates(inCoordinates) {}
+FORCEINLINE FNVector::FNVector(int dimension)
 {
    for(int i = 0; i < dimension; i++)
    {
-      Coordinates.Add(value);
+      Coordinates.Add(0);
    }
 }
 
@@ -343,10 +340,18 @@ FORCEINLINE FString FNVector::ToString() const
    s += "{";
    for(int i = 0, max = Coordinates.Num(); i < max; i++)
    {
-      s += FString::SanitizeFloat(Coordinates[i]);
-      if(i < (max - 1))
+      if(Coordinates[i] < 10 && Coordinates[i] > -10)
       {
-         s += ", ";
+         s += " ";
+      }
+      if(Coordinates[i] >= 0) 
+      { 
+         s += " "; 
+      }
+      s += FString::SanitizeFloat(Coordinates[i]);
+      if(i < (max - 1))      
+      { 
+         s += ", "; 
       }
    }
    s += "}";

@@ -77,6 +77,8 @@ public:
 
    /* Get a textual representation of this nMatrix. */
    FString ToString() const;
+   /* Returns an Array of strings for each row of this nMatrix. */
+   TArray<FString> ToStringRows() const;
 };
 
 FORCEINLINE FNMatrix::FNMatrix() {}
@@ -270,6 +272,7 @@ FORCEINLINE void FNMatrix::AddRow(FNVector row)
 }
 
 
+
 FORCEINLINE void FNMatrix::RemoveColumnAt(int index)
 {
    if((index < 0) || (index > ColumnNum())) { MLD_ERR("nMatrix out of Bounds: index = %d", index); }
@@ -306,4 +309,16 @@ FORCEINLINE FString FNMatrix::ToString() const
    }
    s += "}";
    return s;
+}
+
+FORCEINLINE TArray<FString> FNMatrix::ToStringRows() const
+{
+   TArray<FString> rows;
+
+   for(int i = 0; i < RowNum(); i++)
+   {
+      rows.Add(GetRow(i).ToString());
+   }
+
+   return rows;
 }

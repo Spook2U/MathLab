@@ -51,6 +51,14 @@ enum class Direction : uint8
    up      UMETA(DisplayName = "Up")
 };
 
+UENUM(BlueprintType)
+enum class SolutionType : uint8
+{
+   one       UMETA(DisplayName = "Defined Solution"),   
+   no        UMETA(DisplayName = "Not solvable"),   
+   endless   UMETA(DisplayName = "Endless Solutions"),
+   notSolved UMETA(DisplayName = "Not Solved")
+};
 
 UCLASS()
 class MATHLAB_API UMathLabTools : public UObject 

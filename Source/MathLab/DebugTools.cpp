@@ -9,9 +9,11 @@ ADebugTools::ADebugTools()  {}
 ADebugTools::~ADebugTools() {}
 
 #ifdef _UE_BUILD_DEBUG_FLAG_
-DEFINE_LOG_CATEGORY(MLogCode);
-DEFINE_LOG_CATEGORY(MLogBlue);
-DEFINE_LOG_CATEGORY(MLogScrn);
+DEFINE_LOG_CATEGORY(MLogLog);
+DEFINE_LOG_CATEGORY(MLogWar);
+DEFINE_LOG_CATEGORY(MLogErr);
+DEFINE_LOG_CATEGORY(MLogBlu);
+DEFINE_LOG_CATEGORY(MLogScr);
 
 
 
@@ -58,9 +60,9 @@ void debug_uescreen(FString classname, FString ausgabe, FColor color, int mode)
    GEngine->AddOnScreenDebugMessage(-1, 30, color, ausgabe);
    switch(mode)
    {
-      case MLog::Blue: UE_LOG(MLogBlue, Log, TEXT("%s"), *debug_BuildText(classname, ausgabe)); break;
-      case MLog::Scrn: UE_LOG(MLogScrn, Log, TEXT("%s"), *debug_BuildText(classname, ausgabe)); break;
-      default:         UE_LOG(MLogCode, Log, TEXT("%s"), *debug_BuildText(classname, ausgabe)); break;
+      case MLog::Blue: UE_LOG(MLogBlu, Log, TEXT("%s"), *debug_BuildText(classname, ausgabe)); break;
+      case MLog::Scrn: UE_LOG(MLogScr, Log, TEXT("%s"), *debug_BuildText(classname, ausgabe)); break;
+      default:         UE_LOG(MLogLog, Log, TEXT("%s"), *debug_BuildText(classname, ausgabe)); break;
    }
 }
 
