@@ -45,7 +45,7 @@ FString debug_BuildText(FString classname, FString ausgabe)
 
 
 
-void doTest(bool valid, LPCSTR file, int line, LPCSTR func, LPCSTR name)
+bool doTest(bool valid, LPCSTR file, int line, LPCSTR func, LPCSTR name)
 {
    if(!valid)
    {
@@ -53,6 +53,8 @@ void doTest(bool valid, LPCSTR file, int line, LPCSTR func, LPCSTR name)
       g_this->EndPlay(EEndPlayReason::Quit);
       //EndPlay()    
    }
+
+   return valid;
 }
 
 void debug_uescreen(FString classname, FString ausgabe, FColor color, int mode)

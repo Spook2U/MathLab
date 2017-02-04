@@ -36,7 +36,7 @@ void APlaneBase::SetComponents(TArray<UStaticMeshComponent *> components)
 
 
 
-void APlaneBase::SetValuesPlane(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode)
+void APlaneBase::InitPlane(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode)
 {
    MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
 
@@ -47,11 +47,12 @@ void APlaneBase::SetValuesPlane(ACoordinateSystemBase *coordinateSystem, LaserCo
 
    this->Normal = UKismetMathLibrary::Normal(UKismetMathLibrary::Cross_VectorVector(Direction1, Direction2));
 
+   this->type = GeometryType::plane;
+
    switch(mode)
    {
       case PlaneMode::plane: CreateVectorGuides(color); break;
    }
-
 }
 
 

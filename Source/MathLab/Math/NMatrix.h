@@ -25,8 +25,6 @@ public:
    FORCEINLINE FNMatrix(const TArray<FNVector> inNMatrix);
    /* Constructor to make a nMatrix initialised with 0. */
    FORCEINLINE FNMatrix(int column, int row);
-   /* Constructor to make a nMatrix initialised with a value. */
-   FORCEINLINE FNMatrix(float value, int column, int row);
 
    /* Copy another nVector into this one. */
    FORCEINLINE FNMatrix& operator=(const FNMatrix& Other);
@@ -83,12 +81,11 @@ public:
 
 FORCEINLINE FNMatrix::FNMatrix() {}
 FORCEINLINE FNMatrix::FNMatrix(const TArray<FNVector> inNMatrix) : Matrix(inNMatrix) {}
-FORCEINLINE FNMatrix::FNMatrix(int column, int row) : FNMatrix(0.f, column, row) {}
-FORCEINLINE FNMatrix::FNMatrix(float value, int column, int row) 
+FORCEINLINE FNMatrix::FNMatrix(int column, int row)
 {
    for(int i = 0; i < column; i++)
    {
-      Matrix.Add(FNVector(value, row));
+      Matrix.Add(FNVector(row));
    }
 }
 

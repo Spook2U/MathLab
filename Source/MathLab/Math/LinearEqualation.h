@@ -46,7 +46,8 @@ public:
    void Solve();
 
    SolutionType HasSolution() const;
-   FNVector GetResults() const;
+   FNVector GetSolutionOne();
+   FNVector GetSolutionEndless();
 
    /* Get a textual representation of this linear equalation. */
    FString ToString() const;
@@ -284,21 +285,40 @@ FORCEINLINE SolutionType FLinearEqualation::HasSolution() const
    return solution;
 }
 
-FORCEINLINE FNVector FLinearEqualation::GetResults() const
+FORCEINLINE FNVector FLinearEqualation::GetSolutionOne() 
 {
-   FNVector results;
+   FNVector result;
+   
+   if(!IsSolved()) Solve();
 
    switch(solution)
    {
-      case SolutionType::one:       results = CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1); break;
-      case SolutionType::endless:   MLD_WAR("Noch nicht eingebaut, gucken was ich hier mache");             break;
-      case SolutionType::notSolved: MLD_WAR("Linear Equalation not yet solved. Call Solve()."); 
-      case SolutionType::no:        
+      case SolutionType::one:       result = CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1); break;
+      case SolutionType::endless:   MLD_WAR("This linear equalation has more than one solution. Use GetSolutionEndless() instead."); break;
+      case SolutionType::no:        MLD_WAR("This linear equalation has no solution. Use HasSolution() to check.")
+      default:                      result = FNVector();
+   }
+
+   return result;
+}
+
+FORCEINLINE FNVector FLinearEqualation::GetSolutionEndless()
+{
+   FNVector results;
+
+   if(!IsSolved()) Solve();
+
+   switch(solution)
+   {
+      case SolutionType::one:       MLD_WAR("This linear equalation has only one solution. Use GetSolutionOne() instead."); break;
+      case SolutionType::endless:   MLD_WAR("Noch nicht eigebaut"); break;
+      case SolutionType::no:        MLD_WAR("This linear equalation has no solution. Use HasSolution() to check.")
       default:                      results = FNVector();
    }
 
    return results;
 }
+
 
 
 

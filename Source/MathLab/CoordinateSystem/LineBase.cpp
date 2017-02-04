@@ -42,7 +42,7 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
 
 
-void ALineBase::SetValuesLine(ACoordinateSystemBase * coordinateSystem, LaserColors color, FVector position, FVector direction, LineMode mode)
+void ALineBase::InitLine(ACoordinateSystemBase * coordinateSystem, LaserColors color, FVector position, FVector direction, LineMode mode)
 {
    MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
 
@@ -50,6 +50,7 @@ void ALineBase::SetValuesLine(ACoordinateSystemBase * coordinateSystem, LaserCol
    this->Position = position;
    this->Direction = direction;
    this->Mode = mode;
+   this->type = GeometryType::line;
 
    switch(Mode)
    {

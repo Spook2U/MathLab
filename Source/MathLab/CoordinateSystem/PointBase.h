@@ -38,15 +38,8 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Update")
    virtual void Update() override;
 
-   
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Calculate")
-   float DistanceToLine(ALineBase *line);
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Calculate")
-   float DistanceToPoint(APointBase *point);
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Calculate")
-   float DistanceToPlane(APlaneBase *plane);
-   float DistanceToSphere(ASphereBase *sphere);
 
+   
 protected:
    virtual void CreateVectorGuides(LaserColors color) override;	
 

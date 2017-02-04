@@ -2,6 +2,8 @@
 
 #include "MathLab.h"
 
+#include <typeinfo>
+
 #include "GeometryBase.h"
 #include "LineBase.h"
 #include "PlaneBase.h"
@@ -103,7 +105,7 @@ void ACoordinateSystemBase::TestFunction()
    //MLD_LOG("");
 
    //MLD_LOG("Result: %s", *le.GetResults().ToString());
-
+   
 }
 
 
@@ -188,7 +190,7 @@ void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int inde
 {
    AUnitBase *newUnit = (AUnitBase *)AddGeometry(UnitBP);
    MLD_PTR_CHECK(newUnit); if(!newUnit) return;
-   newUnit->InitPoint(this, LaserColor, axis->GetUpVector()*index);
+   newUnit->InitUnit(this, LaserColor, axis->GetUpVector()*index);
    newUnit->OrientateToAxis(axis);
 }
 
@@ -207,7 +209,7 @@ ALineBase *ACoordinateSystemBase::MakeLine(LaserColors color, FVector position, 
    ALineBase *line = (ALineBase *)AddGeometry(LineBP);
 
    MLD_PTR_CHECK(line); if(!line) return nullptr;
-   line->SetValuesLine(this, color, position, direction, mode);
+   line->InitLine(this, color, position, direction, mode);
    line->ShowVectorGuides(showGuides);
    return line;
 }
@@ -216,7 +218,7 @@ APlaneBase *ACoordinateSystemBase::MakePlane(LaserColors color, FVector position
 {
    APlaneBase *plane = (APlaneBase *)AddGeometry(PlaneBP);
    MLD_PTR_CHECK(plane); if(!plane) return nullptr;
-   plane->SetValuesPlane(this, color, position, direction1, direction2, mode);
+   plane->InitPlane(this, color, position, direction1, direction2, mode);
    plane->ShowVectorGuides(showGuides);
    return plane;
 }
@@ -225,7 +227,7 @@ ASphereBase *ACoordinateSystemBase::MakeSphere(LaserColors color, FVector coordi
 {
    ASphereBase *sphere = (ASphereBase *)AddGeometry(SphereBP);
    MLD_PTR_CHECK(sphere); if(!sphere) return nullptr;
-   sphere->SetValuesSphere(this, color, coordinate, radius);
+   sphere->InitSphere(this, color, coordinate, radius);
    sphere->ShowVectorGuides(showGuides);
    return sphere;
 }
@@ -245,7 +247,7 @@ ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, bool showGuides, FV
 {
    ALineBase *newLine = (ALineBase *)AddGeometry(LineBP);
    MLD_PTR_CHECK(newLine); if(!newLine) return nullptr;
-   newLine->SetValuesLine(this, color, position, direction, mode);
+   newLine->InitLine(this, color, position, direction, mode);
    newLine->ShowVectorGuides(showGuides);
    return newLine;
 }
@@ -254,7 +256,7 @@ APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, bool showGuides, 
 {
    APlaneBase *newPlane = (APlaneBase *)AddGeometry(PlaneBP);
    MLD_PTR_CHECK(newPlane); if(!newPlane) return nullptr;
-   newPlane->SetValuesPlane(this, color, position, direction1, direction2, mode);
+   newPlane->InitPlane(this, color, position, direction1, direction2, mode);
    newPlane->ShowVectorGuides(showGuides);
    return newPlane;
 }
@@ -263,7 +265,7 @@ ASphereBase * ACoordinateSystemBase::AddSphere(LaserColors color, bool showGuide
 {
    ASphereBase *newSphere = (ASphereBase *)AddGeometry(SphereBP);
    MLD_PTR_CHECK(newSphere); if(!newSphere) return nullptr; 
-   newSphere->SetValuesSphere(this, color, coordinate, radius);
+   newSphere->InitSphere(this, color, coordinate, radius);
    newSphere->ShowVectorGuides(showGuides);
    return newSphere;
 }
@@ -283,9 +285,6 @@ AVectorStruct *ACoordinateSystemBase::AddVectorStruct(LaserColors color, FVector
    }
    return newVectorStruct;
 }
-
-
-
 
 
 

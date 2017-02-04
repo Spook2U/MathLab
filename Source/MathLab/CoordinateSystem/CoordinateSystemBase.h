@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "MathLabTools.h"
+#include "Lib/MathLabEnumLibrary.h"
 #include "GameFramework/Actor.h"
 #include "Math/NVector.h"
 #include "Math/NMatrix.h"

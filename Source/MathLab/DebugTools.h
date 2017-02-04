@@ -29,7 +29,7 @@ DECLARE_LOG_CATEGORY_EXTERN(MLogScr, Log, All);
 #ifdef _UE_BUILD_DEBUG_FLAG_
 FString debug_ClassPrefix(FString classname);
 FString debug_BuildText(FString classname, FString ausgabe);
-void doTest(bool valid, LPCSTR file, int line, LPCSTR func, LPCSTR name);
+bool doTest(bool valid, LPCSTR file, int line, LPCSTR func, LPCSTR name);
 void debug_uescreen(FString classname, FString ausgabe, FColor color, int mode);
 #endif
 

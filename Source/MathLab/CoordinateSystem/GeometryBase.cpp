@@ -2,6 +2,10 @@
 
 #include "MathLab.h"
 #include "VectorStruct.h"
+#include "PointBase.h"
+#include "LineBase.h"
+#include "PlaneBase.h"
+#include "SphereBase.h"
 #include "GeometryBase.h"
 
 
@@ -11,6 +15,7 @@ AGeometryBase::AGeometryBase()
 
    CoordinateSystem = NULL;
    LaserCompoents;
+   type = GeometryType::other;
 
    Size = 0.075;
 }
@@ -30,6 +35,76 @@ FVector AGeometryBase::CoordinateToLocation(FVector coordinate)
    location += CoordinateSystem->GetActorLocation();
 
    return location;
+}
+
+float AGeometryBase::Distance(AGeometryBase *from, AGeometryBase *to)
+{
+   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return 0.f;
+
+   float result = 0.f;
+
+   long mode = 0;
+   switch(from->type)
+   {
+      case GeometryType::point:  mode |= 1; break;
+      case GeometryType::line:   mode |= 2; break;
+      case GeometryType::plane:  mode |= 4; break;
+      case GeometryType::sphere: mode |= 8; break;
+      default: break;
+   }
+   
+   mode <<= 16;
+
+   switch(to->type)
+   {
+      case GeometryType::point:  mode |= 1; break;
+      case GeometryType::line:   mode |= 2; break;
+      case GeometryType::plane:  mode |= 4; break;
+      case GeometryType::sphere: mode |= 8; break;
+      default: break;
+   }
+
+   switch(mode)
+   {
+      case 65536*1+1: result = DistancePointTo((APointBase *)   from, (APointBase *)  to);   break;
+      case 65536*1+2: result = DistancePointTo((APointBase *)   from, (ALineBase *)   to);   break;
+      case 65536*1+4: result = DistancePointTo((APointBase *)   from, (APlaneBase *)  to);   break;
+      case 65536*1+8: result = DistancePointTo((APointBase *)   from, (ASphereBase *) to);   break;
+      case 65536*2+1: result = DistancePointTo((APointBase *)   to,   (ALineBase *)   from); break;
+      case 65536*2+2: result = DistanceLineTo( (ALineBase *)    from, (ALineBase *)   to);   break;
+      case 65536*2+4: result = DistanceLineTo( (ALineBase *)    from, (APlaneBase *)  to);   break;
+      case 65536*2+8: result = DistanceLineTo( (ALineBase *)    from, (ASphereBase *) to);   break;
+      case 65536*4+1: result = DistancePointTo((APointBase *)   to,   (APlaneBase *)  from); break;
+      case 65536*4+2: result = DistanceLineTo( (ALineBase *)    to,   (APlaneBase *)  from); break;
+      case 65536*4+4: result = DistancePlaneTo((APlaneBase *)   from, (APlaneBase *)  to);   break;
+      case 65536*4+8: result = DistancePlaneTo((APlaneBase *)   from, (ASphereBase *) to);   break;
+      case 65536*8+1: result = DistancePointTo((APointBase *)   to,   (ASphereBase *) from); break;
+      case 65536*8+2: result = DistanceLineTo( (ALineBase *)    to,   (ASphereBase *) from); break;
+      case 65536*8+4: result = DistancePlaneTo((APlaneBase *)   to,   (ASphereBase *) from); break;
+      case 65536*8+8: result = DistanceSphereTo((ASphereBase *) from, (ASphereBase *) to);   break;
+      default: break;
+   }
+
+   //MLD_LOG("%d %d", g1->type, g2->type);
+
+
+   //if(g1->type == 2)
+   //{
+   //   ALineBase *l = nullptr;
+   //   l = (ALineBase *)g1;
+   //   l->BuildLine();
+   //}
+   //else if(g1->type == 2)
+   //{
+
+   //}
+
+
+   return result;
+}
+
+void AGeometryBase::RelativePosition(AGeometryBase *from, AGeometryBase *to)
+{
 }
 
 
@@ -101,14 +176,14 @@ void AGeometryBase::ShowVectorGuides(bool show)
 void AGeometryBase::SetValuesGeometry(ACoordinateSystemBase *coordinateSystem, LaserColors color)
 {
    MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
-
+   
    this->CoordinateSystem = coordinateSystem;
    SetColor(color);
 }
 
 
 
-// Protected ----------------------------------------------------------------------------------------
+// Protected-----------------------------------------------------------------------------------------
 
 void AGeometryBase::AddLaserComponent(UStaticMeshComponent *laser)
 {
@@ -122,6 +197,80 @@ void AGeometryBase::AddVectorGuide(AVectorStruct *guide)
 
 void AGeometryBase::CreateVectorGuides(LaserColors color)
 {
+}
+
+// Math Calculations---------------------------------------------------------------------------------
+
+float AGeometryBase::DistancePointTo(APointBase *point1, APointBase *point2)
+{
+   if(!(MLD_PTR_CHECK(point1) && MLD_PTR_CHECK(point2))) return 0.f;
+
+   return UKismetMathLibrary::VSize(point2->Coordinate-point1->Coordinate);
+}
+
+float AGeometryBase::DistancePointTo(APointBase *point, ALineBase *line)
+{
+   if(!(MLD_PTR_CHECK(point) && MLD_PTR_CHECK(line))) return 0.f;
+
+   FVector v = point->Coordinate - line->Position;
+
+   return UKismetMathLibrary::VSize(FVector::CrossProduct(v, line->Direction)) / UKismetMathLibrary::VSize(line->Direction);
+}
+
+float AGeometryBase::DistancePointTo(APointBase *point, APlaneBase *plane)
+{
+   if(!(MLD_PTR_CHECK(point) && MLD_PTR_CHECK(plane))) return 0.f;
+
+   return 1.0f;
+}
+
+float AGeometryBase::DistancePointTo(APointBase *point, ASphereBase *sphere)
+{
+   if(!(MLD_PTR_CHECK(point) && MLD_PTR_CHECK(sphere))) return 0.f;
+
+   return 2.0f;
+}
+
+float AGeometryBase::DistanceLineTo(ALineBase *line1, ALineBase *line2)
+{
+   if(!(MLD_PTR_CHECK(line1) && MLD_PTR_CHECK(line2))) return 0.f;
+
+   return 3.0f;
+}
+
+float AGeometryBase::DistanceLineTo(ALineBase *line, APlaneBase *plane)
+{
+   if(!(MLD_PTR_CHECK(line) && MLD_PTR_CHECK(plane))) return 0.f;
+
+   return 4.0f;
+}
+
+float AGeometryBase::DistanceLineTo(ALineBase *line, ASphereBase *sphere)
+{
+   if(!(MLD_PTR_CHECK(line) && MLD_PTR_CHECK(sphere))) return 0.f;
+
+   return 5.0f;
+}
+
+float AGeometryBase::DistancePlaneTo(APlaneBase *plane1, APlaneBase *plane2)
+{
+   if(!(MLD_PTR_CHECK(plane1) && MLD_PTR_CHECK(plane2))) return 0.f;
+
+   return 6.0f;
+}
+
+float AGeometryBase::DistancePlaneTo(APlaneBase *plane, ASphereBase *sphere)
+{
+   if(!(MLD_PTR_CHECK(plane) && MLD_PTR_CHECK(sphere))) return 0.f;
+
+   return 7.0f;
+}
+
+float AGeometryBase::DistanceSphereTo(ASphereBase *sphere1, ASphereBase *sphere2)
+{
+   if(!(MLD_PTR_CHECK(sphere1) && MLD_PTR_CHECK(sphere2))) return 0.f;
+
+   return 8.0f;
 }
 
 // Build Components----------------------------------------------------------------------------------

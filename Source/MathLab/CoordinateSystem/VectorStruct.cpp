@@ -50,6 +50,7 @@ void AVectorStruct::SetValuesVectorStruct(ACoordinateSystemBase *coordinateSyste
    this->A = a;
    this->B = b;
    this->Mode = mode;
+   this->type = GeometryType::vectorStruct;
 }
 
 

@@ -3,9 +3,8 @@
 #pragma once
 
 #include "UObject/NoExportTypes.h"
-//#include "Math/NVector.h"
 
-#include "MathLabTools.generated.h"
+#include "MathLabEnumLibrary.generated.h"
 
 UENUM(BlueprintType)
 enum class LaserColors : uint8
@@ -60,8 +59,20 @@ enum class SolutionType : uint8
    notSolved UMETA(DisplayName = "Not Solved")
 };
 
+enum class GeometryType : uint8
+{
+   point,
+   unit,
+   line,
+   plane,
+   sphere,
+   vectorStruct,
+   other
+};
+
+
 UCLASS()
-class MATHLAB_API UMathLabTools : public UObject 
+class MATHLAB_API UMathLabEnumLibrary : public UObject 
 {
    GENERATED_BODY()
 

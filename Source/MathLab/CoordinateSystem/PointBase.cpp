@@ -38,6 +38,7 @@ void APointBase::InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors 
 
    SetValuesGeometry(coordinateSystem, color);
    this->Coordinate = coordinate;
+   this->type = GeometryType::point;
    CreateVectorGuides(color);
 }
 
@@ -47,43 +48,6 @@ void APointBase::Update()
 {
    Super::Update();
    SetPosition(Coordinate);
-}
-
-
-
-float APointBase::DistanceToLine(ALineBase * line)
-{
-   float distance = 0.0f;
-   MLD_PTR_CHECK(line);
-   if(line)
-   {
-      distance = UKismetMathLibrary::GetPointDistanceToLine(Coordinate, line->Position, line->Direction);
-   }
-   return distance;
-}
-float APointBase::DistanceToPoint(APointBase * point)
-{
-   float distance = 0.0f;
-   MLD_PTR_CHECK(point);
-   if(point)
-   {
-      distance = UKismetMathLibrary::VSize(point->Coordinate - Coordinate);
-   }
-   return distance;
-}
-float APointBase::DistanceToPlane(APlaneBase * plane)
-{
-   float distance = 0.0f;
-   MLD_PTR_CHECK(plane);
-   if(plane)
-   {
-      distance = 0.0f;
-   }
-   return distance;
-}
-float APointBase::DistanceToSphere(ASphereBase * sphere)
-{
-   return 0.0f;
 }
 
 

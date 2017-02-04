@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "MathLabTools.h"
+#include "Lib/MathLabEnumLibrary.h"
 #include "CoordinateSystemBase.h"
 #include "GameFramework/Actor.h"
 #include "GeometryBase.generated.h"
@@ -35,12 +35,22 @@ public:
    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "geometry")
    float Size;
 
+   GeometryType type;
+
 // -------------------------------------------------------------------------------------------------
 
 public:
    //Converts the given Coordinate to the Location in the Scene
    UFUNCTION(BlueprintPure, Category = "coordinate System|geometry|Util|")
    FVector CoordinateToLocation(FVector coordinate);
+
+   /* Returns the distance from one geometry to the other.*/
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Calculate")
+   float Distance(AGeometryBase *from, AGeometryBase *to);
+   
+   /* Returns the relative Positio from one geometry to the other.*/
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Calculate")
+   void RelativePosition(AGeometryBase *from, AGeometryBase *to);
 
    //Called, when the objects need to update the position or other vales
    virtual void Update();
@@ -67,13 +77,25 @@ public:
 
 protected:
    void AddVectorGuide(AVectorStruct *vectorGuide);
-
    void AddLaserComponent(UStaticMeshComponent *laser);
 
    virtual void CreateVectorGuides(LaserColors color);
+   
+   // Math calculation Library Workaround
+   float DistancePointTo( APointBase  *point1,  APointBase  *point2);
+   float DistancePointTo( APointBase  *point,   ALineBase   *line);
+   float DistancePointTo( APointBase  *point,   APlaneBase  *plane);
+   float DistancePointTo( APointBase  *point,   ASphereBase *sphere);
+   float DistanceLineTo(  ALineBase   *line1,   ALineBase   *line2);
+   float DistanceLineTo(  ALineBase   *line,    APlaneBase  *plane);
+   float DistanceLineTo(  ALineBase   *line,    ASphereBase *sphere);
+   float DistancePlaneTo( APlaneBase  *plane1,  APlaneBase  *plane2);
+   float DistancePlaneTo( APlaneBase  *plane,   ASphereBase *sphere);
+   float DistanceSphereTo(ASphereBase *sphere1, ASphereBase *sphere2);
 
 
 
+   // Component Setup Library workaround
    void InitScalePoint(UStaticMeshComponent *point);
    void InitScaleLine(UStaticMeshComponent *line);
    void InitScaleArrowhead(UStaticMeshComponent *arrowhead);
@@ -81,7 +103,7 @@ protected:
    void SetLaserMatTransparency(UStaticMeshComponent *laser, float value);
    void MoveLaser(UStaticMeshComponent *laser, Direction dir, float length);
    void RotateLaserLookAt(FVector from, FVector to);
-   /**When x, y or z should not be changed use NULL. Value 0 not possible as new scale*/
+   /* When x, y or z should not be changed use NULL. Value 0 not possible as new scale*/
    void SetLaserScale(UStaticMeshComponent *laser, FVector scale);
 
    void RotateLine(FVector direction);

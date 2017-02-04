@@ -28,6 +28,8 @@ public:
    UFUNCTION(BlueprintCallable, Category = "unit|Init")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
+   void InitUnit(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate);
+
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "unit|Update")
    virtual void Update() override;
