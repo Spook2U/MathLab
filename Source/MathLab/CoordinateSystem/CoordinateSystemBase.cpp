@@ -82,7 +82,7 @@ void ACoordinateSystemBase::Tick( float DeltaTime ) { Super::Tick( DeltaTime ); 
 
 void ACoordinateSystemBase::TestFunction()
 {
-   //FLinearEqualation le = FLinearEqualation(FNMatrix({FNVector({2, -4, 2}), FNVector({4, -6, 4}), FNVector({-4, -2, 4}), FNVector({-4, 0, 4})}));
+   FLinearEqualation le = FLinearEqualation(FNMatrix({FNVector({2, -4, 2}), FNVector({4, -6, 4}), FNVector({-4, -2, 4}), FNVector({-4, 0, 4})}));
    //FLinearEqualation le = FLinearEqualation(FNMatrix({FNVector({0, -4, 2}), FNVector({4, -6, 4}), FNVector({-4, -2, 4}), FNVector({-4, 0, 4})}));
    //FLinearEqualation le = FLinearEqualation(FNMatrix({FNVector({2, -4, 2}), FNVector({4, -8, 8}), FNVector({-4, -2, 4}), FNVector({-4, 0, 4})}));
    //FLinearEqualation le = FLinearEqualation(FNMatrix({FNVector({2, -4, 2, 2}), FNVector({4, -8, 4, 4}), FNVector({-4, -2, 4, 2}), FNVector({-4, 0, 4, 2}), FNVector({1, 1, 1, 2})}));
@@ -96,13 +96,14 @@ void ACoordinateSystemBase::TestFunction()
    //}
    //MLD_LOG("");
 
-   //le.Solve();
-   //
-   //for(FString s : le.ToStringRows())
-   //{
-   //   MLD_LOG("%s", *s);
-   //}
-   //MLD_LOG("");
+   le.Solve();
+
+   
+   for(FString s : le.ToStringRows())
+   {
+      MLD_LOG("%s", *s);
+   }
+   MLD_LOG("");
 
    //MLD_LOG("Result: %s", *le.GetResults().ToString());
    

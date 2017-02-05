@@ -50,7 +50,7 @@ public:
    
    /* Returns the relative Positio from one geometry to the other.*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Calculate")
-   void RelativePosition(AGeometryBase *from, AGeometryBase *to);
+   SolutionType RelativePosition(AGeometryBase *from, AGeometryBase *to, TArray<FVector> &vectors);
 
    //Called, when the objects need to update the position or other vales
    virtual void Update();
@@ -80,20 +80,8 @@ protected:
    void AddLaserComponent(UStaticMeshComponent *laser);
 
    virtual void CreateVectorGuides(LaserColors color);
+
    
-   // Math calculation Library Workaround
-   float DistancePointTo( APointBase  *point1,  APointBase  *point2);
-   float DistancePointTo( APointBase  *point,   ALineBase   *line);
-   float DistancePointTo( APointBase  *point,   APlaneBase  *plane);
-   float DistancePointTo( APointBase  *point,   ASphereBase *sphere);
-   float DistanceLineTo(  ALineBase   *line1,   ALineBase   *line2);
-   float DistanceLineTo(  ALineBase   *line,    APlaneBase  *plane);
-   float DistanceLineTo(  ALineBase   *line,    ASphereBase *sphere);
-   float DistancePlaneTo( APlaneBase  *plane1,  APlaneBase  *plane2);
-   float DistancePlaneTo( APlaneBase  *plane,   ASphereBase *sphere);
-   float DistanceSphereTo(ASphereBase *sphere1, ASphereBase *sphere2);
-
-
 
    // Component Setup Library workaround
    void InitScalePoint(UStaticMeshComponent *point);

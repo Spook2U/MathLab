@@ -19,23 +19,23 @@ public:
    TArray<float> Coordinates;
 
    /* Default constructor (no initialization). */
-   FORCEINLINE FNVector();
+   FNVector();
    /* Constructor to make a nvector with n-Dimensions. */
-   FORCEINLINE FNVector(TArray<float> inCoordinates);
+   FNVector(TArray<float> inCoordinates);
    /* Constructor to make a zero nVector with n-Dimensions. */
-   FORCEINLINE FNVector(int dimenion);
+   FNVector(int dimenion);
 
    bool ValidCheck(FNVector inNVector) const;
 
 
    /* Copy another nVector into this one. */
-   FORCEINLINE FNVector& operator=(const FNVector& Other);
+   FNVector& operator=(const FNVector& Other);
    /* Gets the result of component-wise addition of this and another vector. */
-   FORCEINLINE FNVector operator+(const FNVector& V) const;
+   FNVector operator+(const FNVector& V) const;
    /* Gets the result of component-wise subtraction of this by another vector. */
-   FORCEINLINE FNVector operator-(const FNVector& V) const;
+   FNVector operator-(const FNVector& V) const;
    /* Gets the result of scaling the vector (multiplying each component by a value). */
-   FORCEINLINE FNVector operator*(float Scale) const;
+   FNVector operator*(float Scale) const;
    /* Gets the result of dividing each component of the vector by a value. */
    FNVector operator/(float Scale) const;
    ///* Gets the result of component-wise multiplication of this vector by another. */
@@ -47,11 +47,11 @@ public:
    /* Check against another vector for inequality. */
    bool operator!=(const FNVector& V) const;
    /* Adds another vector to this. Uses component-wise addition. */
-   FORCEINLINE FNVector operator+=(const FNVector& V);
+   FNVector operator+=(const FNVector& V);
    /* Subtracts another vector from this. Uses component-wise subtraction. */
-   FORCEINLINE FNVector operator-=(const FNVector& V);
+   FNVector operator-=(const FNVector& V);
    /* Scales the vector. */
-   FORCEINLINE FNVector operator*=(float Scale);
+   FNVector operator*=(float Scale);
    /* Divides the vector by a number. */
    FNVector operator/=(float V);
    ///* Multiplies the vector with another vector, using component-wise multiplication. */
@@ -87,7 +87,7 @@ public:
 };
 
 
-
+/*
 FORCEINLINE FNVector::FNVector() {}
 FORCEINLINE FNVector::FNVector(TArray<float> inCoordinates) : Coordinates(inCoordinates) {}
 FORCEINLINE FNVector::FNVector(int dimension)
@@ -358,3 +358,4 @@ FORCEINLINE FString FNVector::ToString() const
    
    return s;
 }
+/**/

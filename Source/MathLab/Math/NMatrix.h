@@ -20,14 +20,14 @@ public:
    TArray<FNVector> Matrix;
 
    /* Default constructor (no initialization). */
-   FORCEINLINE FNMatrix();
+   FNMatrix();
    /* Constructor to make a nMatrix. */
-   FORCEINLINE FNMatrix(const TArray<FNVector> inNMatrix);
+   FNMatrix(const TArray<FNVector> inNMatrix);
    /* Constructor to make a nMatrix initialised with 0. */
-   FORCEINLINE FNMatrix(int column, int row);
+   FNMatrix(int column, int row);
 
    /* Copy another nVector into this one. */
-   FORCEINLINE FNMatrix& operator=(const FNMatrix& Other);
+   FNMatrix& operator=(const FNMatrix& Other);
 
    /* Checks if all nVectors in Matrix have the same length. */
    bool ValidCheck() const;
@@ -79,6 +79,7 @@ public:
    TArray<FString> ToStringRows() const;
 };
 
+/*
 FORCEINLINE FNMatrix::FNMatrix() {}
 FORCEINLINE FNMatrix::FNMatrix(const TArray<FNVector> inNMatrix) : Matrix(inNMatrix) {}
 FORCEINLINE FNMatrix::FNMatrix(int column, int row)
@@ -319,3 +320,4 @@ FORCEINLINE TArray<FString> FNMatrix::ToStringRows() const
 
    return rows;
 }
+/**/

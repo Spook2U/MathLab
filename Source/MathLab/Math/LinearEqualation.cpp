@@ -1,87 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
-#pragma once
+/**/
+#include "MathLab.h"
+#include "LinearEqualation.h"
 
-#include "Lib/MathLabEnumLibrary.h"
-#include "NMatrix.h"
-#include "LinearEqualation.generated.h"
 
-/*
-   A special formated Matrix with n rows and n+1 columns.
-   Used to calculate Linear Equalations.
-*/
-USTRUCT(BlueprintType)
-struct FLinearEqualation 
-{
-   GENERATED_BODY()
-
-public:      
-   /* LinearEqualation components. */
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|nMatrix")
-   FNMatrix CoefficientMatrix;
-
-private: 
-   SolutionType solution = SolutionType::notSolved;
-
-   bool debugging = true;
-
-   // Help variables to solve the linear equalation
-   float pivot;
-   int   pivotIndex;
-   int   rowPivotIndex;
-
-public:      
-   /* Default constructor (no initialization). */
-   FLinearEqualation();
-
-   /* Constructor to setup a coefficient matrix for a linear equalation. 
-      The Matrix needs to be in the format: n+1 columns, n rows. */
-   FLinearEqualation(const FNMatrix inMatrix);
-
-   /* Checks if the coeffcient matrix has the correct format: n+1 columns, n rows. */
-   bool ValidCheck() const;
-   /* Checks if the given nMatrix has the correct format: n+1 columns, n rows. */
-   bool ValidCheck(FNMatrix inMatrix) const;
-
-   /* Solves this linear equalation. */
-   void Solve();
-
-   SolutionType HasSolution() const;
-   FNVector GetSolutionOne();
-   FNVector GetSolutionEndless();
-
-   /* Get a textual representation of this linear equalation. */
-   FString ToString() const;
-   /* Returns an Array of strings for each row of this linear equalation. */
-   TArray<FString> ToStringRows() const;
-
-private:
-   bool IsSolved() const;
-
-   //Help functions for Solve()
-   bool CheckColumnZeroFromTo(int from, int to);
-   bool CheckRowZeroFromTo(int from, int to);
-   void SetPivot();
-   bool LastPivot();
-   bool SwitchRow();
-   bool CheckColumnZero();
-   void PivotToOne();
-   bool MakeRowPivotToZero();
-   bool CheckCoefficentZero();
-   bool CheckRowZero();
-   void Solve_DebugLog(int row, FString notice);
-};
-
-/*
-FORCEINLINE FLinearEqualation::FLinearEqualation() {}
-FORCEINLINE FLinearEqualation::FLinearEqualation(const FNMatrix inMatrix)
+FLinearEqualation::FLinearEqualation() {}
+FLinearEqualation::FLinearEqualation(const FNMatrix inMatrix)
 {
    if(ValidCheck(inMatrix)) { CoefficientMatrix = inMatrix; }
 }
 
 
 
-FORCEINLINE bool FLinearEqualation::ValidCheck(FNMatrix inMatrix) const
+bool FLinearEqualation::ValidCheck(FNMatrix inMatrix) const
 {
    bool valid = true;
 
@@ -94,9 +25,9 @@ FORCEINLINE bool FLinearEqualation::ValidCheck(FNMatrix inMatrix) const
    return valid;
 }
 
-FORCEINLINE bool FLinearEqualation::ValidCheck() const
+bool FLinearEqualation::ValidCheck() const
 {
-   ValidCheck(CoefficientMatrix);
+   return ValidCheck(CoefficientMatrix);
 }
 
 
@@ -108,7 +39,7 @@ FORCEINLINE bool FLinearEqualation::ValidCheck() const
 
 #define SOLVELOG(row, string)    Solve_DebugLog(row, string)
 
-FORCEINLINE void FLinearEqualation::Solve()
+void FLinearEqualation::Solve()
 {
    if(IsSolved()) return;
 
@@ -117,7 +48,7 @@ FORCEINLINE void FLinearEqualation::Solve()
    for(pivotIndex = 0; pivotIndex < maxRows; pivotIndex++)
    {
       SetPivot(); 
-      
+
       if(pivot == 0)
       {
          if(LastPivot())       { FINISH_NO_SOLUTON; }
@@ -128,11 +59,11 @@ FORCEINLINE void FLinearEqualation::Solve()
       {
          PivotToOne();
       }
-   
+
       for(rowPivotIndex = 0; rowPivotIndex < maxRows; rowPivotIndex++)
       {
          if(rowPivotIndex == pivotIndex) continue;
-         
+
          if(MakeRowPivotToZero())
          {
             if(CheckCoefficentZero()) { FINISH_NO_SOLUTON; }
@@ -140,9 +71,9 @@ FORCEINLINE void FLinearEqualation::Solve()
          }
       }
    }
-   
+
    if(!IsSolved()) { solution = SolutionType::one; }
-   
+
    //bool pivotNotZero = true;
    //bool rowIsZero;
    //
@@ -228,15 +159,15 @@ FORCEINLINE void FLinearEqualation::Solve()
    //}
 }
 
-FORCEINLINE SolutionType FLinearEqualation::HasSolution() const
+SolutionType FLinearEqualation::HasSolution() const
 {
    return solution;
 }
 
-FORCEINLINE FNVector FLinearEqualation::GetSolutionOne() 
+FNVector FLinearEqualation::GetSolutionOne() 
 {
    FNVector result;
-   
+
    if(!IsSolved()) Solve();
 
    switch(solution)
@@ -250,7 +181,7 @@ FORCEINLINE FNVector FLinearEqualation::GetSolutionOne()
    return result;
 }
 
-FORCEINLINE FNVector FLinearEqualation::GetSolutionEndless()
+FNVector FLinearEqualation::GetSolutionEndless()
 {
    FNVector results;
 
@@ -270,7 +201,7 @@ FORCEINLINE FNVector FLinearEqualation::GetSolutionEndless()
 
 
 
-FORCEINLINE FString FLinearEqualation::ToString() const
+FString FLinearEqualation::ToString() const
 {
    FString s = CoefficientMatrix.ToString();
 
@@ -282,18 +213,18 @@ FORCEINLINE FString FLinearEqualation::ToString() const
    return s;
 }
 
-FORCEINLINE TArray<FString> FLinearEqualation::ToStringRows() const
+TArray<FString> FLinearEqualation::ToStringRows() const
 {
    return CoefficientMatrix.ToStringRows();
 }
 
-FORCEINLINE bool FLinearEqualation::IsSolved() const
+bool FLinearEqualation::IsSolved() const
 {
    return solution != SolutionType::notSolved;
 }
 
 
-FORCEINLINE bool FLinearEqualation::CheckColumnZeroFromTo(int from, int to)
+bool FLinearEqualation::CheckColumnZeroFromTo(int from, int to)
 {
    bool isZero = true;
 
@@ -313,7 +244,7 @@ FORCEINLINE bool FLinearEqualation::CheckColumnZeroFromTo(int from, int to)
    return isZero;
 }
 
-FORCEINLINE bool FLinearEqualation::CheckRowZeroFromTo(int from, int to)
+bool FLinearEqualation::CheckRowZeroFromTo(int from, int to)
 {
    bool isZero = true;
 
@@ -334,14 +265,14 @@ FORCEINLINE bool FLinearEqualation::CheckRowZeroFromTo(int from, int to)
 
 }
 
-FORCEINLINE void FLinearEqualation::SetPivot()
+void FLinearEqualation::SetPivot()
 {
    pivot = CoefficientMatrix.GetElement(pivotIndex, pivotIndex);
-   
+
    SOLVELOG(pivotIndex, FString::Printf(TEXT("Pivot = %.1f"), pivot));
 }
 
-FORCEINLINE bool FLinearEqualation::LastPivot()
+bool FLinearEqualation::LastPivot()
 {
    bool isLast = pivotIndex == (CoefficientMatrix.RowNum() - 1);
    if(isLast)
@@ -353,7 +284,7 @@ FORCEINLINE bool FLinearEqualation::LastPivot()
    return isLast;
 }
 
-FORCEINLINE bool FLinearEqualation::SwitchRow()
+bool FLinearEqualation::SwitchRow()
 {
    int rowIndex = pivotIndex + 1;
    bool canSwitch = false;
@@ -384,7 +315,7 @@ FORCEINLINE bool FLinearEqualation::SwitchRow()
    return canSwitch;
 }
 
-FORCEINLINE bool FLinearEqualation::CheckColumnZero()
+bool FLinearEqualation::CheckColumnZero()
 {
    bool isZero = CheckColumnZeroFromTo(0, CoefficientMatrix.RowNum());
    if(isZero) 
@@ -396,13 +327,13 @@ FORCEINLINE bool FLinearEqualation::CheckColumnZero()
    return isZero;
 }
 
-FORCEINLINE void FLinearEqualation::PivotToOne()
+void FLinearEqualation::PivotToOne()
 {
    if(pivot) SOLVELOG(pivotIndex, FString::Printf(TEXT(": %.1f"), pivot));
    if(pivot) CoefficientMatrix.SetRow(pivotIndex, CoefficientMatrix.GetRow(pivotIndex) / pivot);
 }
 
-FORCEINLINE bool FLinearEqualation::MakeRowPivotToZero()
+bool FLinearEqualation::MakeRowPivotToZero()
 {
    bool didChange = false;
    float rowPivot = CoefficientMatrix.GetElement(pivotIndex, rowPivotIndex);
@@ -421,7 +352,7 @@ FORCEINLINE bool FLinearEqualation::MakeRowPivotToZero()
    return didChange;
 }
 
-FORCEINLINE bool FLinearEqualation::CheckCoefficentZero()
+bool FLinearEqualation::CheckCoefficentZero()
 {
    bool isZero = CheckRowZeroFromTo(0, CoefficientMatrix.ColumnNum()-1);
    if(isZero)
@@ -433,7 +364,7 @@ FORCEINLINE bool FLinearEqualation::CheckCoefficentZero()
    return isZero;
 }
 
-FORCEINLINE bool FLinearEqualation::CheckRowZero()
+bool FLinearEqualation::CheckRowZero()
 {
    bool isZero = CheckRowZeroFromTo(0, CoefficientMatrix.ColumnNum());
    if(isZero)
@@ -445,7 +376,7 @@ FORCEINLINE bool FLinearEqualation::CheckRowZero()
    return isZero;
 }
 
-FORCEINLINE void FLinearEqualation::Solve_DebugLog(int row, FString notice)
+void FLinearEqualation::Solve_DebugLog(int row, FString notice)
 {
    if(debugging) 
    {
