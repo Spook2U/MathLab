@@ -22,8 +22,9 @@ public:
    FNVector();
    /* Constructor to make a nvector with n-Dimensions. */
    FNVector(TArray<float> inCoordinates);
-   /* Constructor to make a zero nVector with n-Dimensions. */
-   FNVector(int dimenion);
+   
+   /* Initialises the nVector with 0.*/
+   void Init(int dimension);
 
    bool ValidCheck(FNVector inNVector) const;
 

@@ -21,18 +21,19 @@ FString debug_ClassPrefix(FString classname)
 {
    FString prefix = "";
 
-   if(classname.Equals(TEXT("CoordinateSystemBase.cpp")))     { prefix = "CSyst - "; }
-   else if(classname.Equals(TEXT("GeometryBase.cpp")))        { prefix = "Geo   - "; }
-   else if(classname.Equals(TEXT("PointBase.cpp")))           { prefix = "Point - "; }
-   else if(classname.Equals(TEXT("UnitBase.cpp")))            { prefix = "Unit  - "; }
-   else if(classname.Equals(TEXT("LineBase.cpp")))            { prefix = "Line  - "; }
-   else if(classname.Equals(TEXT("PlaneBase.cpp")))           { prefix = "Plane - "; }
-   else if(classname.Equals(TEXT("SphereBase.cpp")))          { prefix = "Spher - "; }
-   else if(classname.Equals(TEXT("Math/LinearEqualation.h"))) { prefix = "LinEq - "; }
-   else if(classname.Equals(TEXT("Math/NVector.h")))          { prefix = "nVect - "; }
-   else if(classname.Equals(TEXT("Math/NMatrix.h")))          { prefix = "nMat  - "; }
-   else if(classname.Equals(TEXT("DebugTools.cpp")))          { prefix = ""; }
-   else                                                       { prefix = classname + " - "; }
+   if(classname.Equals(TEXT("CoordinateSystemBase.cpp")))  { prefix = "CSyst - "; }
+   else if(classname.Equals(TEXT("GeometryBase.cpp")))     { prefix = "Geo   - "; }
+   else if(classname.Equals(TEXT("PointBase.cpp")))        { prefix = "Point - "; }
+   else if(classname.Equals(TEXT("UnitBase.cpp")))         { prefix = "Unit  - "; }
+   else if(classname.Equals(TEXT("LineBase.cpp")))         { prefix = "Line  - "; }
+   else if(classname.Equals(TEXT("PlaneBase.cpp")))        { prefix = "Plane - "; }
+   else if(classname.Equals(TEXT("SphereBase.cpp")))       { prefix = "Spher - "; }
+   else if(classname.Equals(TEXT("LinearEqualation.cpp"))) { prefix = "LinEq - "; }
+   else if(classname.Equals(TEXT("NVector.cpp")))          { prefix = "nVect - "; }
+   else if(classname.Equals(TEXT("NMatrix.cpp")))          { prefix = "nMat  - "; }
+   else if(classname.Equals(TEXT("GeometryCalc.cpp")))     { prefix = "GCalc - "; }
+   else if(classname.Equals(TEXT("DebugTools.cpp")))       { prefix = ""; }
+   else                                                    { prefix = classname + " - "; }
 
    return prefix;
 }
@@ -50,7 +51,7 @@ bool doTest(bool valid, LPCSTR file, int line, LPCSTR func, LPCSTR name)
    if(!valid)
    {
       MLD_ERR("%s%s = NULL, %s() (line %d)", *debug_ClassPrefix(file), *FString(name), *FString(func), line);
-      g_this->EndPlay(EEndPlayReason::Quit);
+      //g_this->EndPlay(EEndPlayReason::Quit);
       //EndPlay()    
    }
 

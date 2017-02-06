@@ -6,8 +6,8 @@
 
 APointBase::APointBase()
 {
-   Coordinate = FVector::ZeroVector;
-   Point = nullptr;
+   point = FPoint();
+   pointMesh = nullptr;
 }
 
 void APointBase::BeginPlay() 
@@ -22,22 +22,22 @@ void APointBase::SetComponents(TArray<UStaticMeshComponent*> components)
    for(UStaticMeshComponent *c : components)
    {
       MLD_PTR_CHECK(c); if(!c) continue;
-      if(c->GetName().Equals("Point")) { this->Point = c; }
+      if(c->GetName().Equals("PointMesh")) { this->pointMesh = c; }
    }
    
-   MLD_PTR_CHECK(Point); if(!Point) return;
-   InitScalePoint(Point);
-   AddLaserComponent(Point);
+   MLD_PTR_CHECK(pointMesh); if(!pointMesh) return;
+   InitScalePoint(pointMesh);
+   AddLaserComponent(pointMesh);
 }
 
 
 
-void APointBase::InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate)
+void APointBase::InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FPoint inPoint)
 {  
    MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
 
    SetValuesGeometry(coordinateSystem, color);
-   this->Coordinate = coordinate;
+   this->point = inPoint;
    this->type = GeometryType::point;
    CreateVectorGuides(color);
 }
@@ -47,7 +47,7 @@ void APointBase::InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors 
 void APointBase::Update()
 {
    Super::Update();
-   SetPosition(Coordinate);
+   SetPosition(point.Coordinate);
 }
 
 
@@ -56,6 +56,6 @@ void APointBase::Update()
 
 void APointBase::CreateVectorGuides(LaserColors color)
 {
-   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, Coordinate, VectorStructMode::vector));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, point.Coordinate, VectorStructMode::vector));
 }
 

@@ -32,8 +32,8 @@ bool FLinearEqualation::ValidCheck() const
 
 
 
-#define FINISH_NO_SOLUTON        pivotIndex = maxRows; solution = SolutionType::no; break
-#define FINISH_ENDLESS_SOLUTIONS pivotIndex = maxRows; solution = SolutionType::endless; break
+#define FINISH_NO_SOLUTON        pivotIndex = maxRows; solution = LinEqSolution::no; break
+#define FINISH_ENDLESS_SOLUTIONS pivotIndex = maxRows; solution = LinEqSolution::endless; break
 #define REPEAT_WITH_SAME_INDEX   pivotIndex--; continue
 #define SKIP                     continue
 
@@ -72,7 +72,7 @@ void FLinearEqualation::Solve()
       }
    }
 
-   if(!IsSolved()) { solution = SolutionType::one; }
+   if(!IsSolved()) { solution = LinEqSolution::one; }
 
    //bool pivotNotZero = true;
    //bool rowIsZero;
@@ -159,7 +159,7 @@ void FLinearEqualation::Solve()
    //}
 }
 
-SolutionType FLinearEqualation::HasSolution() const
+LinEqSolution FLinearEqualation::HasSolution() const
 {
    return solution;
 }
@@ -172,9 +172,9 @@ FNVector FLinearEqualation::GetSolutionOne()
 
    switch(solution)
    {
-      case SolutionType::one:       result = CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1); break;
-      case SolutionType::endless:   MLD_WAR("This linear equalation has more than one solution. Use GetSolutionEndless() instead."); break;
-      case SolutionType::no:        MLD_WAR("This linear equalation has no solution. Use HasSolution() to check.")
+      case LinEqSolution::one:       result = CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1); break;
+      case LinEqSolution::endless:   MLD_WAR("This linear equalation has more than one solution. Use GetSolutionEndless() instead."); break;
+      case LinEqSolution::no:        MLD_WAR("This linear equalation has no solution. Use HasSolution() to check.")
       default:                      result = FNVector();
    }
 
@@ -189,9 +189,9 @@ FNVector FLinearEqualation::GetSolutionEndless()
 
    switch(solution)
    {
-      case SolutionType::one:       MLD_WAR("This linear equalation has only one solution. Use GetSolutionOne() instead."); break;
-      case SolutionType::endless:   MLD_WAR("Noch nicht eigebaut"); break;
-      case SolutionType::no:        MLD_WAR("This linear equalation has no solution. Use HasSolution() to check.")
+      case LinEqSolution::one:       MLD_WAR("This linear equalation has only one solution. Use GetSolutionOne() instead."); break;
+      case LinEqSolution::endless:   MLD_WAR("Noch nicht eigebaut"); break;
+      case LinEqSolution::no:        MLD_WAR("This linear equalation has no solution. Use HasSolution() to check.")
       default:                      results = FNVector();
    }
 
@@ -220,7 +220,7 @@ TArray<FString> FLinearEqualation::ToStringRows() const
 
 bool FLinearEqualation::IsSolved() const
 {
-   return solution != SolutionType::notSolved;
+   return solution != LinEqSolution::notSolved;
 }
 
 

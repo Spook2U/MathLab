@@ -38,8 +38,10 @@ void ASphereBase::InitSphere(ACoordinateSystemBase* coordinateSystem, LaserColor
 {
    MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
 
+   FPoint p;
+   p.Coordinate = coordinate;
    this->Radius = radius;
-   InitPoint(coordinateSystem, color, coordinate);
+   InitPoint(coordinateSystem, color, p);
    this->type = GeometryType::sphere; //after InitPoint() to override the value from point
 }
 
@@ -68,7 +70,7 @@ void ASphereBase::CreateVectorGuides(LaserColors color)
    for(AVectorStruct *v : VectorGuides)
    {
       MLD_PTR_CHECK(v); if(!v) continue;
-      if(v->A.Equals(FVector::ZeroVector) && v->B.Equals(Coordinate))
+      if(v->A.Equals(FVector::ZeroVector) && v->B.Equals(point.Coordinate))
       {
          pointVectorStruct = v;
          break;
@@ -76,7 +78,7 @@ void ASphereBase::CreateVectorGuides(LaserColors color)
    }
    pointVectorStruct->SetVisibilityPointB(true);
 
-   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, Coordinate, Coordinate + FVector(Radius, 0, 0), VectorStructMode::segment));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, point.Coordinate, point.Coordinate + FVector(Radius, 0, 0), VectorStructMode::segment));
 }
 
 

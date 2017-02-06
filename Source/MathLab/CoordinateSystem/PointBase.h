@@ -8,6 +8,18 @@
 class ALineBase;
 class APlaneBase;
 
+///* Defines a mathematical Point. */
+//USTRUCT(BlueprintType)
+//struct FPoint
+//{
+//   GENERATED_BODY()
+//
+//public:      
+//   FVector Coordinate;
+//};
+
+
+
 UCLASS()
 class MATHLAB_API APointBase : public AGeometryBase
 {
@@ -20,10 +32,10 @@ public:
 
 public:
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "point")
-   FVector Coordinate;
+   FPoint point;
 
 private:
-   UStaticMeshComponent *Point;
+   UStaticMeshComponent *pointMesh;
 
 // -------------------------------------------------------------------------------------------------
 
@@ -32,7 +44,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Init")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate);
+   void InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FPoint point);
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Update")

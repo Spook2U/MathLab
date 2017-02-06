@@ -4,13 +4,6 @@
 
 FNMatrix::FNMatrix() {}
 FNMatrix::FNMatrix(const TArray<FNVector> inNMatrix) : Matrix(inNMatrix) {}
-FNMatrix::FNMatrix(int column, int row)
-{
-   for(int i = 0; i < column; i++)
-   {
-      Matrix.Add(FNVector(row));
-   }
-}
 
 FNMatrix& FNMatrix::operator=(const FNMatrix& Other)
 {
@@ -20,6 +13,17 @@ FNMatrix& FNMatrix::operator=(const FNMatrix& Other)
 }
 
 
+
+void FNMatrix::Init(int column, int row)
+{
+   Matrix.Empty();
+   FNVector v = FNVector();
+   v.Init(row);
+   for(int i = 0; i < column; i++)
+   {
+      Matrix.Add(v);
+   }
+}
 
 bool FNMatrix::ValidCheck() const
 {

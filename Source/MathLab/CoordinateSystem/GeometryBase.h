@@ -44,14 +44,6 @@ public:
    UFUNCTION(BlueprintPure, Category = "coordinate System|geometry|Util|")
    FVector CoordinateToLocation(FVector coordinate);
 
-   /* Returns the distance from one geometry to the other.*/
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Calculate")
-   float Distance(AGeometryBase *from, AGeometryBase *to);
-   
-   /* Returns the relative Positio from one geometry to the other.*/
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Calculate")
-   SolutionType RelativePosition(AGeometryBase *from, AGeometryBase *to, TArray<FVector> &vectors);
-
    //Called, when the objects need to update the position or other vales
    virtual void Update();
 

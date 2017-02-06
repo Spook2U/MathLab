@@ -6,8 +6,9 @@
 #include "LineBase.h"
 #include "PlaneBase.h"
 #include "SphereBase.h"
+
 #include "GeometryBase.h"
-#include "Lib/GeometryCalc.h"
+
 
 AGeometryBase::AGeometryBase()              
 { 
@@ -35,34 +36,6 @@ FVector AGeometryBase::CoordinateToLocation(FVector coordinate)
    location += CoordinateSystem->GetActorLocation();
 
    return location;
-}
-
-float AGeometryBase::Distance(AGeometryBase *from, AGeometryBase *to)
-{
-   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return 0.f;
-
-   GeometryCalc calc;
-
-   float result = 0.f;
-
-   result = calc.Distance(from, to);
-
-   return result;
-}
-
-SolutionType AGeometryBase::RelativePosition(AGeometryBase *from, AGeometryBase *to, TArray<FVector> &vectors)
-{
-   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return SolutionType::notSolved;
-
-   GeometryCalc calc;
-
-   RelPosReturn result;
-
-   result = calc.RelativePosition(from, to);
-
-   vectors = result.vectors;
-
-   return result.type;
 }
 
 

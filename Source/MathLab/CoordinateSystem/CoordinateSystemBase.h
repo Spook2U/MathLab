@@ -110,9 +110,9 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
    void AddUnits();
    
-   /* Spawns a Point at the given Coordinate in the Coordinate System*/
+   /* Spawns a Point in the Coordinate System*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
-   APointBase *MakePoint(LaserColors color, FVector coordinate, bool showGuides);
+   APointBase *AddPoint(LaserColors color, FPoint inPoint, bool showGuides);
    
    /* Spawns a Line with the defines mode
       Mode line: Spawns an endless line using position and direction Vector.
@@ -130,11 +130,6 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
    ASphereBase *MakeSphere(LaserColors color, FVector coordinate, float radius, bool showGuides);
 
-   APointBase  *AddPoint( LaserColors color, bool showGuides, FVector coordinate);
-   ALineBase   *AddLine(  LaserColors color, bool showGuides, FVector position, FVector direction, LineMode mode);
-   APlaneBase  *AddPlane( LaserColors color, bool showGuides, FVector position, FVector direction1, FVector direction2, PlaneMode mode);
-   ASphereBase *AddSphere(LaserColors color, bool showGuides, FVector coordinate, float radius);
-   
    AVectorStruct *AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode = VectorStructMode::general);
 
 
@@ -144,20 +139,41 @@ public:
 // ToDo: Move functions into MathLabLibraray and make static
 
    /* This method is only working in Debug or Development Mode */
-   UFUNCTION(BlueprintCallable, DisplayName = "Print (Debug)", Category = "Math Lab|Utilities|String", meta = (Keywords = "mld, print, debug, printdebug"))
+   UFUNCTION(BlueprintCallable, DisplayName = "Print (Debug)", Category = "Math Lab|String", meta = (Keywords = "mld, print, debug, printdebug"))
    static void bp_debug_Screen(FString inString = "Hello", FLinearColor color = FLinearColor::White);
 
-   UFUNCTION(BlueprintPure, DisplayName = "ToString (nVector)", Category = "Math Lab|nVector", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (nVector)", Category = "Math Lab|String", meta = (CompactNodeTitle = "->", BlueprintAutocast))
    FString FNVectorToString(FNVector inNVector);
 
-   UFUNCTION(BlueprintPure, DisplayName = "ToString (nMatrix)", Category = "Math Lab|nMatrix", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (nMatrix)", Category = "Math Lab|String", meta = (CompactNodeTitle = "->", BlueprintAutocast))
    FString FNMatrixToString(FNMatrix inNMatrix);
 
-   UFUNCTION(BlueprintPure, DisplayName = "ToString (Linear Equalation)", Category = "Math Lab|Linear Equalation", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Linear Equalation)", Category = "Math Lab|String", meta = (CompactNodeTitle = "->", BlueprintAutocast))
    FString FLinearEqualationToString(FLinearEqualation inLinearEqualation);
 
    UFUNCTION(BlueprintCallable, Category = "Math Lab|Linear Equalation")
    void LE_Solve(FLinearEqualation inLinearEqualation);
+
+
+
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Point)", Category = "Math Lab|String", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString FPointToString(FPoint inPoint);
+
+   UFUNCTION(BlueprintPure, DisplayName = "ToPointBase (Point struct)", Category = "Math Lab|point", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   APointBase *FPointToPointBP(FPoint inPoint);
+
+   UFUNCTION(BlueprintPure, DisplayName = "ToPointStruct (Point)", Category = "Math Lab|point", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FPoint PointBPToFPoint(APointBase *inPoint);
+
+
+   /* Returns the distance from one geometry to the other.*/
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|Calculate")
+   float Distance(AGeometryBase *from, AGeometryBase *to);
+
+   /* Returns the relative Positio from one geometry to the other.*/
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|Calculate", DisplayName = "Relative Position")
+   RelativePosition GetRelativePosition(AGeometryBase *from, AGeometryBase *to, TArray<FVector> &intersections);
+
 
 
 // -------------------------------------------------------------------------------------------------

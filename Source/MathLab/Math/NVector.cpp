@@ -4,7 +4,8 @@
 
 FNVector::FNVector() {}
 FNVector::FNVector(TArray<float> inCoordinates) : Coordinates(inCoordinates) {}
-FNVector::FNVector(int dimension)
+
+void FNVector::Init(int dimension)
 {
    for(int i = 0; i < dimension; i++)
    {

@@ -23,11 +23,12 @@ public:
    FNMatrix();
    /* Constructor to make a nMatrix. */
    FNMatrix(const TArray<FNVector> inNMatrix);
-   /* Constructor to make a nMatrix initialised with 0. */
-   FNMatrix(int column, int row);
 
    /* Copy another nVector into this one. */
    FNMatrix& operator=(const FNMatrix& Other);
+
+   /* Initialises the nMatrix with 0.*/
+   void Init(int column, int row);
 
    /* Checks if all nVectors in Matrix have the same length. */
    bool ValidCheck() const;

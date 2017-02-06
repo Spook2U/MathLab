@@ -21,7 +21,7 @@ public:
    FNMatrix CoefficientMatrix;
 
 private: 
-   SolutionType solution = SolutionType::notSolved;
+   LinEqSolution solution = LinEqSolution::notSolved;
 
    bool debugging = true;
 
@@ -46,7 +46,7 @@ public:
    /* Solves this linear equalation. */
    void Solve();
 
-   SolutionType HasSolution() const;
+   LinEqSolution HasSolution() const;
    FNVector GetSolutionOne();
    FNVector GetSolutionEndless();
 
