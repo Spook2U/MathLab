@@ -5,10 +5,9 @@
 
 ALineBase::ALineBase()
 {
-   Position  = FVector::ZeroVector;
-   Direction = FVector::ZeroVector;
-   Line = nullptr;
-   Arrowhead = nullptr;
+   line = FMathLine();
+   lineMesh = nullptr;
+   arrowheadMesh = nullptr;
 }
 
 void ALineBase::BeginPlay()
@@ -24,31 +23,30 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
    for(UStaticMeshComponent *c : components)
    {
       MLD_PTR_CHECK(c); if(!c) continue;
-      if(c->GetName().Equals("Line"))      { this->Line      = c; }
-      if(c->GetName().Equals("Arrowhead")) { this->Arrowhead = c; }
+      if(c->GetName().Equals("LineMesh"))      { this->lineMesh      = c; }
+      if(c->GetName().Equals("ArrowheadMesh")) { this->arrowheadMesh = c; }
    }
 
-   MLD_PTR_CHECK(Line);
-   MLD_PTR_CHECK(Arrowhead);
-   if(!(Line && Arrowhead)) return;
+   MLD_PTR_CHECK(lineMesh);
+   MLD_PTR_CHECK(arrowheadMesh);
+   if(!(lineMesh && arrowheadMesh)) return;
 
-   InitScaleLine(Line);
-   InitScaleArrowhead(Arrowhead);
-   AddLaserComponent(Line);
-   AddLaserComponent(Arrowhead);
+   InitScaleLine(lineMesh);
+   InitScaleArrowhead(arrowheadMesh);
+   AddLaserComponent(lineMesh);
+   AddLaserComponent(arrowheadMesh);
 
-   Arrowhead->SetVisibility(false);
+   arrowheadMesh->SetVisibility(false);
 }
 
 
 
-void ALineBase::InitLine(ACoordinateSystemBase * coordinateSystem, LaserColors color, FVector position, FVector direction, LineMode mode)
+void ALineBase::InitLine(ACoordinateSystemBase * coordinateSystem, LaserColors color, FMathLine inLine, LineMode mode)
 {
    MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
 
    SetValuesGeometry(coordinateSystem, color);
-   this->Position = position;
-   this->Direction = direction;
+   this->line = inLine;
    this->Mode = mode;
    this->type = GeometryType::line;
 
@@ -56,7 +54,7 @@ void ALineBase::InitLine(ACoordinateSystemBase * coordinateSystem, LaserColors c
    {
       case LineMode::line:    CreateVectorGuides(color); break;
       case LineMode::segment: break;
-      case LineMode::vector:  Arrowhead->SetVisibility(true); break;
+      case LineMode::vector:  arrowheadMesh->SetVisibility(true); break;
    }
 
 }
@@ -66,7 +64,7 @@ void ALineBase::InitLine(ACoordinateSystemBase * coordinateSystem, LaserColors c
 void ALineBase::Update()
 {
    Super::Update();
-   SetPosition(Position);
+   SetPosition(line.Position);
    BuildLine();
 }
 
@@ -74,18 +72,18 @@ void ALineBase::Update()
 
 void ALineBase::BuildLine()
 {
-   if(Mode == LineMode::segment) { RotateLaserLookAt(Position, Direction); }
-   else                          { RotateLine(Direction); }
+   if(Mode == LineMode::segment) { RotateLaserLookAt(line.Position, line.Direction); }
+   else                          { RotateLine(line.Direction); }
 
-   if(     Mode == LineMode::line)    { SetLaserScale(Line, FVector(NULL, NULL, CoordinateSystem->MaxVisibleLength())); }
-   else if(Mode == LineMode::segment) { ScaleLine(Line, UKismetMathLibrary::VSize(Direction - Position)); }
-   else                               { ScaleVector(Line, Arrowhead, UKismetMathLibrary::VSize(Direction)); }
+   if     (Mode == LineMode::line)    { SetLaserScale(lineMesh, FVector(NULL, NULL, CoordinateSystem->MaxVisibleLength())); }
+   else if(Mode == LineMode::segment) { ScaleLine(lineMesh, UKismetMathLibrary::VSize(line.Direction - line.Position)); }
+   else                               { ScaleVector(lineMesh, arrowheadMesh, UKismetMathLibrary::VSize(line.Direction)); }
 }
 
 // Protected ----------------------------------------------------------------------------------------
 
 void ALineBase::CreateVectorGuides(LaserColors color)
 {
-   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, Position, VectorStructMode::vector));
-   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, Position, Direction, VectorStructMode::vector));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, line.Position, VectorStructMode::vector));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, line.Position, line.Direction, VectorStructMode::vector));
 }

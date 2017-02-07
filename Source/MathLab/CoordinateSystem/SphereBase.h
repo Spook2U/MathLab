@@ -17,10 +17,10 @@ public:
 
 public:
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "sphere")
-   float Radius;
+   FMathSphere sphere;
 
 private:
-   UStaticMeshComponent *Sphere;
+   UStaticMeshComponent *sphereMesh;
 
 // -------------------------------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|sphere|Init")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void InitSphere(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate, float radius);
+   void InitSphere(ACoordinateSystemBase *coordinateSystem, LaserColors color, FMathSphere inSphere);
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "coordinate System|sphere|Update")

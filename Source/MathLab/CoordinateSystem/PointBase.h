@@ -32,7 +32,7 @@ public:
 
 public:
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "point")
-   FPoint point;
+   FMathPoint point;
 
 private:
    UStaticMeshComponent *pointMesh;
@@ -44,7 +44,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Init")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FPoint point);
+   void InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FMathPoint inPoint);
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Update")

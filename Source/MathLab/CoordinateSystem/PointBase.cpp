@@ -6,7 +6,7 @@
 
 APointBase::APointBase()
 {
-   point = FPoint();
+   point = FMathPoint();
    pointMesh = nullptr;
 }
 
@@ -32,7 +32,7 @@ void APointBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
 
 
-void APointBase::InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FPoint inPoint)
+void APointBase::InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FMathPoint inPoint)
 {  
    MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
 

@@ -7,11 +7,8 @@
 
 APlaneBase::APlaneBase()
 {
-   Position   = FVector::ZeroVector;
-   Direction1 = FVector::ZeroVector;
-   Direction2 = FVector::ZeroVector;
-   Normal     = FVector::ZeroVector;
-   Plane = nullptr;
+   plane = FMathPlane();
+   PlaneMesh = nullptr;
 }
 
 void APlaneBase::BeginPlay()
@@ -26,26 +23,23 @@ void APlaneBase::SetComponents(TArray<UStaticMeshComponent *> components)
    for(UStaticMeshComponent *c : components)
    {
       MLD_PTR_CHECK(c); if(!c) continue;
-      if(c->GetName().Equals("Plane")) { this->Plane = c; }
+      if(c->GetName().Equals("PlaneMesh")) { this->PlaneMesh = c; }
    }
 
-   MLD_PTR_CHECK(Plane); if(!Plane) return;
-   SetLaserMatTransparency(Plane, 0.1f);
-   AddLaserComponent(Plane);
+   MLD_PTR_CHECK(PlaneMesh); if(!PlaneMesh) return;
+   SetLaserMatTransparency(PlaneMesh, 0.1f);
+   AddLaserComponent(PlaneMesh);
 }
 
 
 
-void APlaneBase::InitPlane(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode)
+void APlaneBase::InitPlane(ACoordinateSystemBase *coordinateSystem, LaserColors color, FMathPlane inPlane, PlaneMode mode)
 {
    MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
 
    SetValuesGeometry(coordinateSystem, color);
-   this->Position = position;
-   this->Direction1 = direction1;
-   this->Direction2 = direction2;
-
-   this->Normal = UKismetMathLibrary::Normal(UKismetMathLibrary::Cross_VectorVector(Direction1, Direction2));
+   this->plane = inPlane;
+   plane.Normal = UKismetMathLibrary::Normal(UKismetMathLibrary::Cross_VectorVector(plane.Direction1, plane.Direction2));
 
    this->type = GeometryType::plane;
 
@@ -55,12 +49,17 @@ void APlaneBase::InitPlane(ACoordinateSystemBase *coordinateSystem, LaserColors 
    }
 }
 
+FVector APlaneBase::GetNormal()
+{
+   return plane.Normal;
+}
+
 
 
 void APlaneBase::Update()
 {
    Super::Update();
-   SetPosition(Position);
+   SetPosition(plane.Position);
    BuildPlane();
 }
 
@@ -70,8 +69,8 @@ void APlaneBase::BuildPlane()
 {
    if(Mode == PlaneMode::plane)
    {
-      RotateLaserLookAt(Position, Position + Normal);
-      SetLaserScale(Plane, FVector(CoordinateSystem->MaxVisibleLength(), CoordinateSystem->MaxVisibleLength(), NULL));
+      RotateLaserLookAt(plane.Position, plane.Position + plane.Normal);
+      SetLaserScale(PlaneMesh, FVector(CoordinateSystem->MaxVisibleLength(), CoordinateSystem->MaxVisibleLength(), NULL));
    }
 }
 
@@ -79,8 +78,8 @@ void APlaneBase::BuildPlane()
 
 void APlaneBase::CreateVectorGuides(LaserColors color)
 {
-   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, Position, VectorStructMode::vectorPoint));
-   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, Position, Direction1, VectorStructMode::vectorPoint));
-   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, Position, Direction2, VectorStructMode::vectorPoint));
-   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, Position, Normal, VectorStructMode::vector));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, plane.Position, VectorStructMode::vectorPoint));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, plane.Position, plane.Direction1, VectorStructMode::vectorPoint));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, plane.Position, plane.Direction2, VectorStructMode::vectorPoint));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, plane.Position, plane.Normal, VectorStructMode::vector));
 }

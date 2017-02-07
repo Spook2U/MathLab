@@ -47,22 +47,22 @@ float GeometryCalc::GetDistance(AGeometryBase *from, AGeometryBase *to)
 
    switch(mode)
    {
-      case SHIFTPOW*1+1: result = DistanceCalc((APointBase *)  from, (APointBase *)  to); break;
-      case SHIFTPOW*1+2: result = DistanceCalc((APointBase *)  from, (ALineBase *)   to); break;
-      case SHIFTPOW*1+4: result = DistanceCalc((APointBase *)  from, (APlaneBase *)  to); break;
-      case SHIFTPOW*1+8: result = DistanceCalc((APointBase *)  from, (ASphereBase *) to); break;
-      case SHIFTPOW*2+1: result = DistanceCalc((ALineBase *)   from, (APointBase *)  to); break;
-      case SHIFTPOW*2+2: result = DistanceCalc((ALineBase *)   from, (ALineBase *)   to); break;
-      case SHIFTPOW*2+4: result = DistanceCalc((ALineBase *)   from, (APlaneBase *)  to); break;
-      case SHIFTPOW*2+8: result = DistanceCalc((ALineBase *)   from, (ASphereBase *) to); break;
-      case SHIFTPOW*4+1: result = DistanceCalc((APlaneBase *)  from, (APointBase *)  to); break;
-      case SHIFTPOW*4+2: result = DistanceCalc((APlaneBase *)  from, (ALineBase *)   to); break;
-      case SHIFTPOW*4+4: result = DistanceCalc((APlaneBase *)  from, (APlaneBase *)  to); break;
-      case SHIFTPOW*4+8: result = DistanceCalc((APlaneBase *)  from, (ASphereBase *) to); break;
-      case SHIFTPOW*8+1: result = DistanceCalc((ASphereBase *) from, (APointBase *)  to); break;
-      case SHIFTPOW*8+2: result = DistanceCalc((ASphereBase *) from, (ALineBase *)   to); break;
-      case SHIFTPOW*8+4: result = DistanceCalc((ASphereBase *) from, (APlaneBase *)  to); break;
-      case SHIFTPOW*8+8: result = DistanceCalc((ASphereBase *) from, (ASphereBase *) to); break;
+      case SHIFTPOW*1+1: result = DistanceCalc(((APointBase *)  from)->point,  ((APointBase *)  to)->point);  break;
+      case SHIFTPOW*1+2: result = DistanceCalc(((APointBase *)  from)->point,  ((ALineBase *)   to)->line);   break;
+      case SHIFTPOW*1+4: result = DistanceCalc(((APointBase *)  from)->point,  ((APlaneBase *)  to)->plane);  break;
+      case SHIFTPOW*1+8: result = DistanceCalc(((APointBase *)  from)->point,  ((ASphereBase *) to)->sphere); break;
+      case SHIFTPOW*2+1: result = DistanceCalc(((ALineBase *)   from)->line,   ((APointBase *)  to)->point);  break;
+      case SHIFTPOW*2+2: result = DistanceCalc(((ALineBase *)   from)->line,   ((ALineBase *)   to)->line);   break;
+      case SHIFTPOW*2+4: result = DistanceCalc(((ALineBase *)   from)->line,   ((APlaneBase *)  to)->plane);  break;
+      case SHIFTPOW*2+8: result = DistanceCalc(((ALineBase *)   from)->line,   ((ASphereBase *) to)->sphere); break;
+      case SHIFTPOW*4+1: result = DistanceCalc(((APlaneBase *)  from)->plane,  ((APointBase *)  to)->point);  break;
+      case SHIFTPOW*4+2: result = DistanceCalc(((APlaneBase *)  from)->plane,  ((ALineBase *)   to)->line);   break;
+      case SHIFTPOW*4+4: result = DistanceCalc(((APlaneBase *)  from)->plane,  ((APlaneBase *)  to)->plane);  break;
+      case SHIFTPOW*4+8: result = DistanceCalc(((APlaneBase *)  from)->plane,  ((ASphereBase *) to)->sphere); break;
+      case SHIFTPOW*8+1: result = DistanceCalc(((ASphereBase *) from)->sphere, ((APointBase *)  to)->point);  break;
+      case SHIFTPOW*8+2: result = DistanceCalc(((ASphereBase *) from)->sphere, ((ALineBase *)   to)->line);   break;
+      case SHIFTPOW*8+4: result = DistanceCalc(((ASphereBase *) from)->sphere, ((APlaneBase *)  to)->plane);  break;
+      case SHIFTPOW*8+8: result = DistanceCalc(((ASphereBase *) from)->sphere, ((ASphereBase *) to)->sphere); break;
       default: break;
    }
 
@@ -80,244 +80,318 @@ RelPosReturn GeometryCalc::GetRelativePosition(AGeometryBase * from, AGeometryBa
 
    switch(mode)
    {
-      case SHIFTPOW*1+1: result = RelativePositionCalc((APointBase *)  from, (APointBase *)  to); break;
-      case SHIFTPOW*1+2: result = RelativePositionCalc((APointBase *)  from, (ALineBase *)   to); break;
-      case SHIFTPOW*1+4: result = RelativePositionCalc((APointBase *)  from, (APlaneBase *)  to); break;
-      case SHIFTPOW*1+8: result = RelativePositionCalc((APointBase *)  from, (ASphereBase *) to); break;
-      case SHIFTPOW*2+1: result = RelativePositionCalc((ALineBase *)   from, (APointBase *)  to); break;
-      case SHIFTPOW*2+2: result = RelativePositionCalc((ALineBase *)   from, (ALineBase *)   to); break;
-      case SHIFTPOW*2+4: result = RelativePositionCalc((ALineBase *)   from, (APlaneBase *)  to); break;
-      case SHIFTPOW*2+8: result = RelativePositionCalc((ALineBase *)   from, (ASphereBase *) to); break;
-      case SHIFTPOW*4+1: result = RelativePositionCalc((APlaneBase *)  from, (APointBase *)  to); break;
-      case SHIFTPOW*4+2: result = RelativePositionCalc((APlaneBase *)  from, (ALineBase *)   to); break;
-      case SHIFTPOW*4+4: result = RelativePositionCalc((APlaneBase *)  from, (APlaneBase *)  to); break;
-      case SHIFTPOW*4+8: result = RelativePositionCalc((APlaneBase *)  from, (ASphereBase *) to); break;
-      case SHIFTPOW*8+1: result = RelativePositionCalc((ASphereBase *) from, (APointBase *)  to); break;
-      case SHIFTPOW*8+2: result = RelativePositionCalc((ASphereBase *) from, (ALineBase *)   to); break;
-      case SHIFTPOW*8+4: result = RelativePositionCalc((ASphereBase *) from, (APlaneBase *)  to); break;
-      case SHIFTPOW*8+8: result = RelativePositionCalc((ASphereBase *) from, (ASphereBase *) to); break;
+      case SHIFTPOW*1+1: result = RelativePositionCalc(((APointBase *)  from)->point,  ((APointBase *)  to)->point);  break;
+      case SHIFTPOW*1+2: result = RelativePositionCalc(((APointBase *)  from)->point,  ((ALineBase *)   to)->line);   break;
+      case SHIFTPOW*1+4: result = RelativePositionCalc(((APointBase *)  from)->point,  ((APlaneBase *)  to)->plane);  break;
+      case SHIFTPOW*1+8: result = RelativePositionCalc(((APointBase *)  from)->point,  ((ASphereBase *) to)->sphere); break;
+      case SHIFTPOW*2+1: result = RelativePositionCalc(((ALineBase *)   from)->line,   ((APointBase *)  to)->point);  break;
+      case SHIFTPOW*2+2: result = RelativePositionCalc(((ALineBase *)   from)->line,   ((ALineBase *)   to)->line);   break;
+      case SHIFTPOW*2+4: result = RelativePositionCalc(((ALineBase *)   from)->line,   ((APlaneBase *)  to)->plane);  break;
+      case SHIFTPOW*2+8: result = RelativePositionCalc(((ALineBase *)   from)->line,   ((ASphereBase *) to)->sphere); break;
+      case SHIFTPOW*4+1: result = RelativePositionCalc(((APlaneBase *)  from)->plane,  ((APointBase *)  to)->point);  break;
+      case SHIFTPOW*4+2: result = RelativePositionCalc(((APlaneBase *)  from)->plane,  ((ALineBase *)   to)->line);   break;
+      case SHIFTPOW*4+4: result = RelativePositionCalc(((APlaneBase *)  from)->plane,  ((APlaneBase *)  to)->plane);  break;
+      case SHIFTPOW*4+8: result = RelativePositionCalc(((APlaneBase *)  from)->plane,  ((ASphereBase *) to)->sphere); break;
+      case SHIFTPOW*8+1: result = RelativePositionCalc(((ASphereBase *) from)->sphere, ((APointBase *)  to)->point);  break;
+      case SHIFTPOW*8+2: result = RelativePositionCalc(((ASphereBase *) from)->sphere, ((ALineBase *)   to)->line);   break;
+      case SHIFTPOW*8+4: result = RelativePositionCalc(((ASphereBase *) from)->sphere, ((APlaneBase *)  to)->plane);  break;
+      case SHIFTPOW*8+8: result = RelativePositionCalc(((ASphereBase *) from)->sphere, ((ASphereBase *) to)->sphere); break;
       default: break;
    }
 
    return result;
 }
 
-float GeometryCalc::HesseNormalFormPlugIn(APlaneBase *plane, FVector point)
+bool GeometryCalc::PointInLine(FMathLine line, FMathPoint point)
 {
-   if(!MLD_PTR_CHECK(plane))  return 0.f;
-   return UKismetMathLibrary::Dot_VectorVector(plane->Normal, point) - UKismetMathLibrary::Dot_VectorVector(plane->Normal, plane->Position);
+   bool isInLine = false;
+   
+   float lambda =   (point.Coordinate.X - line.Position.X) / line.Direction.X;
+   if   (lambda == ((point.Coordinate.Y - line.Position.Y) / line.Direction.Y))
+   {
+      if(lambda == ((point.Coordinate.Z - line.Position.Z) / line.Direction.Z))
+      {
+         isInLine = true;
+      }
+   }
+
+   return isInLine;
 }
 
-float GeometryCalc::HesseNormalFormPlugIn(APlaneBase *plane, APointBase *point)
+bool GeometryCalc::PointInPlane(FMathPlane plane, FMathPoint point)
 {
-   if(!MLD_PTR_CHECK(point))  return 0.f;
-   return HesseNormalFormPlugIn(plane, point->point.Coordinate);
+   bool isInPlane = false;
+   FLinearEqualation eqalation = FLinearEqualation(FNMatrix({FNVector({plane.Direction1.X, plane.Direction1.Y}), 
+                                                             FNVector({plane.Direction2.X, plane.Direction2.Y}), 
+                                                             FNVector({point.Coordinate.X-plane.Position.X, point.Coordinate.Y-plane.Position.Y})
+                                                            }));
+   eqalation.Solve();
+   LinEqSolution les = eqalation.HasSolution();
+   if(les == LinEqSolution::one)
+   {
+      FNVector solution = eqalation.GetSolutionOne();
+      
+      if(solution.Size() != 2) { MLD_ERR("solution Vector has wrong size: %s", *solution.ToString()); return false; }
+
+      if(point.Coordinate.Z == (plane.Position.Z + solution.Get(0) * plane.Direction1.Z + solution.Get(1) * plane.Direction2.Z))
+      {
+         isInPlane = true;
+      }
+
+   }
+   else if(les == LinEqSolution::endless)
+   {
+      MLD_WAR("PointInPlane() result 'endless' What to do here?");
+   }
+   return isInPlane;
+}
+
+float GeometryCalc::HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point)
+{
+   return UKismetMathLibrary::Dot_VectorVector(plane.Normal, point.Coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.Normal, plane.Position);
+}
+
+float GeometryCalc::VectorDistance(FVector a, FVector b)
+{
+   return UKismetMathLibrary::VSize(b-a);
+}
+
+FVector GeometryCalc::MakeNomal(FVector a, FVector b, bool unitVector)
+{
+   FVector normal = UKismetMathLibrary::Cross_VectorVector(a, b);
+   if(unitVector)
+   {
+      UKismetMathLibrary::Normal(normal);
+   }
+   return normal;
 }
 
 
 
-float GeometryCalc::VectorDistance(FVector v1, FVector v2)
+float GeometryCalc::DistanceCalc(FMathPoint point1, FMathPoint point2)
 {
-   return UKismetMathLibrary::VSize(v2-v1);
+   return VectorDistance(point2.Coordinate, point1.Coordinate);
 }
-
-
-
-float GeometryCalc::DistanceCalc(APointBase *point1, APointBase *point2)
+float GeometryCalc::DistanceCalc(FMathPoint point, FMathLine line)
 {
-   return VectorDistance(point2->point.Coordinate, point1->point.Coordinate);
+   /* Calculated with Surface of Vectorproduct and Surface of a triangle. */ 
+   FVector v = point.Coordinate - line.Position;
+   return UKismetMathLibrary::VSize(FVector::CrossProduct(v, line.Direction)) / UKismetMathLibrary::VSize(line.Direction);
 }
-float GeometryCalc::DistanceCalc(APointBase *point, ALineBase *line)
-{
-   /* surface of vectorproduct: surface = 1/2 * (Vector from Position to point) crossprudct direction
-      heigh of triange: surface = 1/2 * g * h
-      g = size of direction
-      h = searched distance d
-      -> 1/2 * size of diection * d = 1/2 * (Vector from Position to point) crossprudct direction
-      -> d = (Vector from Position to point) crossprudct direction / size of diection
-   */ 
-   FVector v = point->point.Coordinate - line->Position;
-   return UKismetMathLibrary::VSize(FVector::CrossProduct(v, line->Direction)) / UKismetMathLibrary::VSize(line->Direction);
-}
-float GeometryCalc::DistanceCalc(APointBase *point, APlaneBase *plane)
+float GeometryCalc::DistanceCalc(FMathPoint point, FMathPlane plane)
 {
    return HesseNormalFormPlugIn(plane, point);
 }
-float GeometryCalc::DistanceCalc(APointBase *point, ASphereBase *sphere)
+float GeometryCalc::DistanceCalc(FMathPoint point, FMathSphere sphere)
 {
-   return VectorDistance(sphere->point.Coordinate, point->point.Coordinate) - sphere->Radius;
+   return DistanceCalc(FMathPoint(sphere.Coordinate), point) - sphere.Radius;
 }
-float GeometryCalc::DistanceCalc(ALineBase *line, APointBase *point)
+float GeometryCalc::DistanceCalc(FMathLine  line, FMathPoint point)
 {
    return DistanceCalc(point, line);
 }
-float GeometryCalc::DistanceCalc(ALineBase *line1, ALineBase *line2)
+float GeometryCalc::DistanceCalc(FMathLine  line1, FMathLine line2)
 {
-   RelPosReturn relpos = GetRelativePosition(line1, line2);
+   RelPosReturn relpos = RelativePositionCalc(line1, line2);
    float distance = 0.f;
 
    switch(relpos.type)
    {
       case RelativePosition::identical:    distance = 0.f; break;
       case RelativePosition::intersection: distance = 0.f; break;
-      case RelativePosition::parallel:     /* gleich wie: DistanceCalc(APointBase *point, ALineBase *line) Abstand p1 von g2 */ break;
-      case RelativePosition::skew:         /* distance = HesseNormalFormPlugIn();*/ break;
-                                           /* gleich wie: DistanceCalc(APointBase *point, APlaneBase *plane): d1 x d2 = n, p1 & n = Ebene E, Abstand von E und p2*/
+      case RelativePosition::parallel:     distance = DistanceCalc(FMathPoint(line1.Position), line2); break;
+      case RelativePosition::skew:         distance = DistanceCalc(FMathPoint(line2.Position), FMathPlane(FMathPoint(line1.Position), MakeNomal(line1.Direction, line2.Direction))); break;
       default: MLD_WAR("Wrong Relative Position for 2 lines"); break;
    }
 
    return distance;
 }
-float GeometryCalc::DistanceCalc(ALineBase *line, APlaneBase *plane)
+float GeometryCalc::DistanceCalc(FMathLine  line, FMathPlane plane)
 {
-   RelPosReturn relpos = GetRelativePosition(line, plane);
+   RelPosReturn relpos = RelativePositionCalc(line, plane);
    float distance = 0.f;
 
    switch(relpos.type)
    {
       case RelativePosition::inside:       distance = 0.f; break;
       case RelativePosition::intersection: distance = 0.f; break;
-      case RelativePosition::parallel:     /* gleich wie: DistanceCalc(APointBase *point, APlaneBase *plane) Abstand Gerade p1 von E1 */ break;
+      case RelativePosition::parallel:     distance = DistanceCalc(FMathPoint(line.Position), plane); break;
       default: MLD_WAR("Wrong Relative Position for 2 planes"); break;
    }
 
    return distance;
 }
-float GeometryCalc::DistanceCalc(ALineBase *line, ASphereBase *sphere)
+float GeometryCalc::DistanceCalc(FMathLine  line, FMathSphere sphere)
 {
-   /* gleich wie: DistanceCalc(APointBase *point, ALineBase *line) Abstand p1 von g2 */
-   // Dann - radius
-   return 5.0f;
+   return DistanceCalc(FMathPoint(sphere.Coordinate), line) - sphere.Radius;
 }
-float GeometryCalc::DistanceCalc(APlaneBase *plane, APointBase *point)
+float GeometryCalc::DistanceCalc(FMathPlane plane, FMathPoint point)
 {
    return DistanceCalc(point, plane);
 }
-float GeometryCalc::DistanceCalc(APlaneBase *plane, ALineBase *line)
+float GeometryCalc::DistanceCalc(FMathPlane plane, FMathLine line)
 {
    return DistanceCalc(line, plane);
 }
-float GeometryCalc::DistanceCalc(APlaneBase *plane1, APlaneBase *plane2)
+float GeometryCalc::DistanceCalc(FMathPlane plane1, FMathPlane plane2)
 {
-   RelPosReturn relpos = GetRelativePosition(plane1, plane2);
+   RelPosReturn relpos = RelativePositionCalc(plane1, plane2);
    float distance = 0.f;
 
    switch(relpos.type)
    {
       case RelativePosition::identical:    distance = 0.f; break;
       case RelativePosition::intersection: distance = 0.f; break;
-      case RelativePosition::parallel:     /* gleich wie: DistanceCalc(APointBase *point, APlaneBase *plane) Abstand p1 von E2 */ break;
+      case RelativePosition::parallel:     distance = DistanceCalc(FMathPoint(plane1.Position), plane2); break;
       default: MLD_WAR("Wrong Relative Position for 2 planes"); break;
    }
 
    return distance;
 }
-float GeometryCalc::DistanceCalc(APlaneBase *plane, ASphereBase *sphere)
+float GeometryCalc::DistanceCalc(FMathPlane plane, FMathSphere sphere)
 {
-   /* gleich wie: DistanceCalc(APointBase *point, APlaneBase *plane) Abstand p1 von E2 */
-   // Dann - radius
-   return 7.0f;
+   return DistanceCalc(FMathPoint(sphere.Coordinate), plane) - sphere.Radius;
 }
-float GeometryCalc::DistanceCalc(ASphereBase *sphere, APointBase *point)
+float GeometryCalc::DistanceCalc(FMathSphere sphere, FMathPoint point)
 {
    return DistanceCalc(point, sphere);
 }
-float GeometryCalc::DistanceCalc(ASphereBase *sphere, ALineBase *line)
+float GeometryCalc::DistanceCalc(FMathSphere sphere, FMathLine line)
 {
    return DistanceCalc(line, sphere);
 }
-float GeometryCalc::DistanceCalc(ASphereBase *sphere, APlaneBase *plane)
+float GeometryCalc::DistanceCalc(FMathSphere sphere, FMathPlane plane)
 {
    return DistanceCalc(plane, sphere);
 }
-float GeometryCalc::DistanceCalc(ASphereBase *sphere1, ASphereBase *sphere2)
+float GeometryCalc::DistanceCalc(FMathSphere sphere1, FMathSphere sphere2)
 {
-   return VectorDistance(sphere2->point.Coordinate, sphere1->point.Coordinate) - sphere1->Radius - sphere2->Radius;
+   return DistanceCalc(FMathPoint(sphere2.Coordinate), FMathPoint(sphere1.Coordinate)) - sphere1.Radius - sphere2.Radius;
 }
 
 
 
-RelPosReturn GeometryCalc::RelativePositionCalc(APointBase *point1, APointBase *point2)
-{
-   RelPosReturn result;
-   if(point1->point.Coordinate == point2->point.Coordinate) { result.type = RelativePosition::identical; }
-   else                                                     { result.type = RelativePosition::different; }
-   return result;
-}
-RelPosReturn GeometryCalc::RelativePositionCalc(APointBase *point, ALineBase *line)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathPoint point1, FMathPoint point2)
 {
    RelPosReturn result;
-
+   if(point1.Coordinate == point2.Coordinate) { result.type = RelativePosition::identical; }
+   else                                       { result.type = RelativePosition::different; }
    return result;
 }
-RelPosReturn GeometryCalc::RelativePositionCalc(APointBase *point, APlaneBase *plane)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathPoint point, FMathLine line)
 {
    RelPosReturn result;
-
+   if(PointInLine(line, point)) { result.type = RelativePosition::inside;  }
+   else                         { result.type = RelativePosition::outside; }
    return result;
 }
-RelPosReturn GeometryCalc::RelativePositionCalc(APointBase *point, ASphereBase *sphere)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathPoint point, FMathPlane plane)
 {
    RelPosReturn result;
-   if(VectorDistance(point->point.Coordinate, sphere->point.Coordinate) <= sphere->Radius) { result.type = RelativePosition::inside;  }
-   else                                                                                    { result.type = RelativePosition::outside; }
+   if(PointInPlane(plane, point)) { result.type = RelativePosition::inside;  }
+   else                           { result.type = RelativePosition::outside; }
    return result;
 }
-RelPosReturn GeometryCalc::RelativePositionCalc(ALineBase *line, APointBase *point)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathPoint point, FMathSphere sphere)
+{
+   RelPosReturn result;
+   if(DistanceCalc(point, FMathPoint(sphere.Coordinate)) <= sphere.Radius) { result.type = RelativePosition::inside;  }
+   else                                                                    { result.type = RelativePosition::outside; }
+   return result;
+}
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathLine  line, FMathPoint point)
 {
    return RelativePositionCalc(point, line);
 }
-RelPosReturn GeometryCalc::RelativePositionCalc(ALineBase *line1, ALineBase *line2)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathLine  line1, FMathLine line2)
+{
+   RelPosReturn result;
+
+   if(UKismetMathLibrary::Normal(line1.Direction) == UKismetMathLibrary::Normal(line2.Direction))
+   {
+      if(line1.Position == line2.Position) { result.type = RelativePosition::identical; }
+      else                                 { result.type = RelativePosition::parallel;  }
+   }
+
+   FLinearEqualation eqalation = FLinearEqualation(FNMatrix({FNVector({line1.Direction.X, line1.Direction.Y}), 
+                                                             FNVector({(-1)*line2.Direction.X, (-1)*line2.Direction.Y}), 
+                                                             FNVector({line1.Position.X-line2.Position.X, line1.Position.Y-line2.Position.Y})
+                                                            }));
+   eqalation.Solve();
+   LinEqSolution les = eqalation.HasSolution();
+   if(les == LinEqSolution::one)
+   {
+      FNVector solution = eqalation.GetSolutionOne();
+
+      if(solution.Size() != 2) { MLD_ERR("solution Vector has wrong size: %s", *solution.ToString()); return RelPosReturn(); }
+
+      if(line1.Position + solution.Get(0) * line1.Direction == line2.Position + solution.Get(1) * line2.Direction)
+      {
+         result.type = RelativePosition::intersection;
+         //nach FVector casten: eqalation.GetSolutionOne()
+         //result.vectors.Add();
+      }
+      else
+      {
+         result.type = RelativePosition::skew;
+      }
+   }
+   else if(les == LinEqSolution::endless)
+   {
+      MLD_WAR("PointInPlane() result 'endless' What to do here?");
+   }
+   else if(les == LinEqSolution::no)
+   {
+      result.type = RelativePosition::skew;
+   }
+
+   return result;
+}
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathLine  line, FMathPlane plane)
 {
    RelPosReturn result;
 
    return result;
 }
-RelPosReturn GeometryCalc::RelativePositionCalc(ALineBase *line, APlaneBase *plane)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathLine  line, FMathSphere sphere)
 {
    RelPosReturn result;
 
    return result;
 }
-RelPosReturn GeometryCalc::RelativePositionCalc(ALineBase *line, ASphereBase *sphere)
-{
-   RelPosReturn result;
-
-   return result;
-}
-RelPosReturn GeometryCalc::RelativePositionCalc(APlaneBase *plane, APointBase *point)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathPlane plane, FMathPoint point)
 {
    return RelativePositionCalc(point, plane);
 }
-RelPosReturn GeometryCalc::RelativePositionCalc(APlaneBase *plane, ALineBase *line)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathPlane plane, FMathLine line)
 {
    return RelativePositionCalc(line, plane);
 }
-RelPosReturn GeometryCalc::RelativePositionCalc(APlaneBase *plane1, APlaneBase *plane2)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathPlane plane1, FMathPlane plane2)
 {
    RelPosReturn result;
 
    return result;
 }
-RelPosReturn GeometryCalc::RelativePositionCalc(APlaneBase *plane, ASphereBase *sphere)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathPlane plane, FMathSphere sphere)
 {
    RelPosReturn result;
 
    return result;
 }
-RelPosReturn GeometryCalc::RelativePositionCalc(ASphereBase *sphere, APointBase *point)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathSphere sphere, FMathPoint point)
 {
    return RelativePositionCalc(point, sphere);
 }
-RelPosReturn GeometryCalc::RelativePositionCalc(ASphereBase *sphere, ALineBase *line)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathSphere sphere, FMathLine line)
 {
    return RelativePositionCalc(line, sphere);
 }
-RelPosReturn GeometryCalc::RelativePositionCalc(ASphereBase *sphere, APlaneBase *plane)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathSphere sphere, FMathPlane plane)
 {
    return RelativePositionCalc(plane, sphere);
 }
-RelPosReturn GeometryCalc::RelativePositionCalc(ASphereBase *sphere1, ASphereBase *sphere2)
+RelPosReturn GeometryCalc::RelativePositionCalc(FMathSphere sphere1, FMathSphere sphere2)
 {
    RelPosReturn result;
 

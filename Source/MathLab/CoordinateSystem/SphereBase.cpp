@@ -8,8 +8,8 @@
 
 ASphereBase::ASphereBase()
 {
-   Radius = 0.f;
-   Sphere = nullptr;
+   sphere = FMathSphere();
+   sphereMesh = nullptr;
 }
 
 void ASphereBase::BeginPlay()
@@ -24,24 +24,22 @@ void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components)
    for(UStaticMeshComponent *c : components)
    {
       MLD_PTR_CHECK(c); if(!c) continue;
-      if(c->GetName().Equals("Sphere")) { this->Sphere = c; }
+      if(c->GetName().Equals("SphereMesh")) { this->sphereMesh = c; }
    }
 
-   MLD_PTR_CHECK(Sphere); if(!Sphere) return;
-   SetLaserMatTransparency(Sphere, 0.1f);
-   AddLaserComponent(Sphere);
+   MLD_PTR_CHECK(sphereMesh); if(!sphereMesh) return;
+   SetLaserMatTransparency(sphereMesh, 0.1f);
+   AddLaserComponent(sphereMesh);
 }
 
 
 
-void ASphereBase::InitSphere(ACoordinateSystemBase* coordinateSystem, LaserColors color, FVector coordinate, float radius)
+void ASphereBase::InitSphere(ACoordinateSystemBase* coordinateSystem, LaserColors color, FMathSphere inSphere)
 {
    MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
 
-   FPoint p;
-   p.Coordinate = coordinate;
-   this->Radius = radius;
-   InitPoint(coordinateSystem, color, p);
+   this->sphere = inSphere;
+   InitPoint(coordinateSystem, color, sphere);
    this->type = GeometryType::sphere; //after InitPoint() to override the value from point
 }
 
@@ -57,7 +55,7 @@ void ASphereBase::Update()
 
 void ASphereBase::BuildSphere()
 {
-   ScaleSphere(Sphere, Radius);
+   ScaleSphere(sphereMesh, sphere.Radius);
 }
 
 // Protected ----------------------------------------------------------------------------------------
@@ -78,7 +76,7 @@ void ASphereBase::CreateVectorGuides(LaserColors color)
    }
    pointVectorStruct->SetVisibilityPointB(true);
 
-   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, point.Coordinate, point.Coordinate + FVector(Radius, 0, 0), VectorStructMode::segment));
+   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, sphere.Coordinate, sphere.Coordinate + FVector(sphere.Radius, 0, 0), VectorStructMode::segment));
 }
 
 

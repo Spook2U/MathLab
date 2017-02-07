@@ -112,23 +112,23 @@ public:
    
    /* Spawns a Point in the Coordinate System*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
-   APointBase *AddPoint(LaserColors color, FPoint inPoint, bool showGuides);
+   APointBase *AddPoint(LaserColors color, FMathPoint inPoint, bool showGuides);
    
    /* Spawns a Line with the defines mode
       Mode line: Spawns an endless line using position and direction Vector.
       Mode segment: Spawns a segmented line between 2 points A (position) and B (direction).
       Mode vector: Spawns a vector pointing to direction, using position as offset from the orign.*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
-   ALineBase *MakeLine(LaserColors color, FVector position, FVector direction, LineMode mode, bool showGuides);
+   ALineBase *AddLine(LaserColors color, FMathLine inLine, LineMode mode, bool showGuides);
    
    /* Spawns a Plane with the defines mode
       Mode plane: Spawns an endless plane using position and 2 direction Vector.*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
-   APlaneBase *MakePlane(LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode, bool showGuides);
+   APlaneBase *AddPlane(LaserColors color, FMathPlane inPlane, PlaneMode mode, bool showGuides);
    
    /**Spawns a Sphere at the given Coordinate with the defined radius*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
-   ASphereBase *MakeSphere(LaserColors color, FVector coordinate, float radius, bool showGuides);
+   ASphereBase *AddSphere(LaserColors color, FMathSphere inSphere, bool showGuides);
 
    AVectorStruct *AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode = VectorStructMode::general);
 
@@ -157,13 +157,13 @@ public:
 
 
    UFUNCTION(BlueprintPure, DisplayName = "ToString (Point)", Category = "Math Lab|String", meta = (CompactNodeTitle = "->", BlueprintAutocast))
-   FString FPointToString(FPoint inPoint);
+   FString FPointToString(FMathPoint inPoint);
 
    UFUNCTION(BlueprintPure, DisplayName = "ToPointBase (Point struct)", Category = "Math Lab|point", meta = (CompactNodeTitle = "->", BlueprintAutocast))
-   APointBase *FPointToPointBP(FPoint inPoint);
+   APointBase *FPointToPointBP(FMathPoint inPoint);
 
    UFUNCTION(BlueprintPure, DisplayName = "ToPointStruct (Point)", Category = "Math Lab|point", meta = (CompactNodeTitle = "->", BlueprintAutocast))
-   FPoint PointBPToFPoint(APointBase *inPoint);
+   FMathPoint PointBPToFPoint(APointBase *inPoint);
 
 
    /* Returns the distance from one geometry to the other.*/

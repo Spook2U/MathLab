@@ -3,10 +3,15 @@
 #pragma once
 
 #include "Lib/MathLabEnumLibrary.h"
+#include "Lib/GeometryCalc.h"
+
 #include "CoordinateSystemBase.h"
+
 #include "GameFramework/Actor.h"
 #include "GeometryBase.generated.h"
 
+// Forward declarations.
+///class ACoordinateSystemBase;
 class AVectorStruct;
 
 UCLASS()

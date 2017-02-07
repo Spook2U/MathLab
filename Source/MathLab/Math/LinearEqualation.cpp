@@ -172,10 +172,10 @@ FNVector FLinearEqualation::GetSolutionOne()
 
    switch(solution)
    {
-      case LinEqSolution::one:       result = CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1); break;
-      case LinEqSolution::endless:   MLD_WAR("This linear equalation has more than one solution. Use GetSolutionEndless() instead."); break;
-      case LinEqSolution::no:        MLD_WAR("This linear equalation has no solution. Use HasSolution() to check.")
-      default:                      result = FNVector();
+      case LinEqSolution::one:     result = CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1); break;
+      case LinEqSolution::endless: MLD_WAR("This linear equalation has more than one solution. Use GetSolutionEndless() instead."); break;
+      case LinEqSolution::no:      MLD_WAR("This linear equalation has no solution. Use HasSolution() to check.")
+      default:                     result = FNVector();
    }
 
    return result;
@@ -189,10 +189,10 @@ FNVector FLinearEqualation::GetSolutionEndless()
 
    switch(solution)
    {
-      case LinEqSolution::one:       MLD_WAR("This linear equalation has only one solution. Use GetSolutionOne() instead."); break;
-      case LinEqSolution::endless:   MLD_WAR("Noch nicht eigebaut"); break;
-      case LinEqSolution::no:        MLD_WAR("This linear equalation has no solution. Use HasSolution() to check.")
-      default:                      results = FNVector();
+      case LinEqSolution::one:     MLD_WAR("This linear equalation has only one solution. Use GetSolutionOne() instead."); break;
+      case LinEqSolution::endless: MLD_WAR("Noch nicht eigebaut"); break;
+      case LinEqSolution::no:      MLD_WAR("This linear equalation has no solution. Use HasSolution() to check.")
+      default:                     results = FNVector();
    }
 
    return results;

@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "MathLab.h"
 #include "NVector.generated.h"
 
 /*

@@ -17,15 +17,12 @@ public:
 
 public:
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "line")
-   FVector Position;
-   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "line")
-   FVector Direction;
-   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "line")
+   FMathLine line;
    LineMode Mode;
 
 private:
-   UStaticMeshComponent *Line;
-   UStaticMeshComponent *Arrowhead;
+   UStaticMeshComponent *lineMesh;
+   UStaticMeshComponent *arrowheadMesh;
 
 // -------------------------------------------------------------------------------------------------
 
@@ -34,7 +31,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Init")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void InitLine(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector position, FVector direction, LineMode mode);
+   void InitLine(ACoordinateSystemBase *coordinateSystem, LaserColors color, FMathLine inLine, LineMode mode);
 
    /**Called, when the objects need to update the position or other vales*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|line|Update")

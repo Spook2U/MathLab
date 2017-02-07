@@ -2,8 +2,6 @@
 
 #include "MathLab.h"
 
-#include <ctime>
-
 #include "GeometryBase.h"
 #include "LineBase.h"
 #include "PlaneBase.h"
@@ -75,12 +73,10 @@ void ACoordinateSystemBase::BeginPlay()
    g_this = this;
 #endif
 
-   //   time_t t = time(0);
-
    MLD_LOG("");
-   MLD_LOG("==========");
-   MLD_LOG("BeginPlay: ");
-   MLD_LOG("==========");
+   MLD_LOG("===================");
+   MLD_LOG("BeginPlay: %s", *UKismetMathLibrary::Now().ToString().Right(8));
+   MLD_LOG("===================");
    MLD_LOG("");
 
    Super::BeginPlay();
@@ -111,7 +107,6 @@ void ACoordinateSystemBase::TestFunction()
    //MLD_LOG("Result: %s", *le.GetResults().ToString());
    
    //FNVector v1 = FNVector({8});
-
 }
 
 
@@ -200,7 +195,7 @@ void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int inde
    newUnit->OrientateToAxis(axis);
 }
 
-APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, FPoint inPoint, bool showGuides)
+APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, FMathPoint inPoint, bool showGuides)
 {  
    APointBase *point = (APointBase *)AddGeometry(PointBP);
    
@@ -210,77 +205,39 @@ APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, FPoint inPoint, b
    return point;
 }
 
-ALineBase *ACoordinateSystemBase::MakeLine(LaserColors color, FVector position, FVector direction, LineMode mode, bool showGuides)
+ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, FMathLine inLine, LineMode mode, bool showGuides)
 {
-   if(direction.Size() == 0) { MLD_ERR("Line not created. Invalid diection. Direction of the line cannt be {0, 0, 0}."); return nullptr; }
+   if(inLine.Direction.Size() == 0) { MLD_ERR("Line not created. Invalid diection. Direction of the line cannt be {0, 0, 0}."); return nullptr; }
 
    ALineBase *line = (ALineBase *)AddGeometry(LineBP);
 
    MLD_PTR_CHECK(line); if(!line) return nullptr;
-   line->InitLine(this, color, position, direction, mode);
+   line->InitLine(this, color, inLine, mode);
    line->ShowVectorGuides(showGuides);
    return line;
 }
 
-APlaneBase *ACoordinateSystemBase::MakePlane(LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode, bool showGuides)
+APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, FMathPlane inPlane, PlaneMode mode, bool showGuides)
 {
-   if((direction1.Size() == 0) || (direction2.Size() == 0)) { MLD_ERR("Plane not created. Invalid diection. No direction of the plane shall be {0, 0, 0}."); return nullptr; }
+   if((inPlane.Direction1.Size() == 0) || (inPlane.Direction2.Size() == 0)) { MLD_ERR("Plane not created. Invalid diection. No direction of the plane shall be {0, 0, 0}."); return nullptr; }
 
    APlaneBase *plane = (APlaneBase *)AddGeometry(PlaneBP);
    MLD_PTR_CHECK(plane); if(!plane) return nullptr;
-   plane->InitPlane(this, color, position, direction1, direction2, mode);
+   plane->InitPlane(this, color, inPlane, mode);
    plane->ShowVectorGuides(showGuides);
    return plane;
 }
 
-ASphereBase *ACoordinateSystemBase::MakeSphere(LaserColors color, FVector coordinate, float radius, bool showGuides)
+ASphereBase *ACoordinateSystemBase::AddSphere(LaserColors color, FMathSphere inSphere, bool showGuides)
 {
-   if(radius == 0) { MLD_ERR("Sphere not created. Invalid radius. Cannt create Sphere with radius = 0."); return nullptr; }
+   if(inSphere.Radius == 0) { MLD_ERR("Sphere not created. Invalid radius. Cannt create Sphere with radius = 0."); return nullptr; }
 
    ASphereBase *sphere = (ASphereBase *)AddGeometry(SphereBP);
    MLD_PTR_CHECK(sphere); if(!sphere) return nullptr;
-   sphere->InitSphere(this, color, coordinate, radius);
+   sphere->InitSphere(this, color, inSphere);
    sphere->ShowVectorGuides(showGuides);
    return sphere;
 }
-
-// --------------------------------------------------------------------------------------------------
-
-//APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, bool showGuides, FVector coordinate)
-//{  
-//   APointBase *newPoint = (APointBase *)AddGeometry(PointBP);
-//   MLD_PTR_CHECK(newPoint); if(!newPoint) return nullptr;
-//   newPoint->InitPoint(this, color, coordinate);
-//   newPoint->ShowVectorGuides(showGuides);
-//   return newPoint;
-//}
-//
-//ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, bool showGuides, FVector position, FVector direction, LineMode mode)
-//{
-//   ALineBase *newLine = (ALineBase *)AddGeometry(LineBP);
-//   MLD_PTR_CHECK(newLine); if(!newLine) return nullptr;
-//   newLine->InitLine(this, color, position, direction, mode);
-//   newLine->ShowVectorGuides(showGuides);
-//   return newLine;
-//}
-//
-//APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, bool showGuides, FVector position, FVector direction1, FVector direction2, PlaneMode mode)
-//{
-//   APlaneBase *newPlane = (APlaneBase *)AddGeometry(PlaneBP);
-//   MLD_PTR_CHECK(newPlane); if(!newPlane) return nullptr;
-//   newPlane->InitPlane(this, color, position, direction1, direction2, mode);
-//   newPlane->ShowVectorGuides(showGuides);
-//   return newPlane;
-//}
-//
-//ASphereBase * ACoordinateSystemBase::AddSphere(LaserColors color, bool showGuides, FVector coordinate, float radius)
-//{
-//   ASphereBase *newSphere = (ASphereBase *)AddGeometry(SphereBP);
-//   MLD_PTR_CHECK(newSphere); if(!newSphere) return nullptr; 
-//   newSphere->InitSphere(this, color, coordinate, radius);
-//   newSphere->ShowVectorGuides(showGuides);
-//   return newSphere;
-//}
 
 AVectorStruct *ACoordinateSystemBase::AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode)
 {
@@ -325,19 +282,19 @@ void ACoordinateSystemBase::LE_Solve(FLinearEqualation inLinearEqualation)
    inLinearEqualation.Solve();
 }
 
-FString ACoordinateSystemBase::FPointToString(FPoint inPoint)
+FString ACoordinateSystemBase::FPointToString(FMathPoint inPoint)
 {
    return inPoint.Coordinate.ToString();
 }
 
-APointBase *ACoordinateSystemBase::FPointToPointBP(FPoint inPoint)
+APointBase *ACoordinateSystemBase::FPointToPointBP(FMathPoint inPoint)
 {
    return AddPoint(LaserColor, inPoint, false);
 }
 
-FPoint ACoordinateSystemBase::PointBPToFPoint(APointBase *inPoint)
+FMathPoint ACoordinateSystemBase::PointBPToFPoint(APointBase *inPoint)
 {
-   if(!MLD_PTR_CHECK(inPoint)) return FPoint();
+   if(!MLD_PTR_CHECK(inPoint)) return FMathPoint();
    return inPoint->point;
 }
 

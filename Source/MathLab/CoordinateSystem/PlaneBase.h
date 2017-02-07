@@ -17,18 +17,12 @@ public:
 
 public:
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "plane")
-   FVector Position;
-   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "plane")
-   FVector Direction1;
-   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "plane")
-   FVector Direction2;
-   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "plane")
-   FVector Normal;
+   FMathPlane plane;
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "plane")
    PlaneMode Mode;
 
 private:
-   UStaticMeshComponent *Plane;
+   UStaticMeshComponent *PlaneMesh;
 
 // -------------------------------------------------------------------------------------------------
 
@@ -37,7 +31,11 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Init")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void InitPlane(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector position, FVector direction1, FVector direction2, PlaneMode mode);
+   void InitPlane(ACoordinateSystemBase *coordinateSystem, LaserColors color, FMathPlane inPlane, PlaneMode mode);
+
+   /* Returns the unified normal Vector of the plane. */
+   UFUNCTION(BlueprintPure, Category = "coordinate System|plane")
+   FVector GetNormal();
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Update")
