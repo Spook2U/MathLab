@@ -38,7 +38,7 @@ enum class VectorStructMode : uint8
    point        UMETA(DisplayName = "Point"),
    segment      UMETA(DisplayName = "Segment"),
    vector       UMETA(DisplayName = "Vector"),
-   vectorPoint  UMETA(DisplayName = "Vector pointing to Point"),
+   vectorPoint  UMETA(DisplayName = "Vector to Point"),
    general      UMETA(DisplayName = "General")
 };
 
@@ -51,7 +51,7 @@ enum class Direction : uint8
 };
 
 UENUM(BlueprintType)
-enum class LinEqSolution : uint8
+enum class LSSolutionType : uint8
 {
    one       UMETA(DisplayName = "Defined Solution"),   
    no        UMETA(DisplayName = "Not solvable"),   
@@ -60,7 +60,7 @@ enum class LinEqSolution : uint8
 };
 
 UENUM(BlueprintType)
-enum class RelativePosition : uint8
+enum class Relation : uint8
 {
    identical     UMETA(DisplayName = "Identical"),   
    different     UMETA(DisplayName = "Different"),   
@@ -81,6 +81,19 @@ enum class GeometryType : uint8
    sphere,
    vectorStruct,
    other
+};
+
+/* Contains the Relative Position and possible intersections. */
+USTRUCT(BlueprintType)
+struct FRelativePosition
+{
+   GENERATED_BODY()
+
+public:      
+   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+   Relation relation;
+   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+   TArray<FVector> intersections;
 };
 
 /* Defines a mathematical Point. */

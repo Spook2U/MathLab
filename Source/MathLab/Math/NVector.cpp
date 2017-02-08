@@ -196,7 +196,22 @@ FNVector FNVector::operator/=(float Scale)
 
 
 
-float FNVector::Get(int index) const 
+FVector FNVector::GetFVector()
+{
+   float x = 0, y = 0, z = 0;
+   switch(Size())
+   {
+      default: 
+      case 3: z = Coordinates[2];
+      case 2: y = Coordinates[1];
+      case 1: x = Coordinates[0];
+      case 0: break;
+   }
+
+   return FVector(x, y, z);
+}
+
+float FNVector::Get(int index) const
 {
    float coordinate = 0;
 

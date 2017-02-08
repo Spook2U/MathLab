@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Math/NVector.h"
 #include "Math/NMatrix.h"
-#include "Math/LinearEqualation.h"
+#include "Math/LinearSystem.h"
 #include "CoordinateSystemBase.generated.h"
 
 // Forward declarations.
@@ -149,10 +149,10 @@ public:
    FString FNMatrixToString(FNMatrix inNMatrix);
 
    UFUNCTION(BlueprintPure, DisplayName = "ToString (Linear Equalation)", Category = "Math Lab|String", meta = (CompactNodeTitle = "->", BlueprintAutocast))
-   FString FLinearEqualationToString(FLinearEqualation inLinearEqualation);
+   FString FLinearEqualationToString(FLinearSystem inLinearEqualation);
 
    UFUNCTION(BlueprintCallable, Category = "Math Lab|Linear Equalation")
-   void LE_Solve(FLinearEqualation inLinearEqualation);
+   void LE_Solve(FLinearSystem inLinearEqualation);
 
 
 
@@ -172,7 +172,7 @@ public:
 
    /* Returns the relative Positio from one geometry to the other.*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Calculate", DisplayName = "Relative Position")
-   RelativePosition GetRelativePosition(AGeometryBase *from, AGeometryBase *to, TArray<FVector> &intersections);
+   Relation GetRelativePosition(AGeometryBase *from, AGeometryBase *to, TArray<FVector> &intersections);
 
 
 

@@ -59,7 +59,8 @@ public:
    ///* Divides the vector by another vector, using component-wise division. */
    //FNVector operator/=(const FNVector& V);
 
-
+   /* Converts the nVector to FVector using the first 3 coordinates. */
+   FVector GetFVector();
 
    /* Returns the coordinate at the given index. */
    float Get(int index) const;

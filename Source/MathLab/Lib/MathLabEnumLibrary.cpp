@@ -4,6 +4,7 @@
 
 #include "GeometryCalc.h"
 
+
 FMathPoint::FMathPoint() {}
 FMathPoint::FMathPoint(FVector inCoordinate) : Coordinate(inCoordinate) {}
 

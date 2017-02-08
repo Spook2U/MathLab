@@ -272,12 +272,12 @@ FString ACoordinateSystemBase::FNMatrixToString(FNMatrix inNMatrix)
    return inNMatrix.ToString();
 }
 
-FString ACoordinateSystemBase::FLinearEqualationToString(FLinearEqualation inLinearEqualation)
+FString ACoordinateSystemBase::FLinearEqualationToString(FLinearSystem inLinearEqualation)
 {
    return inLinearEqualation.ToString();
 }
 
-void ACoordinateSystemBase::LE_Solve(FLinearEqualation inLinearEqualation)
+void ACoordinateSystemBase::LE_Solve(FLinearSystem inLinearEqualation)
 {
    inLinearEqualation.Solve();
 }
@@ -308,16 +308,16 @@ float ACoordinateSystemBase::Distance(AGeometryBase *from, AGeometryBase *to)
    return calc.GetDistance(from, to);
 }
 
-RelativePosition ACoordinateSystemBase::GetRelativePosition(AGeometryBase *from, AGeometryBase *to, TArray<FVector> &intersections)
+Relation ACoordinateSystemBase::GetRelativePosition(AGeometryBase *from, AGeometryBase *to, TArray<FVector> &intersections)
 {
-   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return RelativePosition::notSolved;
+   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return Relation::notSolved;
 
    GeometryCalc calc;
 
-   RelPosReturn result = calc.GetRelativePosition(from, to);
+   FRelativePosition result = calc.GetRelativePosition(from, to);
 
-   intersections = result.vectors;
-   return result.type;
+   intersections = result.intersections;
+   return result.relation;
 }
 
 
