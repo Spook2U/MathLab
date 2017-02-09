@@ -12,7 +12,7 @@ FNMatrix& FNMatrix::operator=(const FNMatrix& Other)
    return *this;
 }
 
-
+// -------------------------------------------------------------------------------------------------
 
 void FNMatrix::Init(int column, int row)
 {
@@ -52,6 +52,8 @@ bool FNMatrix::ValidCheck() const
    return validSize;
 }
 
+// -------------------------------------------------------------------------------------------------
+
 int FNMatrix::ColumnNum() const
 {
    return Matrix.Num();
@@ -63,7 +65,7 @@ int FNMatrix::RowNum() const
    return Matrix[0].Size();
 }
 
-
+// -------------------------------------------------------------------------------------------------
 
 float FNMatrix::GetElement(int column, int row) const
 {
@@ -110,7 +112,7 @@ FNVector FNMatrix::GetRow(int row) const
    return wantedRow;
 }
 
-
+// -------------------------------------------------------------------------------------------------
 
 void FNMatrix::Set(FNMatrix inNMatrix)
 {
@@ -165,7 +167,7 @@ void FNMatrix::SetRow(int index, TArray<float> row)
    SetRow(index, FNVector(row));
 }
 
-
+// -------------------------------------------------------------------------------------------------
 
 void FNMatrix::AddColumn(TArray<float> column)
 {
@@ -195,7 +197,7 @@ void FNMatrix::AddRow(FNVector row)
    AddRow(row.Coordinates);
 }
 
-
+// -------------------------------------------------------------------------------------------------
 
 void FNMatrix::RemoveColumnAt(int index)
 {
@@ -215,8 +217,7 @@ void FNMatrix::RemoveRowAt(int index)
    }
 }
 
-
-
+// -------------------------------------------------------------------------------------------------
 
 FString FNMatrix::ToString() const
 {

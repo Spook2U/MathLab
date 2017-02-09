@@ -2,8 +2,8 @@
 
 #include "MathLab.h"
 #include "SphereBase.h"
-#include "PointBase.h"
-#include "LineBase.h"
+
+#include "CoordinateSystemBase.h"
 #include "VectorStruct.h"
 
 ASphereBase::ASphereBase()

@@ -2,9 +2,20 @@
 
 #pragma once
 
-#include "Lib/MathLabEnumLibrary.h"
 #include "NMatrix.h"
 #include "LinearSystem.generated.h"
+
+
+
+/* Defines the different solution types a Linear System can have. */
+UENUM(BlueprintType)
+enum class LSSolutionType : uint8
+{
+   one       UMETA(DisplayName = "Defined Solution"),   
+   no        UMETA(DisplayName = "Not solvable"),   
+   endless   UMETA(DisplayName = "Endless Solutions"),
+   notSolved UMETA(DisplayName = "Not Solved")
+};
 
 
 
@@ -44,9 +55,7 @@ public:
 private: 
    FLSSolution solution = FLSSolution(LSSolutionType::notSolved);
 
-   bool debugging = true;
-
-   // Help variables to solve the linear equalation
+   bool  debugging = true;
    float pivot;
    int   pivotIndex;
    int   rowPivotIndex;
@@ -66,10 +75,6 @@ public:
 
    /* Solves this linear equalation. */
    FLSSolution Solve();
-
-   //LSSolutionType HasSolution() const;
-   //FNVector GetSolutionOne();
-   //FNVector GetSolutionEndless();
 
    /* Get a textual representation of this linear equalation. */
    FString ToString() const;

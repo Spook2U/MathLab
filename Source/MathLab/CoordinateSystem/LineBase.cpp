@@ -3,6 +3,19 @@
 #include "MathLab.h"
 #include "LineBase.h"
 
+#include "CoordinateSystemBase.h"
+
+
+
+FMathLine::FMathLine() {}
+FMathLine::FMathLine(FVector inPosition, FVector inDirection)
+{
+   Position = inPosition;
+   Direction = inDirection;
+}
+
+
+
 ALineBase::ALineBase()
 {
    line = FMathLine();

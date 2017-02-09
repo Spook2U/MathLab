@@ -2,7 +2,15 @@
 
 #include "MathLab.h"
 #include "PointBase.h"
-#include "LineBase.h"
+
+#include "CoordinateSystemBase.h"
+
+
+
+FMathPoint::FMathPoint() {}
+FMathPoint::FMathPoint(FVector inCoordinate) : Coordinate(inCoordinate) {}
+
+
 
 APointBase::APointBase()
 {

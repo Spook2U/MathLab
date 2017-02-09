@@ -5,18 +5,23 @@
 #include "CoordinateSystem/GeometryBase.h"
 #include "PointBase.generated.h"
 
-class ALineBase;
-class APlaneBase;
 
-///* Defines a mathematical Point. */
-//USTRUCT(BlueprintType)
-//struct FPoint
-//{
-//   GENERATED_BODY()
-//
-//public:      
-//   FVector Coordinate;
-//};
+
+/* Defines a mathematical Point. */
+USTRUCT(BlueprintType)
+struct FMathPoint
+{
+   GENERATED_BODY()
+
+public:      
+   UPROPERTY(BlueprintReadWrite, Category = "point")
+      FVector Coordinate;
+
+   /* Default constructor (no initialization). */
+   FMathPoint();
+   /* Constructor to set the coordinate of the point. */
+   FMathPoint(FVector inCoordinate);
+};
 
 
 

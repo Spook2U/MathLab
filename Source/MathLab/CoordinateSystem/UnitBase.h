@@ -5,6 +5,8 @@
 #include "CoordinateSystem/PointBase.h"
 #include "UnitBase.generated.h"
 
+
+
 UCLASS()
 class MATHLAB_API AUnitBase : public APointBase
 {

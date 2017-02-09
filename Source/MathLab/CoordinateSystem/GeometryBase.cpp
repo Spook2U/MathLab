@@ -1,13 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MathLab.h"
-#include "VectorStruct.h"
-#include "PointBase.h"
-#include "LineBase.h"
-#include "PlaneBase.h"
-#include "SphereBase.h"
-
 #include "GeometryBase.h"
+
+#include "CoordinateSystemBase.h"
+#include "VectorStruct.h"
+
 
 
 AGeometryBase::AGeometryBase()              

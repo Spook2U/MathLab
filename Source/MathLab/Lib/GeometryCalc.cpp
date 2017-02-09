@@ -8,6 +8,8 @@
 #include "CoordinateSystem/UnitBase.h"
 #include "CoordinateSystem/VectorStruct.h"
 
+#include "MathLabEnumLibrary.h"
+
 #include "GeometryCalc.h"
 
 #define SHIFT 16

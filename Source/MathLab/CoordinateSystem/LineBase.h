@@ -5,6 +5,28 @@
 #include "CoordinateSystem/GeometryBase.h"
 #include "LineBase.generated.h"
 
+
+
+/* Defines a mathematical line. */
+USTRUCT(BlueprintType)
+struct FMathLine
+{
+   GENERATED_BODY()
+
+public:      
+   UPROPERTY(BlueprintReadWrite, Category = "line")
+      FVector Position;
+   UPROPERTY(BlueprintReadWrite, Category = "line")
+      FVector Direction;
+
+   /* Default constructor (no initialization). */
+   FMathLine();
+   /* Constructor to set the line with position and direction. */
+   FMathLine(FVector inPosition, FVector inDirection);
+};
+
+
+
 UCLASS()
 class MATHLAB_API ALineBase : public AGeometryBase
 {

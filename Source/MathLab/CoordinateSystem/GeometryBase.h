@@ -3,16 +3,35 @@
 #pragma once
 
 #include "Lib/MathLabEnumLibrary.h"
-#include "Lib/GeometryCalc.h"
-
-#include "CoordinateSystemBase.h"
 
 #include "GameFramework/Actor.h"
 #include "GeometryBase.generated.h"
 
 // Forward declarations.
-///class ACoordinateSystemBase;
+class ACoordinateSystemBase;
 class AVectorStruct;
+
+
+
+enum class GeometryType : uint8
+{
+   point,
+   unit,
+   line,
+   plane,
+   sphere,
+   vectorStruct,
+   other
+};
+
+enum class Direction : uint8
+{
+   forward,
+   right,
+   up
+};
+
+
 
 UCLASS()
 class MATHLAB_API AGeometryBase : public AActor

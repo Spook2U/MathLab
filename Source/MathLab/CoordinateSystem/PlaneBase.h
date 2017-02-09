@@ -5,6 +5,36 @@
 #include "CoordinateSystem/GeometryBase.h"
 #include "PlaneBase.generated.h"
 
+struct FMathPoint;
+
+
+
+/* Defines a mathematical plane. */
+USTRUCT(BlueprintType)
+struct FMathPlane
+{
+   GENERATED_BODY()
+
+public:      
+   UPROPERTY(BlueprintReadWrite, Category = "plane")
+      FVector Position;
+   UPROPERTY(BlueprintReadWrite, Category = "plane")
+      FVector Direction1;
+   UPROPERTY(BlueprintReadWrite, Category = "plane")
+      FVector Direction2;
+
+   FVector Normal;
+
+   /* Default constructor (no initialization). */
+   FMathPlane();
+   /* Constructor to set the plane with position and 2 directions. */
+   FMathPlane(FVector inPosition, FVector inDirection1, FVector inDirection2);
+   /* Constructor to set the plane with position and 1 normal. */
+   FMathPlane(FMathPoint inPoint, FVector inNormal);
+};
+
+
+
 UCLASS()
 class MATHLAB_API APlaneBase : public AGeometryBase
 {

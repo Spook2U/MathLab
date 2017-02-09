@@ -3,6 +3,8 @@
 #include "MathLab.h"
 #include "UnitBase.h"
 
+#include "CoordinateSystemBase.h"
+
 AUnitBase::AUnitBase()
 {
    XAxis  = nullptr;

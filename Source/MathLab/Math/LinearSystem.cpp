@@ -10,13 +10,15 @@ FLSSolution::FLSSolution(LSSolutionType inType, TArray<FNVector> inSolution)
    solution = inSolution;
 }
 
+// -------------------------------------------------------------------------------------------------
+
 FLinearSystem::FLinearSystem() {}
 FLinearSystem::FLinearSystem(const FNMatrix inMatrix)
 {
    if(ValidCheck(inMatrix)) { CoefficientMatrix = inMatrix; }
 }
 
-
+// -------------------------------------------------------------------------------------------------
 
 bool FLinearSystem::ValidCheck(FNMatrix inMatrix) const
 {
@@ -36,10 +38,10 @@ bool FLinearSystem::ValidCheck() const
    return ValidCheck(CoefficientMatrix);
 }
 
+// -------------------------------------------------------------------------------------------------
 
-
-#define FINISH_NO_SOLUTON        pivotIndex = maxRows; solution = LSSolutionType::no; break
-#define FINISH_ENDLESS_SOLUTIONS pivotIndex = maxRows; solution = LSSolutionType::endless; break
+#define FINISH_NO_SOLUTON        pivotIndex = maxRows; solution.type = LSSolutionType::no; break
+#define FINISH_ENDLESS_SOLUTIONS pivotIndex = maxRows; solution.type = LSSolutionType::endless; break
 #define REPEAT_WITH_SAME_INDEX   pivotIndex--; continue
 #define SKIP                     continue
 
@@ -78,52 +80,16 @@ FLSSolution FLinearSystem::Solve()
       }
    }
 
-   if(!IsSolved()) { solution = LSSolutionType::one; }
+   if(!IsSolved()) 
+   { 
+      solution.type = LSSolutionType::one; 
+      solution.solution.Add(CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1));
+   }
    
    return solution;
 }
 
-//LSSolutionType FLinearSystem::HasSolution() const
-//{
-//   return solution;
-//}
-
-//FNVector FLinearSystem::GetSolutionOne() 
-//{
-//   FNVector result;
-//
-//   if(!IsSolved()) Solve();
-//
-//   switch(solution)
-//   {
-//      case LSSolutionType::one:     result = CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1); break;
-//      case LSSolutionType::endless: MLD_WAR("This linear equalation has more than one solution. Use GetSolutionEndless() instead."); break;
-//      case LSSolutionType::no:      MLD_WAR("This linear equalation has no solution. Use HasSolution() to check.")
-//      default:                  result = FNVector();
-//   }
-//
-//   return result;
-//}
-
-//FNVector FLinearSystem::GetSolutionEndless()
-//{
-//   FNVector results;
-//
-//   if(!IsSolved()) Solve();
-//
-//   switch(solution)
-//   {
-//      case LSSolutionType::one:     MLD_WAR("This linear equalation has only one solution. Use GetSolutionOne() instead."); break;
-//      case LSSolutionType::endless: MLD_WAR("Noch nicht eigebaut"); break;
-//      case LSSolutionType::no:      MLD_WAR("This linear equalation has no solution. Use HasSolution() to check.")
-//      default:                  results = FNVector();
-//   }
-//
-//   return results;
-//}
-
-
-
+// -------------------------------------------------------------------------------------------------
 
 FString FLinearSystem::ToString() const
 {
@@ -147,6 +113,7 @@ bool FLinearSystem::IsSolved() const
    return solution.type != LSSolutionType::notSolved;
 }
 
+// -------------------------------------------------------------------------------------------------
 
 bool FLinearSystem::CheckColumnZeroFromTo(int from, int to)
 {

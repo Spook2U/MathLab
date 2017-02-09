@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MathLab.h"
+#include "CoordinateSystemBase.h"
 
 #include "GeometryBase.h"
 #include "LineBase.h"
@@ -12,7 +13,6 @@
 
 #include "Lib/GeometryCalc.h"
 
-#include "CoordinateSystemBase.h"
  
 ACoordinateSystemBase::ACoordinateSystemBase()      
 { 
@@ -308,17 +308,17 @@ float ACoordinateSystemBase::Distance(AGeometryBase *from, AGeometryBase *to)
    return calc.GetDistance(from, to);
 }
 
-Relation ACoordinateSystemBase::GetRelativePosition(AGeometryBase *from, AGeometryBase *to, TArray<FVector> &intersections)
-{
-   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return Relation::notSolved;
-
-   GeometryCalc calc;
-
-   FRelativePosition result = calc.GetRelativePosition(from, to);
-
-   intersections = result.intersections;
-   return result.relation;
-}
+//Relation ACoordinateSystemBase::GetRelativePosition(AGeometryBase *from, AGeometryBase *to, TArray<FVector> &intersections)
+//{
+//   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return Relation::notSolved;
+//
+//   GeometryCalc calc;
+//
+//   FRelativePosition result = calc.GetRelativePosition(from, to);
+//
+//   intersections = result.intersections;
+//   return result.relation;
+//}
 
 
 

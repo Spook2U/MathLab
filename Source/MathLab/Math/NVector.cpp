@@ -5,6 +5,8 @@
 FNVector::FNVector() {}
 FNVector::FNVector(TArray<float> inCoordinates) : Coordinates(inCoordinates) {}
 
+// -------------------------------------------------------------------------------------------------
+
 void FNVector::Init(int dimension)
 {
    for(int i = 0; i < dimension; i++)
@@ -25,6 +27,13 @@ bool FNVector::ValidCheck(FNVector inNVector) const
 
    return valid;
 }
+
+int FNVector::Size() const
+{
+   return Coordinates.Num();
+}
+
+// -------------------------------------------------------------------------------------------------
 
 FNVector& FNVector::operator=(const FNVector& Other)
 {
@@ -194,7 +203,7 @@ FNVector FNVector::operator/=(float Scale)
 //FNVector FNVector::operator*=(const FNVector& V) {}
 //FNVector FNVector::operator/=(const FNVector& V) {}
 
-
+// -------------------------------------------------------------------------------------------------
 
 FVector FNVector::GetFVector()
 {
@@ -256,12 +265,7 @@ void FNVector::RemoveAt(int index)
    else { Coordinates.RemoveAt(index); }
 }
 
-
-
-int FNVector::Size() const
-{
-   return Coordinates.Num();
-}
+// -------------------------------------------------------------------------------------------------
 
 FString FNVector::ToString() const
 {

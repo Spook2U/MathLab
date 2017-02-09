@@ -5,6 +5,22 @@
 #include "CoordinateSystem/PointBase.h"
 #include "SphereBase.generated.h"
 
+
+
+/* Defines a mathematical sphere. */
+USTRUCT(BlueprintType)
+struct FMathSphere : public FMathPoint
+{
+   GENERATED_BODY()
+
+public:      
+   UPROPERTY(BlueprintReadWrite, Category = "sphere")
+   float Radius;
+
+};
+
+
+
 UCLASS()
 class MATHLAB_API ASphereBase : public APointBase
 {

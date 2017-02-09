@@ -1,15 +1,46 @@
 #pragma once
 
-#include "MathLabEnumLibrary.h"
+#include "CoordinateSystem/GeometryBase.h"
+
+#include "GeometryCalc.generated.h"
 
 // Forward declarations.
-class AGeometryBase;
-class ALineBase;
-class APlaneBase;
-class APointBase;
-class ASphereBase;
-class AUnitBase;
-class AVectorStruct;
+class  AGeometryBase;
+struct FMathPoint;
+struct FMathLine;
+struct FMathPlane;
+struct FMathSphere;
+
+
+
+/* Defines possible relations between geometry objects. */
+UENUM(BlueprintType)
+enum class Relation : uint8
+{
+   identical     UMETA(DisplayName = "Identical"),   
+   different     UMETA(DisplayName = "Different"),   
+   inside        UMETA(DisplayName = "Inside"),
+   outside       UMETA(DisplayName = "Outside"),
+   parallel      UMETA(DisplayName = "Parallel"),   
+   skew          UMETA(DisplayName = "Skew"),   
+   intersection  UMETA(DisplayName = "Intersection(s)"),   
+   notSolved     UMETA(DisplayName = "Not Solved")
+};
+
+
+
+/* Contains the Relative Position and possible intersections. */
+USTRUCT(BlueprintType)
+struct FRelativePosition
+{
+   GENERATED_BODY()
+
+public:      
+   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+   Relation relation;
+   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+   TArray<FVector> intersections;
+};
 
 
 
@@ -19,22 +50,22 @@ public:
     GeometryCalc();
    ~GeometryCalc();
 
-
-   
-   // public Calculation Functions
-
    /* Calculates the Distance between 2 Geometry Objects.*/
    float GetDistance(AGeometryBase *from, AGeometryBase *to);
    
    /* Determines the relatives position between 2 Geometry Objects.
-      The struct contains the relative position and depending on the relative postion an array of interception points. */
+      The return struct contains the relative position and depending on the relative postion an array of interception points. */
    FRelativePosition GetRelativePosition(AGeometryBase *from, AGeometryBase *to);
 
    bool PointInLine(FMathLine line, FMathPoint point);
    bool PointInPlane(FMathPlane plane, FMathPoint point);
+
    float HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point);
+
    float VectorDistance(FVector a, FVector b);
+
    FVector MakeNomal(FVector a, FVector b, bool unitVector = true);
+
 
 
 protected:
