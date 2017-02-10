@@ -3,6 +3,8 @@
 #include "MathLab.h"
 #include "VectorStruct.h"
 
+
+
 AVectorStruct::AVectorStruct()
 {
    A = FVector::ZeroVector;

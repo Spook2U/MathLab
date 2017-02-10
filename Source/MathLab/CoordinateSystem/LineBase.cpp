@@ -4,6 +4,7 @@
 #include "LineBase.h"
 
 #include "CoordinateSystemBase.h"
+#include "VectorStruct.h"
 
 
 

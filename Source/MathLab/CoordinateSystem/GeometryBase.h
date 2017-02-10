@@ -2,12 +2,11 @@
 
 #pragma once
 
-#include "Lib/MathLabEnumLibrary.h"
+#include "MathLabEnums.h"
 
 #include "GameFramework/Actor.h"
 #include "GeometryBase.generated.h"
 
-// Forward declarations.
 class ACoordinateSystemBase;
 class AVectorStruct;
 

@@ -9,6 +9,14 @@ struct FMathPoint;
 
 
 
+UENUM(BlueprintType)
+enum class PlaneMode : uint8
+{
+   plane   UMETA(DisplayName = "Plane")
+};
+
+
+
 /* Defines a mathematical plane. */
 USTRUCT(BlueprintType)
 struct FMathPlane

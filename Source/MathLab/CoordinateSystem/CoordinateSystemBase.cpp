@@ -4,14 +4,7 @@
 #include "CoordinateSystemBase.h"
 
 #include "GeometryBase.h"
-#include "LineBase.h"
-#include "PlaneBase.h"
-#include "PointBase.h"
-#include "SphereBase.h"
-#include "UnitBase.h"
-#include "VectorStruct.h"
 
-#include "Lib/GeometryCalc.h"
 
  
 ACoordinateSystemBase::ACoordinateSystemBase()      
@@ -89,24 +82,19 @@ void ACoordinateSystemBase::Tick( float DeltaTime ) { Super::Tick( DeltaTime ); 
 
 void ACoordinateSystemBase::TestFunction()
 {
-   //FLinearEqualation le = FLinearEqualation(FNMatrix({FNVector({2, -4, 2}), FNVector({4, -6, 4}), FNVector({-4, -2, 4}), FNVector({-4, 0, 4})}));
-   //FLinearEqualation le = FLinearEqualation(FNMatrix({FNVector({0, -4, 2}), FNVector({4, -6, 4}), FNVector({-4, -2, 4}), FNVector({-4, 0, 4})}));
-   //FLinearEqualation le = FLinearEqualation(FNMatrix({FNVector({2, -4, 2}), FNVector({4, -8, 8}), FNVector({-4, -2, 4}), FNVector({-4, 0, 4})}));
-   //FLinearEqualation le = FLinearEqualation(FNMatrix({FNVector({2, -4, 2, 2}), FNVector({4, -8, 4, 4}), FNVector({-4, -2, 4, 2}), FNVector({-4, 0, 4, 2}), FNVector({1, 1, 1, 2})}));
-   //FLinearEqualation le = FLinearEqualation(FNMatrix({FNVector({0, 0, 0}), FNVector({4, -8, 4}), FNVector({-2, -2, 4}), FNVector({-4, 0, 4})}));
+   //FLinearSystem ls = FLinearSystem(FNMatrix({FNVector({  2,  1,  7}),
+   //                                           FNVector({  2,  1,  7}),
+   //                                           FNVector({  1, -1,  2})
+   //                                          }));
 
+   //FLinearSystem ls = FLinearSystem(FNMatrix({FNVector({ -1,  0,  1,  0,  0}),
+   //                                           FNVector({  1,  2,  0, -1,  2}),
+   //                                           FNVector({  0, -1, -2,  0, -1})
+   //                                          }));
 
-   //FLinearEqualation le = FLinearEqualation(FNMatrix({FNVector({2, 2}), FNVector({1, 1}), FNVector({7, 7})}));
-   //le.Solve();
-   //for(FString s : le.ToStringRows())
-   //{
-   //   MLD_LOG("%s", *s);
-   //}
-   //MLD_LOG("");
-
-   //MLD_LOG("Result: %s", *le.GetResults().ToString());
-   
-   //FNVector v1 = FNVector({8});
+   //MLD_LOG("%s", *ls.ToString());
+   //ls.GetSolution();
+   //MLD_LOG("%s", *ls.ToString());
 }
 
 
@@ -279,7 +267,7 @@ FString ACoordinateSystemBase::FLinearEqualationToString(FLinearSystem inLinearE
 
 void ACoordinateSystemBase::LE_Solve(FLinearSystem inLinearEqualation)
 {
-   inLinearEqualation.Solve();
+   inLinearEqualation.GetSolution();
 }
 
 FString ACoordinateSystemBase::FPointToString(FMathPoint inPoint)
@@ -308,17 +296,13 @@ float ACoordinateSystemBase::Distance(AGeometryBase *from, AGeometryBase *to)
    return calc.GetDistance(from, to);
 }
 
-//Relation ACoordinateSystemBase::GetRelativePosition(AGeometryBase *from, AGeometryBase *to, TArray<FVector> &intersections)
-//{
-//   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return Relation::notSolved;
-//
-//   GeometryCalc calc;
-//
-//   FRelativePosition result = calc.GetRelativePosition(from, to);
-//
-//   intersections = result.intersections;
-//   return result.relation;
-//}
+FRelativePosition ACoordinateSystemBase::GetRelativePosition(AGeometryBase *from, AGeometryBase *to)
+{
+   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return FRelativePosition(Relation::notSolved);
+
+   GeometryCalc calc;
+   return calc.GetRelativePosition(from, to);
+}
 
 
 

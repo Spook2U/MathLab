@@ -1,15 +1,13 @@
 #pragma once
 
 #include "CoordinateSystem/GeometryBase.h"
-
 #include "GeometryCalc.generated.h"
 
-// Forward declarations.
-class  AGeometryBase;
 struct FMathPoint;
 struct FMathLine;
 struct FMathPlane;
 struct FMathSphere;
+struct FNVector;
 
 
 
@@ -40,6 +38,11 @@ public:
    Relation relation;
    UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
    TArray<FVector> intersections;
+
+   /* Default constructor (no initialization). */
+   FRelativePosition();
+   /* Constructor to initialise the Linear System Solution structure. */
+   FRelativePosition(Relation inRelation, TArray<FVector> inIntersections = TArray<FVector>());
 };
 
 
@@ -57,8 +60,10 @@ public:
       The return struct contains the relative position and depending on the relative postion an array of interception points. */
    FRelativePosition GetRelativePosition(AGeometryBase *from, AGeometryBase *to);
 
-   bool PointInLine(FMathLine line, FMathPoint point);
-   bool PointInPlane(FMathPlane plane, FMathPoint point);
+   bool IsPointInLine(FMathLine line, FMathPoint point);
+   bool IsPointInPlane(FMathPlane plane, FMathPoint point);
+   FVector GetPointOnLine(FMathLine line, float scalar);
+   FVector GetPointOnPlane(FMathPlane plane, float scalar1, float scalar2);
 
    float HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point);
 

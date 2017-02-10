@@ -4,33 +4,22 @@
 
 #include "GameFramework/Actor.h"
 
-#include "Lib/MathLabEnumLibrary.h"
-
+#include "MathLabEnums.h"
 #include "Math/LinearSystem.h"
+#include "Lib/GeometryCalc.h"
 
-#include "PointBase.h"
 #include "LineBase.h"
 #include "PlaneBase.h"
+#include "PointBase.h"
 #include "SphereBase.h"
+#include "UnitBase.h"
+#include "VectorStruct.h"
 
 #include "CoordinateSystemBase.generated.h"
 
-// Forward declarations.
 class AGeometryBase;
-class ALineBase;
 
-class APointBase;
-class ALineBase;
-class APlaneBase;
-class ASphereBase;
 
-class AUnitBase;
-class AVectorStruct;
-
-struct FMathPoint;
-struct FMathLine;
-struct FMathPlane;
-struct FMathSphere;
 
 UCLASS()
 class MATHLAB_API ACoordinateSystemBase : public AActor
@@ -184,9 +173,9 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Calculate")
    float Distance(AGeometryBase *from, AGeometryBase *to);
 
-   ///* Returns the relative Positio from one geometry to the other.*/
-   //UFUNCTION(BlueprintCallable, Category = "coordinate System|Calculate", DisplayName = "Relative Position")
-   //Relation GetRelativePosition(AGeometryBase *from, AGeometryBase *to, TArray<FVector> &intersections);
+   /* Returns the relative Positio from one geometry to the other.*/
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|Calculate", DisplayName = "Relative Position")
+   FRelativePosition GetRelativePosition(AGeometryBase *from, AGeometryBase *to);
 
 
 

@@ -2,6 +2,8 @@
 #include "MathLab.h"
 #include "NMatrix.h"
 
+
+
 FNMatrix::FNMatrix() {}
 FNMatrix::FNMatrix(const TArray<FNVector> inNMatrix) : Matrix(inNMatrix) {}
 

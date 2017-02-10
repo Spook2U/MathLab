@@ -7,6 +7,16 @@
 
 
 
+UENUM(BlueprintType)
+enum class LineMode : uint8
+{
+   line    UMETA(DisplayName = "Line"),
+   segment UMETA(DisplayName = "Segment"),
+   vector  UMETA(DisplayName = "Vector")
+};
+
+
+
 /* Defines a mathematical line. */
 USTRUCT(BlueprintType)
 struct FMathLine

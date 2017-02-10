@@ -2,6 +2,8 @@
 #include "MathLab.h"
 #include "NVector.h"
 
+
+
 FNVector::FNVector() {}
 FNVector::FNVector(TArray<float> inCoordinates) : Coordinates(inCoordinates) {}
 

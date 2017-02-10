@@ -5,6 +5,20 @@
 #include "CoordinateSystem/GeometryBase.h"
 #include "VectorStruct.generated.h"
 
+
+
+UENUM(BlueprintType)
+enum class VectorStructMode : uint8
+{
+   point        UMETA(DisplayName = "Point"),
+   segment      UMETA(DisplayName = "Segment"),
+   vector       UMETA(DisplayName = "Vector"),
+   vectorPoint  UMETA(DisplayName = "Vector to Point"),
+   general      UMETA(DisplayName = "General")
+};
+
+
+
 UCLASS()
 class MATHLAB_API AVectorStruct : public AGeometryBase
 {

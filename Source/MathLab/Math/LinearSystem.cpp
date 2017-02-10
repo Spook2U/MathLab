@@ -3,8 +3,9 @@
 #include "LinearSystem.h"
 
 
+
 FLSSolution::FLSSolution(){}
-FLSSolution::FLSSolution(LSSolutionType inType, TArray<FNVector> inSolution)
+FLSSolution::FLSSolution(LSSolutionType inType, FNVector inSolution)
 {
    type = inType;
    solution = inSolution;
@@ -15,51 +16,35 @@ FLSSolution::FLSSolution(LSSolutionType inType, TArray<FNVector> inSolution)
 FLinearSystem::FLinearSystem() {}
 FLinearSystem::FLinearSystem(const FNMatrix inMatrix)
 {
-   if(ValidCheck(inMatrix)) { CoefficientMatrix = inMatrix; }
-}
-
-// -------------------------------------------------------------------------------------------------
-
-bool FLinearSystem::ValidCheck(FNMatrix inMatrix) const
-{
-   bool valid = true;
-
-   if(inMatrix.ColumnNum() != (inMatrix.RowNum() + 1))
+   // Switch columns and rows, so the input is more readable, like a linear system on paper.
+   CoefficientMatrix.Init(inMatrix.RowNum(), inMatrix.ColumnNum());
+   for(int i = 0; i < inMatrix.ColumnNum(); i++)
    {
-      valid = false;
-      MLD_ERR("Invalid input nMatrix for Linear Equalation. Expected format: n+1 columns, n rows; nMatrix has format: %d columns, %d rows", inMatrix.ColumnNum(), inMatrix.RowNum());
+      CoefficientMatrix.SetRow(i, inMatrix.GetColumn(i));
    }
-
-   return valid;
-}
-
-bool FLinearSystem::ValidCheck() const
-{
-   return ValidCheck(CoefficientMatrix);
 }
 
 // -------------------------------------------------------------------------------------------------
 
-#define FINISH_NO_SOLUTON        pivotIndex = maxRows; solution.type = LSSolutionType::no; break
-#define FINISH_ENDLESS_SOLUTIONS pivotIndex = maxRows; solution.type = LSSolutionType::endless; break
+#define FINISH_NO_SOLUTON        pivotIndex = max; solution.type = LSSolutionType::no; break
+#define FINISH_ENDLESS_SOLUTIONS pivotIndex = max; solution.type = LSSolutionType::endless; break
 #define REPEAT_WITH_SAME_INDEX   pivotIndex--; continue
 #define SKIP                     continue
 
 #define SOLVELOG(row, string)    Solve_DebugLog(row, string)
 
-FLSSolution FLinearSystem::Solve()
+FLSSolution FLinearSystem::GetSolution()
 {
    if(IsSolved()) return solution;
 
-   int maxRows = CoefficientMatrix.RowNum();
-
-   for(pivotIndex = 0; pivotIndex < maxRows; pivotIndex++)
+   // Solving the linear system
+   for(pivotIndex = 0; (pivotIndex < CoefficientMatrix.ColumnNum()-1) && (pivotIndex < CoefficientMatrix.RowNum()); pivotIndex++)
    {
       SetPivot(); 
 
       if(pivot == 0)
       {
-         if(LastPivot())       { FINISH_NO_SOLUTON; }
+         if(LastPivot())       { break; }
          if(SwitchRow())       { REPEAT_WITH_SAME_INDEX; }
          if(CheckColumnZero()) { SKIP; }
       }
@@ -68,24 +53,36 @@ FLSSolution FLinearSystem::Solve()
          PivotToOne();
       }
 
-      for(rowPivotIndex = 0; rowPivotIndex < maxRows; rowPivotIndex++)
+      for(rowPivotIndex = 0; rowPivotIndex < CoefficientMatrix.RowNum(); rowPivotIndex++)
       {
          if(rowPivotIndex == pivotIndex) continue;
 
-         if(MakeRowPivotToZero())
-         {
-            if(CheckCoefficentZero()) { FINISH_NO_SOLUTON; }
-            if(CheckRowZero())        { FINISH_ENDLESS_SOLUTIONS; }
-         }
+         MakeRowPivotToZero();
       }
    }
 
-   if(!IsSolved()) 
-   { 
-      solution.type = LSSolutionType::one; 
-      solution.solution.Add(CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1));
+   // Interpretation of the solution
+   // if(Number Equalations >= Number Variables)
+   // {
+   //    if(Reihe == 0)              endless
+   //    else if(Koeffizienten == 0) no solution
+   //    else                        one
+   // }
+   // else -> Number Equalations < Number Variables
+   // {
+   //    if(Reihe == 0)              endless
+   //    else if(Koeffizienten == 0) no solution
+   //    else                        parameter
+   // }
+
+   if(CheckRowZero())             { }
+   else if(CheckCoefficentZero()) { }
+   else
+   {
+      solution = FLSSolution(LSSolutionType::one, CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1));
    }
-   
+   SolveLog(0, "", false);
+
    return solution;
 }
 
@@ -93,7 +90,19 @@ FLSSolution FLinearSystem::Solve()
 
 FString FLinearSystem::ToString() const
 {
-   FString s = CoefficientMatrix.ToString();
+   FString s = "";
+
+   s += "{";   
+
+   for(int i = 0, j = CoefficientMatrix.ToStringRows().Num(); i < j; i++)
+   {
+      s += "{" + CoefficientMatrix.ToStringRows()[i] + "}";
+      if(i < (j - 1))
+      {
+         s += ", ";
+      }
+   }
+   s += "}";   
 
    if(IsSolved())
    {
@@ -103,13 +112,7 @@ FString FLinearSystem::ToString() const
    return s;
 }
 
-TArray<FString> FLinearSystem::ToStringRows() const
-{
-   return CoefficientMatrix.ToStringRows();
-}
-
-bool FLinearSystem::IsSolved() const
-{
+bool FLinearSystem::IsSolved() const{
    return solution.type != LSSolutionType::notSolved;
 }
 
@@ -143,12 +146,15 @@ bool FLinearSystem::CheckRowZeroFromTo(int from, int to)
    else if(to > CoefficientMatrix.ColumnNum()) { MLD_ERR("CheckColumnZeroFromTo(int from, int to) invalid value for to = %d", to); }
    else
    {
-      for(int column = from; column < to; column++)
+      for(int row = 0; row < CoefficientMatrix.RowNum()-1; row++)
       {
-         if(CoefficientMatrix.GetElement(column, rowPivotIndex) != 0)
+         for(int column = from; column < to; column++)
          {
-            isZero = false;
-            break;
+            if(CoefficientMatrix.GetElement(column, row) != 0)
+            {
+               isZero = false;
+               break;
+            }
          }
       }
    }
@@ -160,7 +166,7 @@ void FLinearSystem::SetPivot()
 {
    pivot = CoefficientMatrix.GetElement(pivotIndex, pivotIndex);
 
-   SOLVELOG(pivotIndex, FString::Printf(TEXT("Pivot = %.1f"), pivot));
+   SolveLog(pivotIndex, FString::Printf(TEXT("Pivot = %.1f"), pivot));
 }
 
 bool FLinearSystem::LastPivot()
@@ -168,9 +174,7 @@ bool FLinearSystem::LastPivot()
    bool isLast = pivotIndex == (CoefficientMatrix.RowNum() - 1);
    if(isLast)
    {
-      SOLVELOG(pivotIndex, "Last Pivot = 0");
-      MLD_LOG("End - No Solution");
-      MLD_LOG("");
+      SolveLog(pivotIndex, "Last Pivot = 0 -> No Solution");
    }
    return isLast;
 }
@@ -193,14 +197,14 @@ bool FLinearSystem::SwitchRow()
    // Switch rows
    if(canSwitch)
    {
-      SOLVELOG(pivotIndex, FString::Printf(TEXT("Switch (%d) with (%d)"), pivotIndex+1, rowIndex+1));
+      SolveLog(pivotIndex, FString::Printf(TEXT("Switch (%d) with (%d)"), pivotIndex+1, rowIndex+1));
       FNVector pivotRow = CoefficientMatrix.GetRow(pivotIndex);
       CoefficientMatrix.SetRow(pivotIndex, CoefficientMatrix.GetRow(rowIndex));
       CoefficientMatrix.SetRow(rowIndex, pivotRow);
    }
    else
    {
-      SOLVELOG(pivotIndex, "Skip changing Pivot, cause Pivot = 0");
+      SolveLog(pivotIndex, "Skip changing Pivot, cause Pivot = 0");
    }
 
    return canSwitch;
@@ -211,7 +215,7 @@ bool FLinearSystem::CheckColumnZero()
    bool isZero = CheckColumnZeroFromTo(0, CoefficientMatrix.RowNum());
    if(isZero) 
    {
-      SOLVELOG(pivotIndex, FString::Printf(TEXT("Column %d is empty"), pivotIndex));
+      SolveLog(pivotIndex, FString::Printf(TEXT("Column %d is empty"), pivotIndex));
       MLD_LOG("Skip");
       MLD_LOG("");
    }
@@ -220,27 +224,23 @@ bool FLinearSystem::CheckColumnZero()
 
 void FLinearSystem::PivotToOne()
 {
-   if(pivot) SOLVELOG(pivotIndex, FString::Printf(TEXT(": %.1f"), pivot));
+   if(pivot) SolveLog(pivotIndex, FString::Printf(TEXT(": %.1f"), pivot));
    if(pivot) CoefficientMatrix.SetRow(pivotIndex, CoefficientMatrix.GetRow(pivotIndex) / pivot);
 }
 
-bool FLinearSystem::MakeRowPivotToZero()
+void FLinearSystem::MakeRowPivotToZero()
 {
-   bool didChange = false;
    float rowPivot = CoefficientMatrix.GetElement(pivotIndex, rowPivotIndex);
 
    if(rowPivot != 0)
    {
-      SOLVELOG(rowPivotIndex, FString::Printf(TEXT("+ %.1f*(%d)"), rowPivot*(-1), pivotIndex+1));
+      SolveLog(rowPivotIndex, FString::Printf(TEXT("+ %.1f*(%d)"), rowPivot*(-1), pivotIndex+1));
       CoefficientMatrix.SetRow(rowPivotIndex, CoefficientMatrix.GetRow(rowPivotIndex) + CoefficientMatrix.GetRow(pivotIndex) * ((-1) * rowPivot));
-      didChange = true;
    }
    else
    {
-      SOLVELOG(rowPivotIndex, "Skip cause 0");
+      SolveLog(rowPivotIndex, "Skip cause 0");
    }
-
-   return didChange;
 }
 
 bool FLinearSystem::CheckCoefficentZero()
@@ -248,7 +248,7 @@ bool FLinearSystem::CheckCoefficentZero()
    bool isZero = CheckRowZeroFromTo(0, CoefficientMatrix.ColumnNum()-1);
    if(isZero)
    {
-      SOLVELOG(rowPivotIndex, "All coefficient 0");
+      SolveLog(rowPivotIndex, "All coefficient 0");
       MLD_LOG("End - No Solution");
       MLD_LOG("");
    }
@@ -260,14 +260,14 @@ bool FLinearSystem::CheckRowZero()
    bool isZero = CheckRowZeroFromTo(0, CoefficientMatrix.ColumnNum());
    if(isZero)
    {
-      SOLVELOG(pivotIndex, "Row is 0");
+      SolveLog(pivotIndex, "Row is 0");
       MLD_LOG("End - Endless Solutions");
       MLD_LOG("");
    }
    return isZero;
 }
 
-void FLinearSystem::Solve_DebugLog(int row, FString notice)
+void FLinearSystem::SolveLog(int row, FString notice, bool comment)
 {
    if(debugging) 
    {
@@ -277,10 +277,7 @@ void FLinearSystem::Solve_DebugLog(int row, FString notice)
       for(int i = 0; i < CoefficientMatrix.RowNum(); i++)
       {
          output = FString::Printf(TEXT("(%d) %s"), i+1, *matrixStrings[i]);
-         if(i == row)
-         {
-            output += " | " + notice;
-         }
+         if(comment) if(i == row) { output += " | " + notice; }
          MLD_LOG("%s", *output);
       }
       MLD_LOG("");

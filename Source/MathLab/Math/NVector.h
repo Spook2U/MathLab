@@ -4,6 +4,8 @@
 
 #include "NVector.generated.h"
 
+
+
 /*
    A vector in N-D space composed of an array of components with floating point precision.
 */

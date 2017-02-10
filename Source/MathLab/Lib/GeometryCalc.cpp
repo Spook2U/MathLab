@@ -1,19 +1,31 @@
 
 #include "MathLab.h"
-#include "CoordinateSystem/GeometryBase.h"
+#include "GeometryCalc.h"
+
+#include "MathLabEnums.h"
+#include "Math/LinearSystem.h"
+
 #include "CoordinateSystem/LineBase.h"
 #include "CoordinateSystem/PlaneBase.h"
 #include "CoordinateSystem/PointBase.h"
 #include "CoordinateSystem/SphereBase.h"
-#include "CoordinateSystem/UnitBase.h"
 #include "CoordinateSystem/VectorStruct.h"
 
-#include "MathLabEnumLibrary.h"
 
-#include "GeometryCalc.h"
 
 #define SHIFT 16
 #define SHIFTPOW 65536
+
+
+
+FRelativePosition::FRelativePosition(){}
+FRelativePosition::FRelativePosition(Relation inRelation, TArray<FVector> inIntersections)
+{
+   relation = inRelation;
+   intersections = inIntersections;
+}
+
+
 
 GeometryCalc::GeometryCalc() {}
 GeometryCalc::~GeometryCalc() {}
@@ -104,7 +116,7 @@ FRelativePosition GeometryCalc::GetRelativePosition(AGeometryBase * from, AGeome
    return result;
 }
 
-bool GeometryCalc::PointInLine(FMathLine line, FMathPoint point)
+bool GeometryCalc::IsPointInLine(FMathLine line, FMathPoint point)
 {
    bool isInLine = false;
    
@@ -120,32 +132,42 @@ bool GeometryCalc::PointInLine(FMathLine line, FMathPoint point)
    return isInLine;
 }
 
-bool GeometryCalc::PointInPlane(FMathPlane plane, FMathPoint point)
+bool GeometryCalc::IsPointInPlane(FMathPlane plane, FMathPoint point)
 {
    bool isInPlane = false;
-   //FLinearSystem eqalation = FLinearSystem(FNMatrix({FNVector({plane.Direction1.X, plane.Direction1.Y}), 
-   //                                                  FNVector({plane.Direction2.X, plane.Direction2.Y}), 
-   //                                                  FNVector({point.Coordinate.X-plane.Position.X, point.Coordinate.Y-plane.Position.Y})
-   //                                                 }));
-   //eqalation.Solve();
-   //LSSolutionType les = eqalation.HasSolution();
-   //if(les == LSSolutionType::one)
-   //{
-   //   FNVector solution = eqalation.GetSolutionOne();
-   //   
-   //   if(solution.Size() != 2) { MLD_ERR("solution Vector has wrong size: %s", *solution.ToString()); return false; }
+   //FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane.Direction1.X, plane.Direction1.Y}), 
+   //                                                     FNVector({plane.Direction2.X, plane.Direction2.Y}), 
+   //                                                     FNVector({point.Coordinate.X-plane.Position.X, point.Coordinate.Y-plane.Position.Y})
+   //                                                    }));
+   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane.Direction1.X, plane.Direction2.X, point.Coordinate.X-plane.Position.X}), 
+                                                        FNVector({plane.Direction1.Y, plane.Direction2.Y, point.Coordinate.Y-plane.Position.Y}), 
+                                                       }));
+   FNVector scalars;
+   switch(linearSystem.GetSolution().type)
+   {
+      case LSSolutionType::one:       
+         scalars = linearSystem.GetSolution().solution;
+         if(point.Coordinate.Z == (plane.Position.Z + scalars.Get(0) * plane.Direction1.Z + scalars.Get(1) * plane.Direction2.Z))
+         {
+            isInPlane = true;
+         }
+      break;
+      case LSSolutionType::endless: MLD_WAR("PointToPlane: Linear System has endless Solutions. What to do here?"); break;
+      case LSSolutionType::no:      MLD_WAR("PointToPlane: Linear System has no solution."); break;
+      default:                      MLD_WAR("PointToPlane: Wrong enum output"); break;
+   }
 
-   //   if(point.Coordinate.Z == (plane.Position.Z + solution.Get(0) * plane.Direction1.Z + solution.Get(1) * plane.Direction2.Z))
-   //   {
-   //      isInPlane = true;
-   //   }
-
-   //}
-   //else if(les == LSSolutionType::endless)
-   //{
-   //   MLD_WAR("PointInPlane() result 'endless' What to do here?");
-   //}
    return isInPlane;
+}
+
+FVector GeometryCalc::GetPointOnLine(FMathLine line, float scalar)
+{
+   return line.Position + scalar * line.Direction;
+}
+
+FVector GeometryCalc::GetPointOnPlane(FMathPlane plane, float scalar1, float scalar2)
+{
+   return plane.Position + scalar1 * plane.Direction1 + scalar2 * plane.Direction2;
 }
 
 float GeometryCalc::HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point)
@@ -188,16 +210,14 @@ float GeometryCalc::DistanceCalc(FMathPoint point, FMathSphere sphere)
 {
    return DistanceCalc(FMathPoint(sphere.Coordinate), point) - sphere.Radius;
 }
-float GeometryCalc::DistanceCalc(FMathLine  line, FMathPoint point)
+float GeometryCalc::DistanceCalc(FMathLine line, FMathPoint point)
 {
    return DistanceCalc(point, line);
 }
-float GeometryCalc::DistanceCalc(FMathLine  line1, FMathLine line2)
+float GeometryCalc::DistanceCalc(FMathLine line1, FMathLine line2)
 {
-   FRelativePosition relpos = RelativePositionCalc(line1, line2);
    float distance = 0.f;
-
-   switch(relpos.relation)
+   switch(RelativePositionCalc(line1, line2).relation)
    {
       case Relation::identical:    distance = 0.f; break;
       case Relation::intersection: distance = 0.f; break;
@@ -208,22 +228,20 @@ float GeometryCalc::DistanceCalc(FMathLine  line1, FMathLine line2)
 
    return distance;
 }
-float GeometryCalc::DistanceCalc(FMathLine  line, FMathPlane plane)
+float GeometryCalc::DistanceCalc(FMathLine line, FMathPlane plane)
 {
-   FRelativePosition relpos = RelativePositionCalc(line, plane);
    float distance = 0.f;
-
-   switch(relpos.relation)
+   switch(RelativePositionCalc(line, plane).relation)
    {
       case Relation::inside:       distance = 0.f; break;
       case Relation::intersection: distance = 0.f; break;
       case Relation::parallel:     distance = DistanceCalc(FMathPoint(line.Position), plane); break;
-      default: MLD_WAR("Wrong Relative Position for 2 planes"); break;
+      default: MLD_WAR("Wrong Relative Position for line & planes"); break;
    }
 
    return distance;
 }
-float GeometryCalc::DistanceCalc(FMathLine  line, FMathSphere sphere)
+float GeometryCalc::DistanceCalc(FMathLine line, FMathSphere sphere)
 {
    return DistanceCalc(FMathPoint(sphere.Coordinate), line) - sphere.Radius;
 }
@@ -237,10 +255,8 @@ float GeometryCalc::DistanceCalc(FMathPlane plane, FMathLine line)
 }
 float GeometryCalc::DistanceCalc(FMathPlane plane1, FMathPlane plane2)
 {
-   FRelativePosition relpos = RelativePositionCalc(plane1, plane2);
    float distance = 0.f;
-
-   switch(relpos.relation)
+   switch(RelativePositionCalc(plane1, plane2).relation)
    {
       case Relation::identical:    distance = 0.f; break;
       case Relation::intersection: distance = 0.f; break;
@@ -283,15 +299,15 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathPoint point1, FMathPoi
 FRelativePosition GeometryCalc::RelativePositionCalc(FMathPoint point, FMathLine line)
 {
    FRelativePosition result;
-   if(PointInLine(line, point)) { result.relation = Relation::inside;  }
-   else                         { result.relation = Relation::outside; }
+   if(IsPointInLine(line, point)) { result.relation = Relation::inside;  }
+   else                           { result.relation = Relation::outside; }
    return result;
 }
 FRelativePosition GeometryCalc::RelativePositionCalc(FMathPoint point, FMathPlane plane)
 {
    FRelativePosition result;
-   if(PointInPlane(plane, point)) { result.relation = Relation::inside;  }
-   else                           { result.relation = Relation::outside; }
+   if(IsPointInPlane(plane, point)) { result.relation = Relation::inside;  }
+   else                             { result.relation = Relation::outside; }
    return result;
 }
 FRelativePosition GeometryCalc::RelativePositionCalc(FMathPoint point, FMathSphere sphere)
@@ -308,50 +324,55 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathLine  line, FMathPoint
 FRelativePosition GeometryCalc::RelativePositionCalc(FMathLine  line1, FMathLine line2)
 {
    FRelativePosition result;
-
+   
    if(UKismetMathLibrary::Normal(line1.Direction) == UKismetMathLibrary::Normal(line2.Direction))
    {
-      if(line1.Position == line2.Position) { result.relation = Relation::identical; }
-      else                                 { result.relation = Relation::parallel;  }
+      if(IsPointInLine(line1, line2.Position)) { result = FRelativePosition(Relation::identical); }
+      else                                     { result = FRelativePosition(Relation::parallel);  }
    }
-
-   //FLinearSystem eqalation = FLinearSystem(FNMatrix({FNVector({line1.Direction.X, line1.Direction.Y}), 
-   //                                                          FNVector({(-1)*line2.Direction.X, (-1)*line2.Direction.Y}), 
-   //                                                          FNVector({line1.Position.X-line2.Position.X, line1.Position.Y-line2.Position.Y})
-   //                                                         }));
-   //eqalation.Solve();
-   //LSSolutionType les = eqalation.HasSolution();
-   //if(les == LSSolutionType::one)
-   //{
-   //   FNVector solution = eqalation.GetSolutionOne();
-
-   //   if(solution.Size() != 2) { MLD_ERR("solution Vector has wrong size: %s", *solution.ToString()); return FRelativePosition(); }
-
-   //   if(line1.Position + solution.Get(0) * line1.Direction == line2.Position + solution.Get(1) * line2.Direction)
-   //   {
-   //      result.relation = Relation::intersection;
-   //      result.intersections.Add(eqalation.GetSolutionOne().GetFVector());
-   //   }
-   //   else
-   //   {
-   //      result.relation = Relation::skew;
-   //   }
-   //}
-   //else if(les == LSSolutionType::endless)
-   //{
-   //   MLD_WAR("PointInPlane() result 'endless' What to do here?");
-   //}
-   //else if(les == LSSolutionType::no)
-   //{
-   //   result.relation = Relation::skew;
-   //}
-
+   else
+   {
+      FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({line1.Direction.X, (-1)*line2.Direction.X, line1.Position.X-line2.Position.X}), 
+                                                           FNVector({line1.Direction.Y, (-1)*line2.Direction.Y, line1.Position.Y-line2.Position.Y})
+                                                          }));
+      FNVector scalars;
+      switch(linearSystem.GetSolution().type)
+      {
+         case LSSolutionType::one:       
+            scalars = linearSystem.GetSolution().solution;
+            if(GetPointOnLine(line1, scalars.Get(0)) == GetPointOnLine(line2, scalars.Get(1)))
+            {
+               result = FRelativePosition(Relation::intersection, {linearSystem.GetSolution().solution.GetFVector()});
+            }
+            else
+            {
+               result = FRelativePosition(Relation::skew);
+            }
+         break;
+         case LSSolutionType::endless:   MLD_WAR("RelativePosition between 2 lines: result 'endless' Relation::identical? What to do here?"); break;
+         case LSSolutionType::no:        result = FRelativePosition(Relation::skew); break;
+      }
+   }
    return result;
 }
 FRelativePosition GeometryCalc::RelativePositionCalc(FMathLine  line, FMathPlane plane)
 {
    FRelativePosition result;
-
+   
+   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane.Direction1.X, plane.Direction2.X, (-1)*line.Direction.X, line.Position.X-plane.Position.X}),
+                                                        FNVector({plane.Direction1.Y, plane.Direction2.Y, (-1)*line.Direction.Y, line.Position.Y-plane.Position.Y}),
+                                                        FNVector({plane.Direction1.Z, plane.Direction2.Z, (-1)*line.Direction.Z, line.Position.Z-plane.Position.Z})
+                                                       }));
+   FNVector scalars;
+   switch(linearSystem.GetSolution().type)
+   {
+      case LSSolutionType::one: 
+         scalars = linearSystem.GetSolution().solution;
+         result = FRelativePosition(Relation::intersection, {GetPointOnLine(line, scalars.Get(2))});
+      break;
+      case LSSolutionType::endless: result = FRelativePosition(Relation::inside);   break;
+      case LSSolutionType::no:      result = FRelativePosition(Relation::parallel); break;
+   }
    return result;
 }
 FRelativePosition GeometryCalc::RelativePositionCalc(FMathLine  line, FMathSphere sphere)
@@ -371,7 +392,15 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathPlane plane, FMathLine
 FRelativePosition GeometryCalc::RelativePositionCalc(FMathPlane plane1, FMathPlane plane2)
 {
    FRelativePosition result;
-
+   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane1.Direction1.X, plane1.Direction2.X, (-1)*plane2.Direction1.X, (-1)*plane2.Direction2.X, plane2.Position.X-plane1.Position.X}),
+                                                        FNVector({plane1.Direction1.Y, plane1.Direction2.Y, (-1)*plane2.Direction1.Y, (-1)*plane2.Direction2.Y, plane2.Position.Y-plane1.Position.Y}),
+                                                        FNVector({plane1.Direction1.Z, plane1.Direction2.Z, (-1)*plane2.Direction1.Z, (-1)*plane2.Direction2.Z, plane2.Position.X-plane1.Position.Z})
+                                                       }));
+   switch(linearSystem.GetSolution().type)
+   {
+      case LSSolutionType::endless:   result = FRelativePosition(Relation::inside);  break;
+      case LSSolutionType::no:        result = FRelativePosition(Relation::parallel); break;
+   }
    return result;
 }
 FRelativePosition GeometryCalc::RelativePositionCalc(FMathPlane plane, FMathSphere sphere)

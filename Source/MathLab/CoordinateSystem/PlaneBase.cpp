@@ -5,6 +5,8 @@
 
 #include "CoordinateSystemBase.h"
 #include "PointBase.h"
+#include "VectorStruct.h"
+
 
 
 FMathPlane::FMathPlane() {}

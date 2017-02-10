@@ -6,6 +6,8 @@
 #include "CoordinateSystemBase.h"
 #include "VectorStruct.h"
 
+
+
 ASphereBase::ASphereBase()
 {
    sphere = FMathSphere();

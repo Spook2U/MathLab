@@ -5,6 +5,8 @@
 #include "NVector.h"
 #include "NMatrix.generated.h"
 
+
+
 /*
    A matrix saving up data in an array of nVectors
    Needs multiple nVectors of same size

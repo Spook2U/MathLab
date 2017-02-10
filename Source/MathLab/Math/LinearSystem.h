@@ -29,12 +29,12 @@ public:
    UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Linear System")
    LSSolutionType type = LSSolutionType::notSolved;
    UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Linear System")
-   TArray<FNVector> solution;
+   FNVector solution;
    
    /* Default constructor (no initialization). */
    FLSSolution();
    /* Constructor to initialise the Linear System Solution structure. */
-   FLSSolution(LSSolutionType inType, TArray<FNVector> inSolution = TArray<FNVector>());
+   FLSSolution(LSSolutionType inType, FNVector inSolution = FNVector());
 };
 
 
@@ -68,18 +68,11 @@ public:
       The Matrix needs to be in the format: n+1 columns, n rows. */
    FLinearSystem(const FNMatrix inMatrix);
 
-   /* Checks if the coeffcient matrix has the correct format: n+1 columns, n rows. */
-   bool ValidCheck() const;
-   /* Checks if the given nMatrix has the correct format: n+1 columns, n rows. */
-   bool ValidCheck(FNMatrix inMatrix) const;
-
-   /* Solves this linear equalation. */
-   FLSSolution Solve();
+   /* Returns the solution of the linear system. Solves it on first call. */
+   FLSSolution GetSolution();
 
    /* Get a textual representation of this linear equalation. */
    FString ToString() const;
-   /* Returns an Array of strings for each row of this linear equalation. */
-   TArray<FString> ToStringRows() const;
 
 private:
    bool IsSolved() const;
@@ -92,8 +85,9 @@ private:
    bool SwitchRow();
    bool CheckColumnZero();
    void PivotToOne();
-   bool MakeRowPivotToZero();
+   void MakeRowPivotToZero();
+   bool CheckNumberOfEqualations();
    bool CheckCoefficentZero();
    bool CheckRowZero();
-   void Solve_DebugLog(int row, FString notice);
+   void SolveLog(int row, FString notice, bool comment = true);
 };
