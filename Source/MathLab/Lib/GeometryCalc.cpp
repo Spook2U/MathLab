@@ -83,7 +83,8 @@ float GeometryCalc::GetDistance(AGeometryBase *from, AGeometryBase *to)
    return result;
 }
 
-FRelativePosition GeometryCalc::GetRelativePosition(AGeometryBase * from, AGeometryBase * to)
+
+FRelativePosition GeometryCalc::GetRelativePosition(AGeometryBase *from, AGeometryBase *to)
 {
    if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return FRelativePosition();
    FRelativePosition result;
@@ -135,10 +136,6 @@ bool GeometryCalc::IsPointInLine(FMathLine line, FMathPoint point)
 bool GeometryCalc::IsPointInPlane(FMathPlane plane, FMathPoint point)
 {
    bool isInPlane = false;
-   //FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane.Direction1.X, plane.Direction1.Y}), 
-   //                                                     FNVector({plane.Direction2.X, plane.Direction2.Y}), 
-   //                                                     FNVector({point.Coordinate.X-plane.Position.X, point.Coordinate.Y-plane.Position.Y})
-   //                                                    }));
    FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane.Direction1.X, plane.Direction2.X, point.Coordinate.X-plane.Position.X}), 
                                                         FNVector({plane.Direction1.Y, plane.Direction2.Y, point.Coordinate.Y-plane.Position.Y}), 
                                                        }));
@@ -170,6 +167,29 @@ FVector GeometryCalc::GetPointOnPlane(FMathPlane plane, float scalar1, float sca
    return plane.Position + scalar1 * plane.Direction1 + scalar2 * plane.Direction2;
 }
 
+TArray<FVector> GeometryCalc::GetIntersectionLine(FMathPlane plane, float u)
+{
+   TArray<FVector> line;
+   if(u != 0) { line = {plane.Position, plane.Direction1 + plane.Direction2 / u}; }
+   else       { MLD_ERR("u = 0; Division through 0 not allowed."); }       
+   return line;
+}
+
+float GeometryCalc::SetOfPythagorasGetA(float b, float c)
+{
+   return FMath::Sqrt(c*c - b*b);
+}
+
+float GeometryCalc::SetOfPythagorasGetB(float a, float c)
+{
+   return FMath::Sqrt(c*c - a*a);
+}
+
+float GeometryCalc::SetOfPythagorasGetC(float a, float b)
+{
+   return FMath::Sqrt(a*a + b*b);
+}
+
 float GeometryCalc::HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point)
 {
    return UKismetMathLibrary::Dot_VectorVector(plane.Normal, point.Coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.Normal, plane.Position);
@@ -185,9 +205,14 @@ FVector GeometryCalc::MakeNomal(FVector a, FVector b, bool unitVector)
    FVector normal = UKismetMathLibrary::Cross_VectorVector(a, b);
    if(unitVector)
    {
-      UKismetMathLibrary::Normal(normal);
+      MakeUnitVector(normal);
    }
    return normal;
+}
+
+FVector GeometryCalc::MakeUnitVector(FVector v)
+{
+   return UKismetMathLibrary::Normal(v);
 }
 
 
@@ -332,9 +357,10 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathLine  line1, FMathLine
    }
    else
    {
-      FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({line1.Direction.X, (-1)*line2.Direction.X, line1.Position.X-line2.Position.X}), 
-                                                           FNVector({line1.Direction.Y, (-1)*line2.Direction.Y, line1.Position.Y-line2.Position.Y})
+      FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({line1.Direction.X, (-1)*line2.Direction.X, line2.Position.X-line1.Position.X}), 
+                                                           FNVector({line1.Direction.Y, (-1)*line2.Direction.Y, line2.Position.Y-line1.Position.Y})
                                                           }));
+
       FNVector scalars;
       switch(linearSystem.GetSolution().type)
       {
@@ -342,7 +368,7 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathLine  line1, FMathLine
             scalars = linearSystem.GetSolution().solution;
             if(GetPointOnLine(line1, scalars.Get(0)) == GetPointOnLine(line2, scalars.Get(1)))
             {
-               result = FRelativePosition(Relation::intersection, {linearSystem.GetSolution().solution.GetFVector()});
+               result = FRelativePosition(Relation::intersection, {GetPointOnLine(line1, scalars.Get(0))});
             }
             else
             {
@@ -363,13 +389,9 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathLine  line, FMathPlane
                                                         FNVector({plane.Direction1.Y, plane.Direction2.Y, (-1)*line.Direction.Y, line.Position.Y-plane.Position.Y}),
                                                         FNVector({plane.Direction1.Z, plane.Direction2.Z, (-1)*line.Direction.Z, line.Position.Z-plane.Position.Z})
                                                        }));
-   FNVector scalars;
    switch(linearSystem.GetSolution().type)
    {
-      case LSSolutionType::one: 
-         scalars = linearSystem.GetSolution().solution;
-         result = FRelativePosition(Relation::intersection, {GetPointOnLine(line, scalars.Get(2))});
-      break;
+      case LSSolutionType::one:     result = FRelativePosition(Relation::intersection, {GetPointOnLine(line, linearSystem.GetSolution().solution.Get(2))}); break;
       case LSSolutionType::endless: result = FRelativePosition(Relation::inside);   break;
       case LSSolutionType::no:      result = FRelativePosition(Relation::parallel); break;
    }
@@ -379,6 +401,13 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathLine  line, FMathSpher
 {
    FRelativePosition result;
 
+   FVector e = sphere.Coordinate - line.Position;
+   float   a = UKismetMathLibrary::Dot_VectorVector(e, MakeUnitVector(line.Direction));
+   float   f = SetOfPythagorasGetA(SetOfPythagorasGetB(a, e.Size()), sphere.Radius);
+   
+   if(f == 0)  { result = FRelativePosition(Relation::different); }
+   else        { result = FRelativePosition(Relation::intersection, {GetPointOnLine(line, (a-f)/line.Direction.Size()), GetPointOnLine(line, (a+f)/line.Direction.Size())}); }
+      
    return result;
 }
 FRelativePosition GeometryCalc::RelativePositionCalc(FMathPlane plane, FMathPoint point)
@@ -398,7 +427,8 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathPlane plane1, FMathPla
                                                        }));
    switch(linearSystem.GetSolution().type)
    {
-      case LSSolutionType::endless:   result = FRelativePosition(Relation::inside);  break;
+      case LSSolutionType::parameter: result = FRelativePosition(Relation::intersection, GetIntersectionLine(plane2, (-1)*linearSystem.GetSolution().solution.Get(0))); break;
+      case LSSolutionType::endless:   result = FRelativePosition(Relation::identical); break;
       case LSSolutionType::no:        result = FRelativePosition(Relation::parallel); break;
    }
    return result;
@@ -406,6 +436,30 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathPlane plane1, FMathPla
 FRelativePosition GeometryCalc::RelativePositionCalc(FMathPlane plane, FMathSphere sphere)
 {
    FRelativePosition result;
+   float distance = DistanceCalc(plane, sphere);
+   
+   if(distance > 0)
+   {
+      result = FRelativePosition(Relation::different);
+   }
+   else
+   {
+      FMathLine perpLine = FMathLine(sphere.Coordinate, plane.Normal);
+      FMathPoint perpLineIntersection = FMathPoint(RelativePositionCalc(perpLine, plane).intersections[0]);
+
+      if(distance == 0)
+      {
+         result = FRelativePosition(Relation::intersection, {perpLineIntersection.Coordinate});
+      }
+      else
+      {
+         float dist = DistanceCalc(perpLineIntersection, plane);
+         float circleRadius = SetOfPythagorasGetA(dist, sphere.Radius);
+         //Schnittkreis bauen
+         MLD_WAR("Schnittkreis erstellen");
+         result = FRelativePosition(Relation::intersection);
+      }
+   }
 
    return result;
 }
@@ -424,7 +478,7 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathSphere sphere, FMathPl
 FRelativePosition GeometryCalc::RelativePositionCalc(FMathSphere sphere1, FMathSphere sphere2)
 {
    FRelativePosition result;
-
+   MLD_WAR("Not defined yet");
    return result;
 }
 

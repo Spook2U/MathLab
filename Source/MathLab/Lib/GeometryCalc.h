@@ -64,13 +64,18 @@ public:
    bool IsPointInPlane(FMathPlane plane, FMathPoint point);
    FVector GetPointOnLine(FMathLine line, float scalar);
    FVector GetPointOnPlane(FMathPlane plane, float scalar1, float scalar2);
+   TArray<FVector> GetIntersectionLine(FMathPlane plane, float u);
+
+   float SetOfPythagorasGetA(float b, float c);
+   float SetOfPythagorasGetB(float a, float c);
+   float SetOfPythagorasGetC(float a, float b);
 
    float HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point);
 
    float VectorDistance(FVector a, FVector b);
 
    FVector MakeNomal(FVector a, FVector b, bool unitVector = true);
-
+   FVector MakeUnitVector(FVector v);
 
 
 protected:

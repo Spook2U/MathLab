@@ -82,19 +82,6 @@ void ACoordinateSystemBase::Tick( float DeltaTime ) { Super::Tick( DeltaTime ); 
 
 void ACoordinateSystemBase::TestFunction()
 {
-   //FLinearSystem ls = FLinearSystem(FNMatrix({FNVector({  2,  1,  7}),
-   //                                           FNVector({  2,  1,  7}),
-   //                                           FNVector({  1, -1,  2})
-   //                                          }));
-
-   //FLinearSystem ls = FLinearSystem(FNMatrix({FNVector({ -1,  0,  1,  0,  0}),
-   //                                           FNVector({  1,  2,  0, -1,  2}),
-   //                                           FNVector({  0, -1, -2,  0, -1})
-   //                                          }));
-
-   //MLD_LOG("%s", *ls.ToString());
-   //ls.GetSolution();
-   //MLD_LOG("%s", *ls.ToString());
 }
 
 

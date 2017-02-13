@@ -14,6 +14,7 @@ enum class LSSolutionType : uint8
    one       UMETA(DisplayName = "Defined Solution"),   
    no        UMETA(DisplayName = "Not solvable"),   
    endless   UMETA(DisplayName = "Endless Solutions"),
+   parameter UMETA(DisplayName = "Solution with Parameter"),
    notSolved UMETA(DisplayName = "Not Solved")
 };
 
@@ -79,15 +80,15 @@ private:
 
    //Help functions for Solve()
    bool CheckColumnZeroFromTo(int from, int to);
-   bool CheckRowZeroFromTo(int from, int to);
+   bool CheckRowZeroFromTo(int row, int from, int to);
    void SetPivot();
    bool LastPivot();
    bool SwitchRow();
    bool CheckColumnZero();
    void PivotToOne();
    void MakeRowPivotToZero();
-   bool CheckNumberOfEqualations();
+   bool UniqueSolutionPossible();
    bool CheckCoefficentZero();
-   bool CheckRowZero();
+   bool CheckRowsZero();
    void SolveLog(int row, FString notice, bool comment = true);
 };

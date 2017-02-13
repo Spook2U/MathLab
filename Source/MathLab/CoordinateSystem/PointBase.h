@@ -15,7 +15,7 @@ struct FMathPoint
 
 public:      
    UPROPERTY(BlueprintReadWrite, Category = "point")
-      FVector Coordinate;
+   FVector Coordinate;
 
    /* Default constructor (no initialization). */
    FMathPoint();
