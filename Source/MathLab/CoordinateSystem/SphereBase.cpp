@@ -30,7 +30,6 @@ void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components)
    }
 
    MLD_PTR_CHECK(sphereMesh); if(!sphereMesh) return;
-   SetLaserMatTransparency(sphereMesh, 0.1f);
    AddLaserComponent(sphereMesh);
 }
 

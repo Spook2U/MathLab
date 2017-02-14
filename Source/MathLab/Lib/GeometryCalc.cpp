@@ -401,12 +401,23 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathLine  line, FMathSpher
 {
    FRelativePosition result;
 
-   FVector e = sphere.Coordinate - line.Position;
-   float   a = UKismetMathLibrary::Dot_VectorVector(e, MakeUnitVector(line.Direction));
-   float   f = SetOfPythagorasGetA(SetOfPythagorasGetB(a, e.Size()), sphere.Radius);
-   
-   if(f == 0)  { result = FRelativePosition(Relation::different); }
-   else        { result = FRelativePosition(Relation::intersection, {GetPointOnLine(line, (a-f)/line.Direction.Size()), GetPointOnLine(line, (a+f)/line.Direction.Size())}); }
+   FVector e  = sphere.Coordinate - line.Position;
+   float   a  = UKismetMathLibrary::Dot_VectorVector(e, MakeUnitVector(line.Direction));
+   float   f;
+   float fSqu = sphere.Radius*sphere.Radius - e.Size()*e.Size() + a*a;
+
+   MLD_LOG("fSqu:%f = radius^2:%f - e^2:%f + a^2:%f", fSqu, (sphere.Radius*sphere.Radius), (e.Size()*e.Size()), (a*a));
+
+   if(fSqu < 0) 
+   { 
+      result = FRelativePosition(Relation::different); 
+   }
+   else        
+   {
+      f  = FMath::Sqrt(fSqu);
+      if(f == 0)   { result = FRelativePosition(Relation::intersection, {GetPointOnLine(line, a/line.Direction.Size())}); }
+      else         { result = FRelativePosition(Relation::intersection, {GetPointOnLine(line, (a-f)/line.Direction.Size()), GetPointOnLine(line, (a+f)/line.Direction.Size())}); }
+   }   
       
    return result;
 }
