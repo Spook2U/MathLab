@@ -398,6 +398,11 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathLine  line, FMathPlane
    }
    return result;
 }
+
+#define EPSILON 0.0001   // Define your own tolerance  
+#define FLOAT_EQ(x,v)     (((v - EPSILON) < x) && (x < (v + EPSILON)))  
+#define FLOAT_EQ_ZERO(x) ((((0 - EPSILON) < x) && (x < (0 + EPSILON))) ? 0 : x)
+
 FRelativePosition GeometryCalc::RelativePositionCalc(FMathLine  line, FMathSphere sphere)
 {
    FRelativePosition result;
@@ -407,7 +412,7 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathLine  line, FMathSpher
    float   f;
    float fSqu = sphere.Radius*sphere.Radius - e.Size()*e.Size() + a*a;
 
-   if(fSqu < 0) 
+   if(FLOAT_EQ_ZERO(fSqu) < 0) 
    { 
       result = FRelativePosition(Relation::different); 
    }

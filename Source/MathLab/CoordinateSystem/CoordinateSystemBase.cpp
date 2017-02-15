@@ -70,7 +70,7 @@ void ACoordinateSystemBase::BeginPlay()
    g_this = this;
 #endif
 
-   MLD_LOG("BeginPlay: %s", *UKismetMathLibrary::Now().ToString().Right(8));
+   MLD_LOG("BeginPlay: %02i:%02i:%02i", UKismetMathLibrary::Now().GetHour(), UKismetMathLibrary::Now().GetMinute(),UKismetMathLibrary::Now().GetSecond());
    MLD_LOG("");
 
    Super::BeginPlay();
