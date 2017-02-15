@@ -25,11 +25,11 @@ struct FMathPlane
 
 public:      
    UPROPERTY(BlueprintReadWrite, Category = "plane")
-      FVector Position;
+   FVector Position;
    UPROPERTY(BlueprintReadWrite, Category = "plane")
-      FVector Direction1;
+   FVector Direction1;
    UPROPERTY(BlueprintReadWrite, Category = "plane")
-      FVector Direction2;
+   FVector Direction2;
 
    FVector Normal;
 

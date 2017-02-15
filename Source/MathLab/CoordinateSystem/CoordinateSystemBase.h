@@ -8,6 +8,7 @@
 #include "Math/LinearSystem.h"
 #include "Lib/GeometryCalc.h"
 
+#include "CircleBase.h"
 #include "LineBase.h"
 #include "PlaneBase.h"
 #include "PointBase.h"
@@ -75,11 +76,12 @@ private:
    UStaticMeshComponent *YAxis;
    UStaticMeshComponent *ZAxis;
 
-   TSubclassOf<AGeometryBase> PointBP;
-   TSubclassOf<AGeometryBase> UnitBP;
+   TSubclassOf<AGeometryBase> CircleBP;
    TSubclassOf<AGeometryBase> LineBP;
    TSubclassOf<AGeometryBase> PlaneBP;
+   TSubclassOf<AGeometryBase> PointBP;
    TSubclassOf<AGeometryBase> SphereBP;
+   TSubclassOf<AGeometryBase> UnitBP;
    TSubclassOf<AGeometryBase> VectorStructBP;
 
 // -------------------------------------------------------------------------------------------------
@@ -129,9 +131,13 @@ public:
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
    APlaneBase *AddPlane(LaserColors color, FMathPlane inPlane, PlaneMode mode, bool showGuides);
    
-   /**Spawns a Sphere at the given Coordinate with the defined radius*/
+   /* Spawns a Sphere with the given values.*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
    ASphereBase *AddSphere(LaserColors color, FMathSphere inSphere, bool showGuides);
+
+   /* Spawns a Circle on a plane with the efined values.*/
+   UFUNCTION(BlueprintCallable, Category = "coordinate System|Make")
+   ACircleBase *AddCircle(LaserColors color, FMathCircle inCircle, bool showGuides);
 
    AVectorStruct *AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode = VectorStructMode::general);
 

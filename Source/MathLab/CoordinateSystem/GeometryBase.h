@@ -14,6 +14,7 @@ class AVectorStruct;
 
 enum class GeometryType : uint8
 {
+   circle,
    point,
    unit,
    line,

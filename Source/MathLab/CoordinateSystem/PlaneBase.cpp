@@ -26,6 +26,7 @@ FMathPlane::FMathPlane(FMathPoint inPoint, FVector inNormal)
 }
 
 
+
 APlaneBase::APlaneBase()
 {
    plane = FMathPlane();

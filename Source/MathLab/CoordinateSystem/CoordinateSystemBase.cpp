@@ -28,13 +28,9 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    YAxis = nullptr;
    ZAxis = nullptr;
 
-   UnitBP = nullptr;
-   static ConstructorHelpers::FObjectFinder<UBlueprint> UnitBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Unit.Unit'"));
-   if(UnitBlueprint.Object) { UnitBP = (UClass *)UnitBlueprint.Object->GeneratedClass; }
-
-   PointBP = nullptr;   
-   static ConstructorHelpers::FObjectFinder<UBlueprint> PointBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Point.Point'"));
-   if(PointBlueprint.Object) { PointBP = (UClass *)PointBlueprint.Object->GeneratedClass; }
+   CircleBP = nullptr;
+   static ConstructorHelpers::FObjectFinder<UBlueprint> CircleBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Circle.Circle'"));
+   if(CircleBlueprint.Object) { CircleBP = (UClass *)CircleBlueprint.Object->GeneratedClass; }
 
    LineBP = nullptr;
    static ConstructorHelpers::FObjectFinder<UBlueprint> LineBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Line.Line'"));
@@ -44,9 +40,17 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    static ConstructorHelpers::FObjectFinder<UBlueprint> PlaneBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Plane.Plane'"));
    if(PlaneBlueprint.Object) { PlaneBP = (UClass *)PlaneBlueprint.Object->GeneratedClass; }
 
+   PointBP = nullptr;   
+   static ConstructorHelpers::FObjectFinder<UBlueprint> PointBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Point.Point'"));
+   if(PointBlueprint.Object) { PointBP = (UClass *)PointBlueprint.Object->GeneratedClass; }
+
    SphereBP = nullptr;
    static ConstructorHelpers::FObjectFinder<UBlueprint> SphereBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Sphere.Sphere'"));
    if(SphereBlueprint.Object) { SphereBP = (UClass *)SphereBlueprint.Object->GeneratedClass; }
+
+   UnitBP = nullptr;
+   static ConstructorHelpers::FObjectFinder<UBlueprint> UnitBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Unit.Unit'"));
+   if(UnitBlueprint.Object) { UnitBP = (UClass *)UnitBlueprint.Object->GeneratedClass; }
 
    VectorStructBP = nullptr;
    static ConstructorHelpers::FObjectFinder<UBlueprint> VectorStructBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/VectorStruct.VectorStruct'"));
@@ -66,10 +70,7 @@ void ACoordinateSystemBase::BeginPlay()
    g_this = this;
 #endif
 
-   MLD_LOG("");
-   MLD_LOG("===================");
    MLD_LOG("BeginPlay: %s", *UKismetMathLibrary::Now().ToString().Right(8));
-   MLD_LOG("===================");
    MLD_LOG("");
 
    Super::BeginPlay();
@@ -205,13 +206,24 @@ APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, FMathPlane inPlan
 
 ASphereBase *ACoordinateSystemBase::AddSphere(LaserColors color, FMathSphere inSphere, bool showGuides)
 {
-   if(inSphere.Radius == 0) { MLD_ERR("Sphere not created. Invalid radius. Cannt create Sphere with radius = 0."); return nullptr; }
+   if(inSphere.Radius <= 0) { MLD_ERR("Sphere not created. Invalid radius. Cannt create Sphere with radius <= 0."); return nullptr; }
 
    ASphereBase *sphere = (ASphereBase *)AddGeometry(SphereBP);
    MLD_PTR_CHECK(sphere); if(!sphere) return nullptr;
    sphere->InitSphere(this, color, inSphere);
    sphere->ShowVectorGuides(showGuides);
    return sphere;
+}
+
+ACircleBase *ACoordinateSystemBase::AddCircle(LaserColors color, FMathCircle inCircle, bool showGuides)
+{
+   if(inCircle.Radius <= 0) { MLD_ERR("Circle not created. Invalid radius. Cannt create Circle with radius <= 0."); return nullptr; }
+
+   ACircleBase *circle = (ACircleBase *)AddGeometry(CircleBP);
+   MLD_PTR_CHECK(circle); if(!circle) return nullptr;
+   circle->InitCircle(this, color, inCircle);
+   circle->ShowVectorGuides(showGuides);
+   return circle;
 }
 
 AVectorStruct *ACoordinateSystemBase::AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode)

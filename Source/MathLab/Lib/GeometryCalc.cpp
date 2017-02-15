@@ -192,6 +192,7 @@ float GeometryCalc::SetOfPythagorasGetC(float a, float b)
 
 float GeometryCalc::HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point)
 {
+   MLD_LOG("HesseNormalFormPlugIn: Point: %s   +   Plane: %s, %s, %s   = %f", *point.Coordinate.ToString(), *plane.Position.ToString(), *plane.Direction1.ToString(), *plane.Direction2.ToString(), UKismetMathLibrary::Dot_VectorVector(plane.Normal, point.Coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.Normal, plane.Position));
    return UKismetMathLibrary::Dot_VectorVector(plane.Normal, point.Coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.Normal, plane.Position);
 }
 
@@ -406,8 +407,6 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathLine  line, FMathSpher
    float   f;
    float fSqu = sphere.Radius*sphere.Radius - e.Size()*e.Size() + a*a;
 
-   MLD_LOG("fSqu:%f = radius^2:%f - e^2:%f + a^2:%f", fSqu, (sphere.Radius*sphere.Radius), (e.Size()*e.Size()), (a*a));
-
    if(fSqu < 0) 
    { 
       result = FRelativePosition(Relation::different); 
@@ -464,10 +463,12 @@ FRelativePosition GeometryCalc::RelativePositionCalc(FMathPlane plane, FMathSphe
       }
       else
       {
-         float dist = DistanceCalc(perpLineIntersection, plane);
+         float dist = DistanceCalc(perpLineIntersection, sphere.Coordinate);
+
          float circleRadius = SetOfPythagorasGetA(dist, sphere.Radius);
-         //Schnittkreis bauen
-         MLD_WAR("Schnittkreis erstellen");
+         
+         MLD_LOG("center: %s, radius: %f, normal: %s", *perpLineIntersection.Coordinate.ToString(), circleRadius, *plane.Normal.ToString());
+
          result = FRelativePosition(Relation::intersection);
       }
    }

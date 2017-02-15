@@ -56,7 +56,7 @@ public:
 private: 
    FLSSolution solution = FLSSolution(LSSolutionType::notSolved);
 
-   bool  debugging = true;
+   bool  debugging = false;
    float pivot;
    int   pivotIndex;
    int   rowPivotIndex;

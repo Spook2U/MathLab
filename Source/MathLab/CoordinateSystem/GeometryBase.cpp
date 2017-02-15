@@ -87,7 +87,7 @@ void AGeometryBase::SetColor(LaserColors color)
    {
       MLD_PTR_CHECK(laser); if(!laser) continue;
       laser->SetVectorParameterValueOnMaterials(FName(TEXT("LaserColor")), FVector(newColor));
-      laser->SetScalarParameterValueOnMaterials(FName(TEXT("Glowiness")), glow);
+      laser->SetScalarParameterValueOnMaterials(FName(TEXT("Glowiness Extern")), glow);
    }
 }
 
@@ -194,6 +194,7 @@ void AGeometryBase::ScaleVector(UStaticMeshComponent *line, UStaticMeshComponent
 }
 void AGeometryBase::ScalePlane(UStaticMeshComponent *plane, float lenght)
 {
+   SetLaserScale(plane, FVector(lenght, lenght, NULL));
 }
 
 void AGeometryBase::ScaleSphere(UStaticMeshComponent *sphere, float radius)
