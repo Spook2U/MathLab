@@ -25,9 +25,9 @@ struct FMathLine
 
 public:      
    UPROPERTY(BlueprintReadWrite, Category = "line")
-      FVector Position;
+   FVector Position;
    UPROPERTY(BlueprintReadWrite, Category = "line")
-      FVector Direction;
+   FVector Direction;
 
    /* Default constructor (no initialization). */
    FMathLine();

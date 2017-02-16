@@ -1,49 +1,49 @@
 #pragma once
 
 #include "CoordinateSystem/GeometryBase.h"
-#include "GeometryCalc.generated.h"
+#include "Lib/MathLabLibrary.h"
 
-struct FMathPoint;
-struct FMathLine;
-struct FMathPlane;
-struct FMathSphere;
-struct FNVector;
-
-
-
-/* Defines possible relations between geometry objects. */
-UENUM(BlueprintType)
-enum class Relation : uint8
-{
-   identical     UMETA(DisplayName = "Identical"),   
-   different     UMETA(DisplayName = "Different"),   
-   inside        UMETA(DisplayName = "Inside"),
-   outside       UMETA(DisplayName = "Outside"),
-   parallel      UMETA(DisplayName = "Parallel"),   
-   skew          UMETA(DisplayName = "Skew"),   
-   intersection  UMETA(DisplayName = "Intersection(s)"),   
-   notSolved     UMETA(DisplayName = "Not Solved")
-};
+//struct FMathPoint;
+//struct FMathLine;
+//struct FMathPlane;
+//struct FMathSphere;
+//struct FNVector;
 
 
 
-/* Contains the Relative Position and possible intersections. */
-USTRUCT(BlueprintType)
-struct FRelativePosition
-{
-   GENERATED_BODY()
+///* Defines possible relations between geometry objects. */
+//UENUM(BlueprintType)
+//enum class Relation : uint8
+//{
+//   identical     UMETA(DisplayName = "Identical"),   
+//   different     UMETA(DisplayName = "Different"),   
+//   inside        UMETA(DisplayName = "Inside"),
+//   outside       UMETA(DisplayName = "Outside"),
+//   parallel      UMETA(DisplayName = "Parallel"),   
+//   skew          UMETA(DisplayName = "Skew"),   
+//   intersection  UMETA(DisplayName = "Intersection(s)"),   
+//   notSolved     UMETA(DisplayName = "Not Solved")
+//};
 
-public:      
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
-   Relation relation;
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
-   TArray<FVector> intersections;
 
-   /* Default constructor (no initialization). */
-   FRelativePosition();
-   /* Constructor to initialise the Linear System Solution structure. */
-   FRelativePosition(Relation inRelation, TArray<FVector> inIntersections = TArray<FVector>());
-};
+
+///* Contains the Relative Position and possible intersections. */
+//USTRUCT(BlueprintType)
+//struct FRelativePosition
+//{
+//   GENERATED_BODY()
+//
+//public:      
+//   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+//   Relation relation;
+//   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+//   TArray<FVector> intersections;
+//
+//   /* Default constructor (no initialization). */
+//   FRelativePosition();
+//   /* Constructor to initialise the Linear System Solution structure. */
+//   FRelativePosition(Relation inRelation, TArray<FVector> inIntersections = TArray<FVector>());
+//};
 
 
 

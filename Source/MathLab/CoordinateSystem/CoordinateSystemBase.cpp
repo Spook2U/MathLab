@@ -291,16 +291,14 @@ float ACoordinateSystemBase::Distance(AGeometryBase *from, AGeometryBase *to)
 {
    if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return 0.f;
 
-   GeometryCalc calc;
-   return calc.GetDistance(from, to);
+   return m.GetDistance(from, to);
 }
 
-FRelativePosition ACoordinateSystemBase::GetRelativePosition(AGeometryBase *from, AGeometryBase *to)
+Relation ACoordinateSystemBase::GetRelativePosition(AGeometryBase *from, AGeometryBase *to)
 {
-   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return FRelativePosition(Relation::notSolved);
+   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return Relation::undefined;
 
-   GeometryCalc calc;
-   return calc.GetRelativePosition(from, to);
+   return m.GetRelativePosition(from, to);
 }
 
 

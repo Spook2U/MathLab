@@ -6,7 +6,7 @@
 
 #include "MathLabEnums.h"
 #include "Math/LinearSystem.h"
-#include "Lib/GeometryCalc.h"
+#include "Lib/MathLabLibrary.h"
 
 #include "CircleBase.h"
 #include "LineBase.h"
@@ -83,6 +83,9 @@ private:
    TSubclassOf<AGeometryBase> SphereBP;
    TSubclassOf<AGeometryBase> UnitBP;
    TSubclassOf<AGeometryBase> VectorStructBP;
+
+   //Temp Object, cause static Library not possible with Unreal v4.14 (Known Bug)
+   MathLabLibrary m;
 
 // -------------------------------------------------------------------------------------------------
 
@@ -181,7 +184,7 @@ public:
 
    /* Returns the relative Positio from one geometry to the other.*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Calculate", DisplayName = "Relative Position")
-   FRelativePosition GetRelativePosition(AGeometryBase *from, AGeometryBase *to);
+   Relation GetRelativePosition(AGeometryBase *from, AGeometryBase *to);
 
 
 
