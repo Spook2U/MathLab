@@ -43,9 +43,9 @@ struct FPuncture
    GENERATED_BODY()
 
 public:
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+   UPROPERTY(BlueprintReadWrite, Category = "math lab")
    FMathPoint entry;
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+   UPROPERTY(BlueprintReadWrite, Category = "math lab")
    FMathPoint exit;
 };
 
@@ -57,13 +57,13 @@ struct FIntersections
    GENERATED_BODY()
 
 public:      
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+   UPROPERTY(BlueprintReadWrite, Category = "math lab")
    FMathPoint point;
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+   UPROPERTY(BlueprintReadWrite, Category = "math lab")
    FMathLine line;
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+   UPROPERTY(BlueprintReadWrite, Category = "math lab")
    FMathCircle circle;
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+   UPROPERTY(BlueprintReadWrite, Category = "math lab")
    FPuncture puncture;
 };   
    
@@ -75,9 +75,9 @@ struct FRelativePosition
    GENERATED_BODY()
 
 public:      
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+   UPROPERTY(BlueprintReadWrite, Category = "math lab")
    Relation relation;
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Calculations")
+   UPROPERTY(BlueprintReadWrite, Category = "math lab")
    FIntersections intersections;
 
    /* Default constructor (no initialization). */

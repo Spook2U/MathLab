@@ -25,9 +25,9 @@ struct FMathLine
 
 public:      
    UPROPERTY(BlueprintReadWrite, Category = "line")
-   FVector Position;
+   FVector position;
    UPROPERTY(BlueprintReadWrite, Category = "line")
-   FVector Direction;
+   FVector direction;
 
    /* Default constructor (no initialization). */
    FMathLine();
@@ -50,7 +50,7 @@ public:
 public:
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "line")
    FMathLine line;
-   LineMode Mode;
+   LineMode mode;
 
 private:
    UStaticMeshComponent *lineMesh;
@@ -60,17 +60,17 @@ private:
 
 public:
    /**Saves the StaticMeshReferences in the source file to work on*/
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Init")
+   UFUNCTION(BlueprintCallable, Category = "math lab|line")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void InitLine(ACoordinateSystemBase *coordinateSystem, LaserColors color, FMathLine inLine, LineMode mode);
+   void InitLine(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathLine inLine, LineMode inMode);
 
    /**Called, when the objects need to update the position or other vales*/
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|line|Update")
+   UFUNCTION(BlueprintCallable, Category = "math lab|line")
    virtual void Update() override;
 
    /**Sets up the Components to display the line in the selected mode*/
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|line|Setup")
+   UFUNCTION(BlueprintCallable, Category = "math lab|line")
    void BuildLine();
    
 protected:

@@ -123,9 +123,9 @@ bool GeometryCalc::IsPointInLine(FMathLine line, FMathPoint point)
    
    /* point  = pos + lambda*dir
       lambda = (point - pos) / dir */
-   float lambda =   (point.Coordinate.X - line.Position.X) / line.Direction.X;
-   if  ((lambda == ((point.Coordinate.Y - line.Position.Y) / line.Direction.Y)) &&
-        (lambda == ((point.Coordinate.Z - line.Position.Z) / line.Direction.Z)))
+   float lambda =   (point.coordinate.X - line.position.X) / line.direction.X;
+   if  ((lambda == ((point.coordinate.Y - line.position.Y) / line.direction.Y)) &&
+        (lambda == ((point.coordinate.Z - line.position.Z) / line.direction.Z)))
    {
       isInLine = true;
    }
@@ -136,15 +136,15 @@ bool GeometryCalc::IsPointInLine(FMathLine line, FMathPoint point)
 bool GeometryCalc::IsPointInPlane(FMathPlane plane, FMathPoint point)
 {
    bool isInPlane = false;
-   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane.Direction1.X, plane.Direction2.X, point.Coordinate.X-plane.Position.X}), 
-                                                        FNVector({plane.Direction1.Y, plane.Direction2.Y, point.Coordinate.Y-plane.Position.Y}), 
+   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane.direction1.X, plane.direction2.X, point.coordinate.X-plane.position.X}), 
+                                                        FNVector({plane.direction1.Y, plane.direction2.Y, point.coordinate.Y-plane.position.Y}), 
                                                        }));
    FNVector scalars;
    switch(linearSystem.GetSolution().type)
    {
       case LSSolutionType::one:       
          scalars = linearSystem.GetSolution().solution;
-         if(point.Coordinate.Z == (plane.Position.Z + scalars.Get(0) * plane.Direction1.Z + scalars.Get(1) * plane.Direction2.Z))
+         if(point.coordinate.Z == (plane.position.Z + scalars.Get(0) * plane.direction1.Z + scalars.Get(1) * plane.direction2.Z))
          {
             isInPlane = true;
          }
@@ -159,18 +159,18 @@ bool GeometryCalc::IsPointInPlane(FMathPlane plane, FMathPoint point)
 
 FVector GeometryCalc::GetPointOnLine(FMathLine line, float scalar)
 {
-   return line.Position + scalar * line.Direction;
+   return line.position + scalar * line.direction;
 }
 
 FVector GeometryCalc::GetPointOnPlane(FMathPlane plane, float scalar1, float scalar2)
 {
-   return plane.Position + scalar1 * plane.Direction1 + scalar2 * plane.Direction2;
+   return plane.position + scalar1 * plane.direction1 + scalar2 * plane.direction2;
 }
 
 TArray<FVector> GeometryCalc::GetIntersectionLine(FMathPlane plane, float u)
 {
    TArray<FVector> line;
-   if(u != 0) { line = {plane.Position, plane.Direction1 + plane.Direction2 / u}; }
+   if(u != 0) { line = {plane.position, plane.direction1 + plane.direction2 / u}; }
    else       { MLD_ERR("u = 0; Division through 0 not allowed."); }       
    return line;
 }
@@ -192,8 +192,8 @@ float GeometryCalc::SetOfPythagorasGetC(float a, float b)
 
 float GeometryCalc::HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point)
 {
-   MLD_LOG("HesseNormalFormPlugIn: Point: %s   +   Plane: %s, %s, %s   = %f", *point.Coordinate.ToString(), *plane.Position.ToString(), *plane.Direction1.ToString(), *plane.Direction2.ToString(), UKismetMathLibrary::Dot_VectorVector(plane.Normal, point.Coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.Normal, plane.Position));
-   return UKismetMathLibrary::Dot_VectorVector(plane.Normal, point.Coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.Normal, plane.Position);
+   MLD_LOG("HesseNormalFormPlugIn: Point: %s   +   Plane: %s, %s, %s   = %f", *point.coordinate.ToString(), *plane.position.ToString(), *plane.direction1.ToString(), *plane.direction2.ToString(), UKismetMathLibrary::Dot_VectorVector(plane.normal, point.coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.normal, plane.position));
+   return UKismetMathLibrary::Dot_VectorVector(plane.normal, point.coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.normal, plane.position);
 }
 
 float GeometryCalc::VectorDistance(FVector a, FVector b)
@@ -220,13 +220,13 @@ FVector GeometryCalc::MakeUnitVector(FVector v)
 
 float GeometryCalc::DistanceCalc(FMathPoint point1, FMathPoint point2)
 {
-   return VectorDistance(point2.Coordinate, point1.Coordinate);
+   return VectorDistance(point2.coordinate, point1.coordinate);
 }
 float GeometryCalc::DistanceCalc(FMathPoint point, FMathLine line)
 {
    /* Calculated with Surface of Vectorproduct and Surface of a triangle. */ 
-   FVector v = point.Coordinate - line.Position;
-   return UKismetMathLibrary::VSize(FVector::CrossProduct(v, line.Direction)) / UKismetMathLibrary::VSize(line.Direction);
+   FVector v = point.coordinate - line.position;
+   return UKismetMathLibrary::VSize(FVector::CrossProduct(v, line.direction)) / UKismetMathLibrary::VSize(line.direction);
 }
 float GeometryCalc::DistanceCalc(FMathPoint point, FMathPlane plane)
 {
@@ -234,7 +234,7 @@ float GeometryCalc::DistanceCalc(FMathPoint point, FMathPlane plane)
 }
 float GeometryCalc::DistanceCalc(FMathPoint point, FMathSphere sphere)
 {
-   return DistanceCalc(FMathPoint(sphere.Coordinate), point) - sphere.Radius;
+   return DistanceCalc(FMathPoint(sphere.coordinate), point) - sphere.radius;
 }
 float GeometryCalc::DistanceCalc(FMathLine line, FMathPoint point)
 {
@@ -269,7 +269,7 @@ float GeometryCalc::DistanceCalc(FMathLine line, FMathPlane plane)
 }
 float GeometryCalc::DistanceCalc(FMathLine line, FMathSphere sphere)
 {
-   return DistanceCalc(FMathPoint(sphere.Coordinate), line) - sphere.Radius;
+   return DistanceCalc(FMathPoint(sphere.coordinate), line) - sphere.radius;
 }
 float GeometryCalc::DistanceCalc(FMathPlane plane, FMathPoint point)
 {
@@ -294,7 +294,7 @@ float GeometryCalc::DistanceCalc(FMathPlane plane1, FMathPlane plane2)
 }
 float GeometryCalc::DistanceCalc(FMathPlane plane, FMathSphere sphere)
 {
-   return DistanceCalc(FMathPoint(sphere.Coordinate), plane) - sphere.Radius;
+   return DistanceCalc(FMathPoint(sphere.coordinate), plane) - sphere.radius;
 }
 float GeometryCalc::DistanceCalc(FMathSphere sphere, FMathPoint point)
 {
@@ -310,7 +310,7 @@ float GeometryCalc::DistanceCalc(FMathSphere sphere, FMathPlane plane)
 }
 float GeometryCalc::DistanceCalc(FMathSphere sphere1, FMathSphere sphere2)
 {
-   return DistanceCalc(FMathPoint(sphere2.Coordinate), FMathPoint(sphere1.Coordinate)) - sphere1.Radius - sphere2.Radius;
+   return DistanceCalc(FMathPoint(sphere2.coordinate), FMathPoint(sphere1.coordinate)) - sphere1.radius - sphere2.radius;
 }
 
 

@@ -16,8 +16,8 @@ struct FNVector
 
 public:      
    /* nVector's components. */
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|nVector")
-   TArray<float> Coordinates;
+   UPROPERTY(BlueprintReadWrite, Category = "nVector")
+   TArray<float> coordinates;
 
    /* Default constructor (no initialization). */
    FNVector();
@@ -74,11 +74,11 @@ public:
    /* Uses the given nVector to reinitialise the coordinates. */
    void Set(FNVector inNVector);
    /* Uses the given array to reinitialise the coordinates. */
-   void Set(TArray<float> coordinates);
+   void Set(TArray<float> inCoordinates);
    /* Adds a coordinate at the end of the array; Increases the dimension by 1. */
    void Add(float value);
    /* Appends the elements of the given Array; Increases the dimension by te size of the given Array. */
-   void Append(TArray<float> coordinates);
+   void Append(TArray<float> inCoordinates);
    /* Removes a coordinate at the given index; Decreases the dimension by 1. */
    void RemoveAt(int index);
    

@@ -18,8 +18,8 @@ struct FNMatrix
 
 public:      
    /* nMatrix's components. */
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|nMatrix")
-   TArray<FNVector> Matrix;
+   UPROPERTY(BlueprintReadWrite, Category = "nMatrix")
+   TArray<FNVector> matrix;
 
    /* Default constructor (no initialization). */
    FNMatrix();

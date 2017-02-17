@@ -9,10 +9,10 @@
 
 AUnitBase::AUnitBase()
 {
-   XAxis  = nullptr;
-   YAxis  = nullptr;
-   XLaser = nullptr;
-   YLaser = nullptr;
+   xAxis  = nullptr;
+   yAxis  = nullptr;
+   xLaser = nullptr;
+   yLaser = nullptr;
 }
 
 void AUnitBase::BeginPlay() 
@@ -27,26 +27,26 @@ void AUnitBase::SetComponents(TArray<UStaticMeshComponent *> components)
    for(UStaticMeshComponent *c : components)
    {
       MLD_PTR_CHECK(c); if(!c) continue;
-      if(c->GetName().Equals("X-Unit"))  { this->XAxis  = c; }
-      if(c->GetName().Equals("Y-Unit"))  { this->YAxis  = c; }
-      if(c->GetName().Equals("X-Laser")) { this->XLaser = c; }
-      if(c->GetName().Equals("Y-Laser")) { this->YLaser = c; }
+      if(c->GetName().Equals("X-Unit"))  { xAxis  = c; }
+      if(c->GetName().Equals("Y-Unit"))  { yAxis  = c; }
+      if(c->GetName().Equals("X-Laser")) { xLaser = c; }
+      if(c->GetName().Equals("Y-Laser")) { yLaser = c; }
    }
 
-   MLD_PTR_CHECK(XAxis);
-   MLD_PTR_CHECK(YAxis);
-   MLD_PTR_CHECK(XLaser);
-   MLD_PTR_CHECK(YLaser);
-   if(!(XAxis && YAxis && XLaser && YLaser)) return;
+   MLD_PTR_CHECK(xAxis);
+   MLD_PTR_CHECK(yAxis);
+   MLD_PTR_CHECK(xLaser);
+   MLD_PTR_CHECK(yLaser);
+   if(!(xAxis && yAxis && xLaser && yLaser)) return;
 
-   AddLaserComponent(XLaser);
-   AddLaserComponent(YLaser);
+   AddLaserComponent(xLaser);
+   AddLaserComponent(yLaser);
 }
 
-void AUnitBase::InitUnit(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate)
+void AUnitBase::InitUnit(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FVector coordinate)
 {
-   MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
-   InitPoint(coordinateSystem, color, FMathPoint(coordinate));
+   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
+   InitPoint(inCoordinateSystem, color, FMathPoint(coordinate));
    this->type = GeometryType::unit; //after InitPoint() to override the value from point
 }
 
@@ -62,21 +62,21 @@ void AUnitBase::Update()
 
 void AUnitBase::ScaleUnitLaser()
 {
-   ScaleUnitLaser_AtAxis(XAxis, XLaser, CoordinateSystem->LaserSizeFactor);
-   ScaleUnitLaser_AtAxis(YAxis, YLaser, CoordinateSystem->LaserSizeFactor);
+   ScaleUnitLaser_AtAxis(xAxis, xLaser, coordinateSystem->laserSizeFactor);
+   ScaleUnitLaser_AtAxis(yAxis, yLaser, coordinateSystem->laserSizeFactor);
 }
 
 void AUnitBase::ScaleUnitLaser_AtAxis(UStaticMeshComponent *axis, UStaticMeshComponent *laser, float laserSize)
 {
    FVector axisScale = axis->GetComponentScale();
-   laser->SetWorldScale3D(FVector(axisScale.X*laserSize, axisScale.Y*laserSize, CoordinateSystem->AxisLength*2));
+   laser->SetWorldScale3D(FVector(axisScale.X*laserSize, axisScale.Y*laserSize, coordinateSystem->axisLength*2));
 }
 
 
 
 void AUnitBase::OrientateToAxis(UStaticMeshComponent *axis)
 {
-   float thickness = CoordinateSystem->AxisSize*CoordinateSystem->UnitSizeFactor;
+   float thickness = coordinateSystem->axisSize*coordinateSystem->unitSizeFactor;
    SetActorTransform(FTransform(axis->GetComponentRotation(), GetActorLocation(), FVector(thickness, thickness, 0.1f)));
 }
 

@@ -5,11 +5,11 @@
 
 
 FNMatrix::FNMatrix() {}
-FNMatrix::FNMatrix(const TArray<FNVector> inNMatrix) : Matrix(inNMatrix) {}
+FNMatrix::FNMatrix(const TArray<FNVector> inNMatrix) : matrix(inNMatrix) {}
 
 FNMatrix& FNMatrix::operator=(const FNMatrix& Other)
 {
-   this->Matrix = Other.Matrix;
+   this->matrix = Other.matrix;
 
    return *this;
 }
@@ -18,12 +18,12 @@ FNMatrix& FNMatrix::operator=(const FNMatrix& Other)
 
 void FNMatrix::Init(int column, int row)
 {
-   Matrix.Empty();
+   matrix.Empty();
    FNVector v = FNVector();
    v.Init(row);
    for(int i = 0; i < column; i++)
    {
-      Matrix.Add(v);
+      matrix.Add(v);
    }
 }
 
@@ -39,10 +39,10 @@ bool FNMatrix::ValidCheck() const
    }
    else
    {
-      sizeOfFirstColumn = Matrix[0].Size();
+      sizeOfFirstColumn = matrix[0].Size();
       for(int i = 0, j = ColumnNum(); i < j; i++)
       {
-         if(Matrix[i].Size() != sizeOfFirstColumn)
+         if(matrix[i].Size() != sizeOfFirstColumn)
          {
             validSize = false;
             MLD_ERR("nMatrix wrong format. Column %d has wrong size; Expected length: %d; %s", i, sizeOfFirstColumn, *ToString());
@@ -58,13 +58,13 @@ bool FNMatrix::ValidCheck() const
 
 int FNMatrix::ColumnNum() const
 {
-   return Matrix.Num();
+   return matrix.Num();
 }
 
 int FNMatrix::RowNum() const
 {
    if(!ValidCheck()) return 0;
-   return Matrix[0].Size();
+   return matrix[0].Size();
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ float FNMatrix::GetElement(int column, int row) const
    else if((row < 0) || (row >= RowNum()))     { MLD_ERR("nMatrix out of Bounds: row = %d",    row); }
    else
    {
-      element = Matrix[column].Get(row);
+      element = matrix[column].Get(row);
    }
 
    return element;
@@ -92,7 +92,7 @@ FNVector FNMatrix::GetColumn(int column) const
    if((column < 0) || (column >= ColumnNum())) { MLD_ERR("nMatrix out of Bounds: column = %d", column); }
    else
    {
-      wantedColumn = Matrix[column];
+      wantedColumn = matrix[column];
    }
    return wantedColumn;
 }
@@ -106,7 +106,7 @@ FNVector FNMatrix::GetRow(int row) const
    if((row < 0) || (row >= RowNum())) { MLD_ERR("nMatrix out of Bounds: row = %d", row); }
    else
    {
-      for(FNVector column : Matrix)
+      for(FNVector column : matrix)
       {
          wantedRow.Add(column.Get(row));
       }
@@ -118,7 +118,7 @@ FNVector FNMatrix::GetRow(int row) const
 
 void FNMatrix::Set(FNMatrix inNMatrix)
 {
-   Matrix = inNMatrix.Matrix;
+   matrix = inNMatrix.matrix;
 }
 
 void FNMatrix::Set(TArray<FNVector> inNMatrix)
@@ -132,7 +132,7 @@ void FNMatrix::SetElement(int column, int row, float value)
    else if((row < 0) || (row >= RowNum()))     { MLD_ERR("nMatrix out of Bounds: row = %d",    row); }
    else
    {
-      Matrix[column].Set(row, value);
+      matrix[column].Set(row, value);
    }
 }
 
@@ -142,7 +142,7 @@ void FNMatrix::SetColumn(int index, FNVector column)
    else if(column.Size() != RowNum())        { MLD_ERR("nMatrix wrong format. Input nVector has wrong size; Expected size: %d", RowNum()); }
    else
    {
-      Matrix[index] = column;      
+      matrix[index] = column;      
    }
 }
 
@@ -159,7 +159,7 @@ void FNMatrix::SetRow(int index, FNVector row)
    {
       for(int i = 0, j = ColumnNum(); i < j; i++)
       {
-         Matrix[i].Set(index, row.Get(i));
+         matrix[i].Set(index, row.Get(i));
       }
    }
 }
@@ -174,12 +174,12 @@ void FNMatrix::SetRow(int index, TArray<float> row)
 void FNMatrix::AddColumn(TArray<float> column)
 {
    if(column.Num() != RowNum()) { MLD_ERR("nMatrix wrong format. Input nVector has wrong size; Expected size: %d", RowNum()); }
-   else                         { Matrix.Add(column); }
+   else                         { matrix.Add(column); }
 }
 
 void FNMatrix::AddColumn(FNVector column)
 {
-   AddColumn(column.Coordinates);
+   AddColumn(column.coordinates);
 }
 
 void FNMatrix::AddRow(TArray<float> row)
@@ -189,14 +189,14 @@ void FNMatrix::AddRow(TArray<float> row)
    {
       for(int i = 0, j = ColumnNum(); i < j; i++)
       {
-         Matrix[i].Add(row[i]);
+         matrix[i].Add(row[i]);
       }
    }
 }
 
 void FNMatrix::AddRow(FNVector row)
 {
-   AddRow(row.Coordinates);
+   AddRow(row.coordinates);
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ void FNMatrix::AddRow(FNVector row)
 void FNMatrix::RemoveColumnAt(int index)
 {
    if((index < 0) || (index > ColumnNum())) { MLD_ERR("nMatrix out of Bounds: index = %d", index); }
-   else { Matrix.RemoveAt(index); }
+   else { matrix.RemoveAt(index); }
 }
 
 void FNMatrix::RemoveRowAt(int index)
@@ -214,7 +214,7 @@ void FNMatrix::RemoveRowAt(int index)
    { 
       for(int i = 0, j = ColumnNum(); i < j; i++)
       {
-         Matrix[i].RemoveAt(index);
+         matrix[i].RemoveAt(index);
       }
    }
 }
@@ -226,10 +226,10 @@ FString FNMatrix::ToString() const
    FString s = "";
 
    s += "{";
-   for(int i = 0; i < Matrix.Num(); i++)
+   for(int i = 0; i < matrix.Num(); i++)
    {
-      s += Matrix[i].ToString();
-      if(i < (Matrix.Num() - 1))
+      s += matrix[i].ToString();
+      if(i < (matrix.Num() - 1))
       {
          s += ", ";
       }

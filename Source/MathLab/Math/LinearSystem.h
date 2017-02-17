@@ -26,9 +26,9 @@ struct FLSSolution
    GENERATED_BODY()
 
 public:      
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Linear System")
+   UPROPERTY(BlueprintReadWrite, Category = "linear System")
    LSSolutionType type = LSSolutionType::notSolved;
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|Linear System")
+   UPROPERTY(BlueprintReadWrite, Category = "linear System")
    FNVector solution;
    
    /* Default constructor (no initialization). */
@@ -49,8 +49,8 @@ struct FLinearSystem
 
 public:      
    /* LinearEqualation components. */
-   UPROPERTY(BlueprintReadWrite, Category = "Math Lab|nMatrix")
-   FNMatrix CoefficientMatrix;
+   UPROPERTY(BlueprintReadWrite, Category = "linear System")
+   FNMatrix coefficientMatrix;
 
 private: 
    FLSSolution solution = FLSSolution(LSSolutionType::notSolved);

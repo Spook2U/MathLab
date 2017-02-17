@@ -15,11 +15,11 @@ struct FMathCircle
 
 public:      
    UPROPERTY(BlueprintReadWrite, Category = "circle")
-   FVector Center;
+   FVector center;
    UPROPERTY(BlueprintReadWrite, Category = "circle")
-   FVector Normal;
+   FVector normal;
    UPROPERTY(BlueprintReadWrite, Category = "circle")
-   float Radius;
+   float radius;
 
    /* Default constructor (no initialization). */
    FMathCircle();
@@ -39,24 +39,24 @@ public:
    FMathCircle circle;
 
 private:
-   UStaticMeshComponent *CircleMesh;
-   UStaticMeshComponent *CircleMeshBorder;
+   UStaticMeshComponent *circleMesh;
+   UStaticMeshComponent *circleMeshBorder;
 
 // -------------------------------------------------------------------------------------------------
 
 public:
    //Saves the StaticMeshReferences in the source file to work on
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|circle|Init")
+   UFUNCTION(BlueprintCallable, Category = "math lab|circle")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void InitCircle(ACoordinateSystemBase *coordinateSystem, LaserColors color, FMathCircle inCircle);
+   void InitCircle(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathCircle inCircle);
 
    //Called, when the objects need to update the position or other vales
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|circle|Update")
+   UFUNCTION(BlueprintCallable, Category = "math lab|circle")
    virtual void Update() override;
 
    //Sets up the Components to display the circle
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|circle|Setup")
+   UFUNCTION(BlueprintCallable, Category = "math lab|circle")
    void BuildCircle();
 
 protected:

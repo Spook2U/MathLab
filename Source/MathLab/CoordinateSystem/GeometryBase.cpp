@@ -12,11 +12,11 @@ AGeometryBase::AGeometryBase()
 { 
    PrimaryActorTick.bCanEverTick = false; 
 
-   CoordinateSystem = NULL;
-   LaserCompoents;
+   coordinateSystem = NULL;
+   laserCompoents;
    type = GeometryType::other;
 
-   Size = 0.075;
+   size = 0.075;
 }
 
 void AGeometryBase::BeginPlay() { 
@@ -29,9 +29,9 @@ FVector AGeometryBase::CoordinateToLocation(FVector coordinate)
 {
    FVector location = coordinate;
 
-   location *= CoordinateSystem->ConvertFactor;
+   location *= coordinateSystem->convertFactor;
    location *= FVector(1.f, -1.f, 1.f);
-   location += CoordinateSystem->GetActorLocation();
+   location += coordinateSystem->GetActorLocation();
 
    return location;
 }
@@ -41,7 +41,7 @@ FVector AGeometryBase::CoordinateToLocation(FVector coordinate)
 void AGeometryBase::Update()
 {
    UpdateRendering();
-   for(AVectorStruct *g : VectorGuides)
+   for(AVectorStruct *g : vectorGuides)
    {
       MLD_PTR_CHECK(g); if(!g) continue;
       g->Update();
@@ -50,11 +50,11 @@ void AGeometryBase::Update()
 
 void AGeometryBase::UpdateRendering()
 {
-   float bound = CoordinateSystem->AxisLength * 200;
-   for(UStaticMeshComponent *laser : LaserCompoents)
+   float bound = coordinateSystem->axisLength * 200;
+   for(UStaticMeshComponent *laser : laserCompoents)
    {
       MLD_PTR_CHECK(laser); if(!laser) continue;
-      laser->SetVectorParameterValueOnMaterials(TEXT("Location"), CoordinateSystem->GetActorLocation());
+      laser->SetVectorParameterValueOnMaterials(TEXT("Location"), coordinateSystem->GetActorLocation());
       laser->SetVectorParameterValueOnMaterials(TEXT("Bounds"), FVector(bound, bound, bound));
    }
 }
@@ -81,9 +81,9 @@ void AGeometryBase::SetColor(LaserColors color)
       case LaserColors::white:   newColor = FLinearColor(1.f,   1.f,   1.f,   1.f); glow = 1.f;  break;
       case LaserColors::yellow:  newColor = FLinearColor(0.75f, 1.f,   0.05f, 1.f); glow = 1.f;  break;
    }
-   glow *= CoordinateSystem->Glowiness;
+   glow *= coordinateSystem->glowiness;
 
-   for(UStaticMeshComponent *laser : LaserCompoents)
+   for(UStaticMeshComponent *laser : laserCompoents)
    {
       MLD_PTR_CHECK(laser); if(!laser) continue;
       laser->SetVectorParameterValueOnMaterials(FName(TEXT("LaserColor")), FVector(newColor));
@@ -95,18 +95,18 @@ void AGeometryBase::SetColor(LaserColors color)
 
 void AGeometryBase::ShowVectorGuides(bool show)
 {
-   for(AVectorStruct *g : VectorGuides)
+   for(AVectorStruct *g : vectorGuides)
    {
       MLD_PTR_CHECK(g); if(!g) continue;
       g->RootComponent->SetHiddenInGame(!show, true);
    }
 }
 
-void AGeometryBase::SetValuesGeometry(ACoordinateSystemBase *coordinateSystem, LaserColors color)
+void AGeometryBase::SetValuesGeometry(ACoordinateSystemBase *inCoordinateSystem, LaserColors color)
 {
-   MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
+   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
    
-   this->CoordinateSystem = coordinateSystem;
+   coordinateSystem = inCoordinateSystem;
    SetColor(color);
 }
 
@@ -116,12 +116,12 @@ void AGeometryBase::SetValuesGeometry(ACoordinateSystemBase *coordinateSystem, L
 
 void AGeometryBase::AddLaserComponent(UStaticMeshComponent *laser)
 {
-   LaserCompoents.Add(laser);
+   laserCompoents.Add(laser);
 }
 
 void AGeometryBase::AddVectorGuide(AVectorStruct *guide)
 {
-   VectorGuides.Add(guide);
+   vectorGuides.Add(guide);
 }
 
 void AGeometryBase::CreateVectorGuides(LaserColors color)
@@ -139,7 +139,7 @@ void AGeometryBase::SetLaserMatTransparency(UStaticMeshComponent *laser, float v
 void AGeometryBase::MoveLaser(UStaticMeshComponent *laser, Direction dir, float length)
 {
    MLD_PTR_CHECK(laser); if(!laser) return;
-   MLD_PTR_CHECK(CoordinateSystem); if(!CoordinateSystem) return;
+   MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
 
    FVector moveDirection = FVector::ZeroVector;
    switch(dir)
@@ -148,7 +148,7 @@ void AGeometryBase::MoveLaser(UStaticMeshComponent *laser, Direction dir, float 
       case Direction::right:   moveDirection = laser->GetRightVector();break;
       case Direction::up:      moveDirection = laser->GetUpVector();break;
    }
-   laser->SetWorldLocation(((CoordinateSystem->ConvertFactor*length)*moveDirection) + GetActorLocation());
+   laser->SetWorldLocation(((coordinateSystem->convertFactor*length)*moveDirection) + GetActorLocation());
 }
 
 void AGeometryBase::RotateLine(FVector direction)
@@ -162,15 +162,15 @@ void AGeometryBase::RotateLaserLookAt(FVector from, FVector to)
 
 void AGeometryBase::InitScalePoint(UStaticMeshComponent *point)
 {
-   SetLaserScale(point, FVector(1.f, 1.f, 1.f) * Size);
+   SetLaserScale(point, FVector(1.f, 1.f, 1.f) * size);
 }
 void AGeometryBase::InitScaleLine(UStaticMeshComponent *line)
 {
-   SetLaserScale(line, FVector(Size/5, Size/5, NULL));
+   SetLaserScale(line, FVector(size/5, size/5, NULL));
 }
 void AGeometryBase::InitScaleArrowhead(UStaticMeshComponent *arrowhead)
 {
-   SetLaserScale(arrowhead, FVector(1.f, 1.f, 1.5f) * Size);
+   SetLaserScale(arrowhead, FVector(1.f, 1.f, 1.5f) * size);
 }
 
 void AGeometryBase::SetLaserScale(UStaticMeshComponent *laser, FVector scale)
@@ -185,11 +185,11 @@ void AGeometryBase::SetLaserScale(UStaticMeshComponent *laser, FVector scale)
 void AGeometryBase::ScaleLine(UStaticMeshComponent *line, float length)
 {
    MoveLaser(line, Direction::up, length/2);
-   SetLaserScale(line, FVector(NULL, NULL, (CoordinateSystem->ConvertFactor/100)*length));
+   SetLaserScale(line, FVector(NULL, NULL, (coordinateSystem->convertFactor/100)*length));
 }
 void AGeometryBase::ScaleVector(UStaticMeshComponent *line, UStaticMeshComponent *arrowhead, float lenght)
 {
-   MoveLaser(arrowhead, Direction::up, lenght-Size);
+   MoveLaser(arrowhead, Direction::up, lenght-size);
    ScaleLine(line, lenght);
 }
 void AGeometryBase::ScalePlane(UStaticMeshComponent *plane, float lenght)
@@ -199,7 +199,7 @@ void AGeometryBase::ScalePlane(UStaticMeshComponent *plane, float lenght)
 
 void AGeometryBase::ScaleSphere(UStaticMeshComponent *sphere, float radius)
 {
-   SetLaserScale(sphere, FVector(1.f, 1.f, 1.f) * ((radius*2) * CoordinateSystem->ConvertFactor/100));
+   SetLaserScale(sphere, FVector(1.f, 1.f, 1.f) * ((radius*2) * coordinateSystem->convertFactor/100));
 }
 
 

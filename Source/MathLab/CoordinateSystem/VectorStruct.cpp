@@ -7,12 +7,12 @@
 
 AVectorStruct::AVectorStruct()
 {
-   A = FVector::ZeroVector;
-   B = FVector::ZeroVector;
-   PointA = nullptr;
-   PointB = nullptr;
-   Line = nullptr;
-   Arrowhead = nullptr;
+   a = FVector::ZeroVector;
+   b = FVector::ZeroVector;
+   pointAMesh    = nullptr;
+   pointBMesh    = nullptr;
+   lineMesh      = nullptr;
+   arrowheadMesh = nullptr;
 }
 
 
@@ -21,46 +21,48 @@ void AVectorStruct::SetComponents(TArray<UStaticMeshComponent*> components)
 {
    for(UStaticMeshComponent *c : components)
    {
-      if(c->GetName().Equals("PointA"))    { this->PointA    = c; }
-      if(c->GetName().Equals("PointB"))    { this->PointB    = c; }
-      if(c->GetName().Equals("Line"))      { this->Line      = c; }
-      if(c->GetName().Equals("Arrowhead")) { this->Arrowhead = c; }
+      if(c->GetName().Equals("PointA"))    { pointAMesh    = c; }
+      if(c->GetName().Equals("PointB"))    { pointBMesh    = c; }
+      if(c->GetName().Equals("Line"))      { lineMesh      = c; }
+      if(c->GetName().Equals("Arrowhead")) { arrowheadMesh = c; }
    }
    
-   MLD_PTR_CHECK(PointA);
-   MLD_PTR_CHECK(PointB);
-   MLD_PTR_CHECK(Line);
-   MLD_PTR_CHECK(Arrowhead);
-   if(!(PointA && PointB && Line && Arrowhead)) return;
+   MLD_PTR_CHECK(pointAMesh);
+   MLD_PTR_CHECK(pointBMesh);
+   MLD_PTR_CHECK(lineMesh);
+   MLD_PTR_CHECK(arrowheadMesh);
+   if(!(pointAMesh && pointBMesh && lineMesh && arrowheadMesh)) return;
 
-   InitScalePoint(PointA);
-   InitScalePoint(PointB);
-   InitScaleLine(Line);
-   InitScaleArrowhead(Arrowhead);
+   InitScalePoint(pointAMesh);
+   InitScalePoint(pointBMesh);
+   InitScaleLine(lineMesh);
+   InitScaleArrowhead(arrowheadMesh);
 
-   AddLaserComponent(PointA);
-   AddLaserComponent(PointB);
-   AddLaserComponent(Line);
-   AddLaserComponent(Arrowhead);
+   AddLaserComponent(pointAMesh);
+   AddLaserComponent(pointBMesh);
+   AddLaserComponent(lineMesh);
+   AddLaserComponent(arrowheadMesh);
 }
 
 
 
-void AVectorStruct::SetValuesVectorStruct(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector a, FVector b, VectorStructMode mode)
+void AVectorStruct::SetValuesVectorStruct(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FVector inA, FVector inB, VectorStructMode inMode)
 {
-   SetValuesGeometry(coordinateSystem, color);
-   this->A = a;
-   this->B = b;
-   this->Mode = mode;
-   this->type = GeometryType::vectorStruct;
+   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
+
+   SetValuesGeometry(inCoordinateSystem, color);
+   a = inA;
+   b = inB;
+   mode = inMode;
+   type = GeometryType::vectorStruct;
 }
 
 
 
-void AVectorStruct::SetVisibilityPointA(bool visibility)    { PointA->SetVisibility(visibility);    }
-void AVectorStruct::SetVisibilityPointB(bool visibility)    { PointB->SetVisibility(visibility);    }
-void AVectorStruct::SetVisibilityLine(bool visibility)      { Line->SetVisibility(visibility);      }
-void AVectorStruct::SetVisibilityArrowhead(bool visibility) { Arrowhead->SetVisibility(visibility); }
+void AVectorStruct::SetVisibilityPointA(bool visibility)    { pointAMesh->SetVisibility(visibility);    }
+void AVectorStruct::SetVisibilityPointB(bool visibility)    { pointBMesh->SetVisibility(visibility);    }
+void AVectorStruct::SetVisibilityLine(bool visibility)      { lineMesh->SetVisibility(visibility);      }
+void AVectorStruct::SetVisibilityArrowhead(bool visibility) { arrowheadMesh->SetVisibility(visibility); }
 
 void AVectorStruct::SetVisibilityForAll(bool visibility)
 {
@@ -83,24 +85,24 @@ void AVectorStruct::SetVisibility(bool showPointA, bool showPointB, bool showLin
 void AVectorStruct::Update()
 {
    Super::Update();
-   SetPosition(A);
+   SetPosition(a);
    BuildLine();
    SetPointB();
 }
 
 void AVectorStruct::BuildLine()
 {
-   if(Mode == VectorStructMode::segment) { RotateLaserLookAt(A, B); }
-   else                                  { RotateLine(B); }
+   if(mode == VectorStructMode::segment) { RotateLaserLookAt(a, b); }
+   else                                  { RotateLine(b); }
 
-   if(Mode == VectorStructMode::segment) { ScaleLine(Line, UKismetMathLibrary::VSize(B - A)); }
-   else                                  { ScaleVector(Line, Arrowhead, UKismetMathLibrary::VSize(B)); }
+   if(mode == VectorStructMode::segment) { ScaleLine(lineMesh, UKismetMathLibrary::VSize(b - a)); }
+   else                                  { ScaleVector(lineMesh, arrowheadMesh, UKismetMathLibrary::VSize(b)); }
 }
 
 void AVectorStruct::SetPointB()
 {
-   if(Mode == VectorStructMode::segment) { PointB->SetWorldLocation(CoordinateToLocation(B)); }
-   else                                  { PointB->SetWorldLocation(CoordinateToLocation(B + A)); }
+   if(mode == VectorStructMode::segment) { pointBMesh->SetWorldLocation(CoordinateToLocation(b)); }
+   else                                  { pointBMesh->SetWorldLocation(CoordinateToLocation(b + a)); }
 }
 
 

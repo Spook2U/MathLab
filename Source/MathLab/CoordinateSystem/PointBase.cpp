@@ -9,7 +9,7 @@
 
 
 FMathPoint::FMathPoint() {}
-FMathPoint::FMathPoint(FVector inCoordinate) : Coordinate(inCoordinate) {}
+FMathPoint::FMathPoint(FVector inCoordinate) : coordinate(inCoordinate) {}
 
 
 
@@ -41,11 +41,11 @@ void APointBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
 
 
-void APointBase::InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FMathPoint inPoint)
+void APointBase::InitPoint(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathPoint inPoint)
 {  
-   MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
+   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   SetValuesGeometry(coordinateSystem, color);
+   SetValuesGeometry(inCoordinateSystem, color);
    this->point = inPoint;
    this->type = GeometryType::point;
    CreateVectorGuides(color);
@@ -56,7 +56,7 @@ void APointBase::InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors 
 void APointBase::Update()
 {
    Super::Update();
-   SetPosition(point.Coordinate);
+   SetPosition(point.coordinate);
 }
 
 
@@ -65,6 +65,6 @@ void APointBase::Update()
 
 void APointBase::CreateVectorGuides(LaserColors color)
 {
-   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, point.Coordinate, VectorStructMode::vector));
+   AddVectorGuide(coordinateSystem->AddVectorStruct(color, FVector::ZeroVector, point.coordinate, VectorStructMode::vector));
 }
 

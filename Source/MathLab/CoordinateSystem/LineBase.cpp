@@ -11,8 +11,8 @@
 FMathLine::FMathLine() {}
 FMathLine::FMathLine(FVector inPosition, FVector inDirection)
 {
-   Position = inPosition;
-   Direction = inDirection;
+   position = inPosition;
+   direction = inDirection;
 }
 
 
@@ -55,16 +55,16 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
 
 
-void ALineBase::InitLine(ACoordinateSystemBase * coordinateSystem, LaserColors color, FMathLine inLine, LineMode mode)
+void ALineBase::InitLine(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathLine inLine, LineMode inMode)
 {
-   MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
+   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   SetValuesGeometry(coordinateSystem, color);
-   this->line = inLine;
-   this->Mode = mode;
-   this->type = GeometryType::line;
+   SetValuesGeometry(inCoordinateSystem, color);
+   line = inLine;
+   mode = inMode;
+   type = GeometryType::line;
 
-   switch(Mode)
+   switch(mode)
    {
       case LineMode::line:    CreateVectorGuides(color); break;
       case LineMode::segment: break;
@@ -78,7 +78,7 @@ void ALineBase::InitLine(ACoordinateSystemBase * coordinateSystem, LaserColors c
 void ALineBase::Update()
 {
    Super::Update();
-   SetPosition(line.Position);
+   SetPosition(line.position);
    BuildLine();
 }
 
@@ -86,18 +86,18 @@ void ALineBase::Update()
 
 void ALineBase::BuildLine()
 {
-   if(Mode == LineMode::segment) { RotateLaserLookAt(line.Position, line.Direction); }
-   else                          { RotateLine(line.Direction); }
+   if(mode == LineMode::segment) { RotateLaserLookAt(line.position, line.direction); }
+   else                          { RotateLine(line.direction); }
 
-   if     (Mode == LineMode::line)    { SetLaserScale(lineMesh, FVector(NULL, NULL, CoordinateSystem->MaxVisibleLength())); }
-   else if(Mode == LineMode::segment) { ScaleLine(lineMesh, UKismetMathLibrary::VSize(line.Direction - line.Position)); }
-   else                               { ScaleVector(lineMesh, arrowheadMesh, UKismetMathLibrary::VSize(line.Direction)); }
+   if     (mode == LineMode::line)    { SetLaserScale(lineMesh, FVector(NULL, NULL, coordinateSystem->MaxVisibleLength())); }
+   else if(mode == LineMode::segment) { ScaleLine(lineMesh, UKismetMathLibrary::VSize(line.direction - line.position)); }
+   else                               { ScaleVector(lineMesh, arrowheadMesh, UKismetMathLibrary::VSize(line.direction)); }
 }
 
 // Protected ----------------------------------------------------------------------------------------
 
 void ALineBase::CreateVectorGuides(LaserColors color)
 {
-   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, FVector::ZeroVector, line.Position, VectorStructMode::vector));
-   AddVectorGuide(CoordinateSystem->AddVectorStruct(color, line.Position, line.Direction, VectorStructMode::vector));
+   AddVectorGuide(coordinateSystem->AddVectorStruct(color, FVector::ZeroVector, line.position, VectorStructMode::vector));
+   AddVectorGuide(coordinateSystem->AddVectorStruct(color, line.position, line.direction, VectorStructMode::vector));
 }

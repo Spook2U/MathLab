@@ -15,7 +15,7 @@ struct FMathPoint
 
 public:      
    UPROPERTY(BlueprintReadWrite, Category = "point")
-   FVector Coordinate;
+   FVector coordinate;
 
    /* Default constructor (no initialization). */
    FMathPoint();
@@ -46,13 +46,13 @@ private:
 
 public:
    //Saves the StaticMeshReferences in the source file to work on
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Init")
+   UFUNCTION(BlueprintCallable, Category = "math lab|point")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void InitPoint(ACoordinateSystemBase *coordinateSystem, LaserColors color, FMathPoint inPoint);
+   void InitPoint(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathPoint inPoint);
 
    //Called, when the objects need to update the position or other vales
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|point|Update")
+   UFUNCTION(BlueprintCallable, Category = "math lab|point")
    virtual void Update() override;
 
 

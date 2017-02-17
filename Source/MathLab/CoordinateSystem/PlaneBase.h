@@ -25,19 +25,19 @@ struct FMathPlane
 
 public:      
    UPROPERTY(BlueprintReadWrite, Category = "plane")
-   FVector Position;
+   FVector position;
    UPROPERTY(BlueprintReadWrite, Category = "plane")
-   FVector Direction1;
+   FVector direction1;
    UPROPERTY(BlueprintReadWrite, Category = "plane")
-   FVector Direction2;
+   FVector direction2;
 
-   FVector Normal;
+   FVector normal;
 
    /* Default constructor (no initialization). */
    FMathPlane();
    /* Constructor to set the plane with position and 2 directions. */
    FMathPlane(FVector inPosition, FVector inDirection1, FVector inDirection2);
-   /* Constructor to set the plane with position and 1 normal. */
+   /* Constructor to set the plane with position and normal. */
    FMathPlane(FMathPoint inPoint, FVector inNormal);
 };
 
@@ -57,30 +57,30 @@ public:
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "plane")
    FMathPlane plane;
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "plane")
-   PlaneMode Mode;
+   PlaneMode mode;
 
 private:
-   UStaticMeshComponent *PlaneMesh;
+   UStaticMeshComponent *planeMesh;
 
 // -------------------------------------------------------------------------------------------------
 
 public:
    //Saves the StaticMeshReferences in the source file to work on
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Init")
+   UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void InitPlane(ACoordinateSystemBase *coordinateSystem, LaserColors color, FMathPlane inPlane, PlaneMode mode);
+   void InitPlane(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathPlane inPlane, PlaneMode inMode);
 
    /* Returns the unified normal Vector of the plane. */
-   UFUNCTION(BlueprintPure, Category = "coordinate System|plane")
+   UFUNCTION(BlueprintPure, Category = "math lab|plane")
    FVector GetNormal();
 
    //Called, when the objects need to update the position or other vales
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Update")
+   UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    virtual void Update() override;
 
    //Sets up the Components to display the plane in the selected mode
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|plane|Setup")
+   UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    void BuildPlane();
 
 protected:

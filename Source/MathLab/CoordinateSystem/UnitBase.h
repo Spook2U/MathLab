@@ -18,26 +18,26 @@ public:
    virtual void BeginPlay() override;
 
 private:
-   UStaticMeshComponent *XAxis;
-   UStaticMeshComponent *YAxis;
-   UStaticMeshComponent *XLaser;
-   UStaticMeshComponent *YLaser;
+   UStaticMeshComponent *xAxis;
+   UStaticMeshComponent *yAxis;
+   UStaticMeshComponent *xLaser;
+   UStaticMeshComponent *yLaser;
 
 // -------------------------------------------------------------------------------------------------
 
 public:
    //Saves the StaticMeshReferences in the source file to work on
-   UFUNCTION(BlueprintCallable, Category = "unit|Init")
+   UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void InitUnit(ACoordinateSystemBase *coordinateSystem, LaserColors color, FVector coordinate);
+   void InitUnit(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FVector coordinate);
 
    //Called, when the objects need to update the position or other vales
-   UFUNCTION(BlueprintCallable, Category = "unit|Update")
+   UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    virtual void Update() override;
 
    //Scales the laser of the Unit to have the same length as the Axis
-   UFUNCTION(BlueprintCallable, Category = "unit|Setup")
+   UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    void ScaleUnitLaser();
 
    void OrientateToAxis(UStaticMeshComponent *axis);

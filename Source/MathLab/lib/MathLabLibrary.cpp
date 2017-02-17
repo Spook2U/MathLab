@@ -66,9 +66,9 @@ bool MathLabLibrary::IsPointInLine(FMathLine line, FMathPoint point)
 
    /* point  = pos + lambda*dir
    lambda = (point - pos) / dir */
-   float lambda =   (point.Coordinate.X - line.Position.X) / line.Direction.X;
-   if  ((lambda == ((point.Coordinate.Y - line.Position.Y) / line.Direction.Y)) &&
-      (lambda == ((point.Coordinate.Z - line.Position.Z) / line.Direction.Z)))
+   float lambda =   (point.coordinate.X - line.position.X) / line.direction.X;
+   if  ((lambda == ((point.coordinate.Y - line.position.Y) / line.direction.Y)) &&
+      (lambda == ((point.coordinate.Z - line.position.Z) / line.direction.Z)))
    {
       isInLine = true;
    }
@@ -79,15 +79,15 @@ bool MathLabLibrary::IsPointInLine(FMathLine line, FMathPoint point)
 bool MathLabLibrary::IsPointInPlane(FMathPlane plane, FMathPoint point)
 {
    bool isInPlane = false;
-   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane.Direction1.X, plane.Direction2.X, point.Coordinate.X-plane.Position.X}), 
-                                                       FNVector({plane.Direction1.Y, plane.Direction2.Y, point.Coordinate.Y-plane.Position.Y}), 
+   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane.direction1.X, plane.direction2.X, point.coordinate.X-plane.position.X}), 
+                                                       FNVector({plane.direction1.Y, plane.direction2.Y, point.coordinate.Y-plane.position.Y}), 
    }));
    FNVector scalars;
    switch(linearSystem.GetSolution().type)
    {
       case LSSolutionType::one:       
          scalars = linearSystem.GetSolution().solution;
-         if(point.Coordinate.Z == (plane.Position.Z + scalars.Get(0) * plane.Direction1.Z + scalars.Get(1) * plane.Direction2.Z))
+         if(point.coordinate.Z == (plane.position.Z + scalars.Get(0) * plane.direction1.Z + scalars.Get(1) * plane.direction2.Z))
          {
             isInPlane = true;
          }
@@ -102,25 +102,25 @@ bool MathLabLibrary::IsPointInPlane(FMathPlane plane, FMathPoint point)
 
 FVector MathLabLibrary::GetPointOnLine(FMathLine line, float scalar)
 {
-   return line.Position + scalar * line.Direction;
+   return line.position + scalar * line.direction;
 }
 
 FVector MathLabLibrary::GetPointOnPlane(FMathPlane plane, float scalar1, float scalar2)
 {
-   return plane.Position + scalar1 * plane.Direction1 + scalar2 * plane.Direction2;
+   return plane.position + scalar1 * plane.direction1 + scalar2 * plane.direction2;
 }
 
 
 
 float MathLabLibrary::HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point)
 {
-   return UKismetMathLibrary::Dot_VectorVector(plane.Normal, point.Coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.Normal, plane.Position);
+   return UKismetMathLibrary::Dot_VectorVector(plane.normal, point.coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.normal, plane.position);
 }
 
 FMathLine MathLabLibrary::GetIntersectionLine(FMathPlane plane, float u)
 {
    FMathLine line;
-   if(u != 0) { line = FMathLine(plane.Position, plane.Direction1 + plane.Direction2 / u); }
+   if(u != 0) { line = FMathLine(plane.position, plane.direction1 + plane.direction2 / u); }
    else       { MLD_ERR("u = 0; Division through 0 not allowed."); }       
    return line;
 }

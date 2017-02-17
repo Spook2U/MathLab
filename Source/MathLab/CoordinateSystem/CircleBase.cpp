@@ -8,9 +8,9 @@
 FMathCircle::FMathCircle() {}
 FMathCircle::FMathCircle(FVector inCenter, FVector inNormal, float inRadius)
 {
-   Center = inCenter;
-   Normal = inNormal;
-   Radius = inRadius;
+   center = inCenter;
+   normal = inNormal;
+   radius = inRadius;
 }
 
 void ACircleBase::SetComponents(TArray<UStaticMeshComponent*> components)
@@ -18,22 +18,22 @@ void ACircleBase::SetComponents(TArray<UStaticMeshComponent*> components)
    for(UStaticMeshComponent *c : components)
    {
       MLD_PTR_CHECK(c); if(!c) continue;
-      if(c->GetName().Equals("CircleMesh"))       { CircleMesh = c; }
-      if(c->GetName().Equals("CircleMeshBorder")) { CircleMeshBorder = c; }
+      if(c->GetName().Equals("CircleMesh"))       { circleMesh = c; }
+      if(c->GetName().Equals("CircleMeshBorder")) { circleMeshBorder = c; }
    }
 
-   MLD_PTR_CHECK(CircleMesh);
-   MLD_PTR_CHECK(CircleMeshBorder);
-   if(!(CircleMesh && CircleMeshBorder)) return;
-   AddLaserComponent(CircleMesh);
-   AddLaserComponent(CircleMeshBorder);
+   MLD_PTR_CHECK(circleMesh);
+   MLD_PTR_CHECK(circleMeshBorder);
+   if(!(circleMesh && circleMeshBorder)) return;
+   AddLaserComponent(circleMesh);
+   AddLaserComponent(circleMeshBorder);
 }
 
-void ACircleBase::InitCircle(ACoordinateSystemBase *coordinateSystem, LaserColors color, FMathCircle inCircle)
+void ACircleBase::InitCircle(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathCircle inCircle)
 {
-   MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
+   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   SetValuesGeometry(coordinateSystem, color);
+   SetValuesGeometry(inCoordinateSystem, color);
    circle = inCircle;
 
    type = GeometryType::circle;
@@ -42,32 +42,32 @@ void ACircleBase::InitCircle(ACoordinateSystemBase *coordinateSystem, LaserColor
 void ACircleBase::Update()
 {
    Super::Update();
-   SetPosition(circle.Center);
+   SetPosition(circle.center);
    BuildCircle();
 }
 
 void ACircleBase::BuildCircle()
 {
-   RotateLaserLookAt(circle.Center, circle.Center + circle.Normal);
-   ScalePlane(CircleMesh, circle.Radius*1.085);
-   ScalePlane(CircleMeshBorder, circle.Radius*1.085);
+   RotateLaserLookAt(circle.center, circle.center + circle.normal);
+   ScalePlane(circleMesh, circle.radius*1.085);
+   ScalePlane(circleMeshBorder, circle.radius*1.085);
 
    float sizeFactor = 1;
 
-   if     (circle.Radius <  1) sizeFactor = 0.0555;
-   else if(circle.Radius <  2) sizeFactor = 0.0455;
-   else if(circle.Radius <  3) sizeFactor = 0.0425;
-   else if(circle.Radius <  4) sizeFactor = 0.0406;
-   else if(circle.Radius <  5) sizeFactor = 0.0401;
-   else if(circle.Radius <  6) sizeFactor = 0.0399;
-   else if(circle.Radius <  7) sizeFactor = 0.0397;
-   else if(circle.Radius <  8) sizeFactor = 0.0395;
-   else if(circle.Radius <  9) sizeFactor = 0.0394;
-   else if(circle.Radius < 10) sizeFactor = 0.0393;
-   else if(circle.Radius < 11) sizeFactor = 0.0392;
+   if     (circle.radius <  1) sizeFactor = 0.0555;
+   else if(circle.radius <  2) sizeFactor = 0.0455;
+   else if(circle.radius <  3) sizeFactor = 0.0425;
+   else if(circle.radius <  4) sizeFactor = 0.0406;
+   else if(circle.radius <  5) sizeFactor = 0.0401;
+   else if(circle.radius <  6) sizeFactor = 0.0399;
+   else if(circle.radius <  7) sizeFactor = 0.0397;
+   else if(circle.radius <  8) sizeFactor = 0.0395;
+   else if(circle.radius <  9) sizeFactor = 0.0394;
+   else if(circle.radius < 10) sizeFactor = 0.0393;
+   else if(circle.radius < 11) sizeFactor = 0.0392;
    else                        sizeFactor = 0.0391;
 
-   CircleMeshBorder->SetScalarParameterValueOnMaterials(FName(TEXT("Substraction Radius")), 0.5 - sizeFactor);
+   circleMeshBorder->SetScalarParameterValueOnMaterials(FName(TEXT("Substraction Radius")), 0.5 - sizeFactor);
 }
 
 // Protected ----------------------------------------------------------------------------------------

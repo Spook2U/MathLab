@@ -7,13 +7,13 @@
 
 FCalcReturn CalcDistance::CalculateWith(FMathPoint point1, FMathPoint point2)   
 { 
-   return FCalcReturn(m.VectorDistance(point2.Coordinate, point1.Coordinate)); 
+   return FCalcReturn(m.VectorDistance(point2.coordinate, point1.coordinate)); 
 }
 FCalcReturn CalcDistance::CalculateWith(FMathPoint point, FMathLine line)      
 {
    /* Calculated with Surface of Vectorproduct and Surface of a triangle. */ 
-   FVector v = point.Coordinate - line.Position;
-   return FCalcReturn(UKismetMathLibrary::VSize(FVector::CrossProduct(v, line.Direction)) / UKismetMathLibrary::VSize(line.Direction)); 
+   FVector v = point.coordinate - line.position;
+   return FCalcReturn(UKismetMathLibrary::VSize(FVector::CrossProduct(v, line.direction)) / UKismetMathLibrary::VSize(line.direction)); 
 }
 FCalcReturn CalcDistance::CalculateWith(FMathPoint point, FMathPlane plane)    
 { 
@@ -21,7 +21,7 @@ FCalcReturn CalcDistance::CalculateWith(FMathPoint point, FMathPlane plane)
 }
 FCalcReturn CalcDistance::CalculateWith(FMathPoint point, FMathSphere sphere)  
 { 
-   return FCalcReturn(CalculateWith(FMathPoint(sphere.Coordinate), point).distance - sphere.Radius);
+   return FCalcReturn(CalculateWith(FMathPoint(sphere.coordinate), point).distance - sphere.radius);
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -37,8 +37,8 @@ FCalcReturn CalcDistance::CalculateWith(FMathLine line1, FMathLine line2)
    {
       case Relation::identical:    
       case Relation::intersection: distance = FCalcReturn(0.f); break;
-      case Relation::parallel:     distance = CalculateWith(FMathPoint(line1.Position), line2); break;
-      case Relation::skew:         distance = CalculateWith(FMathPoint(line2.Position), FMathPlane(FMathPoint(line1.Position), m.MakeNomal(line1.Direction, line2.Direction))); break;
+      case Relation::parallel:     distance = CalculateWith(FMathPoint(line1.position), line2); break;
+      case Relation::skew:         distance = CalculateWith(FMathPoint(line2.position), FMathPlane(FMathPoint(line1.position), m.MakeNomal(line1.direction, line2.direction))); break;
       default:                     MLD_WAR("Invalid Relative Position for 2 lines"); break;
    }
 
@@ -51,7 +51,7 @@ FCalcReturn CalcDistance::CalculateWith(FMathLine line, FMathPlane plane)
    {
       case Relation::inside:       
       case Relation::intersection: distance = 0.f; break;
-      case Relation::parallel:     distance = CalculateWith(FMathPoint(line.Position), plane); break;
+      case Relation::parallel:     distance = CalculateWith(FMathPoint(line.position), plane); break;
       default:                     MLD_WAR("Wrong Relative Position for line & plane"); break;
    }
 
@@ -59,7 +59,7 @@ FCalcReturn CalcDistance::CalculateWith(FMathLine line, FMathPlane plane)
 }
 FCalcReturn CalcDistance::CalculateWith(FMathLine line, FMathSphere sphere)  
 { 
-   return FCalcReturn(CalculateWith(FMathPoint(sphere.Coordinate), line).distance - sphere.Radius); 
+   return FCalcReturn(CalculateWith(FMathPoint(sphere.coordinate), line).distance - sphere.radius); 
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ FCalcReturn CalcDistance::CalculateWith(FMathPlane plane1, FMathPlane plane2)
    {
       case Relation::identical:    
       case Relation::intersection: distance = 0.f; break;
-      case Relation::parallel:     distance = CalculateWith(FMathPoint(plane1.Position), plane2); break;
+      case Relation::parallel:     distance = CalculateWith(FMathPoint(plane1.position), plane2); break;
       default:                     MLD_WAR("Wrong Relative Position for 2 planes"); break;
    }
 
@@ -96,7 +96,7 @@ FCalcReturn CalcDistance::CalculateWith(FMathPlane plane1, FMathPlane plane2)
 }
 FCalcReturn CalcDistance::CalculateWith(FMathPlane plane, FMathSphere sphere)  
 { 
-   return FCalcReturn(CalculateWith(FMathPoint(sphere.Coordinate), plane).distance - sphere.Radius); 
+   return FCalcReturn(CalculateWith(FMathPoint(sphere.coordinate), plane).distance - sphere.radius); 
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -115,5 +115,5 @@ FCalcReturn CalcDistance::CalculateWith(FMathSphere sphere, FMathPlane plane)
 }
 FCalcReturn CalcDistance::CalculateWith(FMathSphere sphere1, FMathSphere sphere2) 
 { 
-   return FCalcReturn(CalculateWith(FMathPoint(sphere2.Coordinate), FMathPoint(sphere1.Coordinate)).distance - sphere1.Radius - sphere2.Radius); 
+   return FCalcReturn(CalculateWith(FMathPoint(sphere2.coordinate), FMathPoint(sphere1.coordinate)).distance - sphere1.radius - sphere2.radius); 
 }

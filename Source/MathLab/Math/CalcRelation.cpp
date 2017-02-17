@@ -9,7 +9,7 @@
 FCalcReturn CalcRelation::CalculateWith(FMathPoint point1, FMathPoint point2)   
 { 
    FCalcReturn result;
-   if(point1.Coordinate == point2.Coordinate) { result.relation = Relation::identical; }
+   if(point1.coordinate == point2.coordinate) { result.relation = Relation::identical; }
    else                                       { result.relation = Relation::different; }
    return result;
 }
@@ -30,7 +30,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathPoint point, FMathPlane plane)
 FCalcReturn CalcRelation::CalculateWith(FMathPoint point, FMathSphere sphere)  
 { 
    FCalcReturn result;
-   if(CalcDistance().CalculateWith(point, FMathPoint(sphere.Coordinate)).distance <= sphere.Radius) { result.relation = Relation::inside;  }
+   if(CalcDistance().CalculateWith(point, FMathPoint(sphere.coordinate)).distance <= sphere.radius) { result.relation = Relation::inside;  }
    else                                                                                             { result.relation = Relation::outside; }
    return result;
 }
@@ -45,16 +45,16 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line1, FMathLine line2)
 { 
    FCalcReturn result;
 
-   if(UKismetMathLibrary::Normal(line1.Direction) == UKismetMathLibrary::Normal(line2.Direction))
+   if(UKismetMathLibrary::Normal(line1.direction) == UKismetMathLibrary::Normal(line2.direction))
    {
-      if(m.IsPointInLine(line1, line2.Position)) { result.relation = Relation::identical; }
+      if(m.IsPointInLine(line1, line2.position)) { result.relation = Relation::identical; }
       else                                       { result.relation = Relation::parallel;  }
    }
    else
    {
-      FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({line1.Direction.X, (-1)*line2.Direction.X, line2.Position.X-line1.Position.X}), 
-                                                           FNVector({line1.Direction.Y, (-1)*line2.Direction.Y, line2.Position.Y-line1.Position.Y}),
-                                                           FNVector({line1.Direction.Z, (-1)*line2.Direction.Z, line2.Position.Z-line1.Position.Z})
+      FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({line1.direction.X, (-1)*line2.direction.X, line2.position.X-line1.position.X}), 
+                                                           FNVector({line1.direction.Y, (-1)*line2.direction.Y, line2.position.Y-line1.position.Y}),
+                                                           FNVector({line1.direction.Z, (-1)*line2.direction.Z, line2.position.Z-line1.position.Z})
                                                           }));
 
       FNVector scalars;
@@ -82,9 +82,9 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line, FMathPlane plane)
 { 
    FCalcReturn result;
 
-   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane.Direction1.X, plane.Direction2.X, (-1)*line.Direction.X, line.Position.X-plane.Position.X}),
-                                                       FNVector({plane.Direction1.Y, plane.Direction2.Y, (-1)*line.Direction.Y, line.Position.Y-plane.Position.Y}),
-                                                       FNVector({plane.Direction1.Z, plane.Direction2.Z, (-1)*line.Direction.Z, line.Position.Z-plane.Position.Z})
+   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane.direction1.X, plane.direction2.X, (-1)*line.direction.X, line.position.X-plane.position.X}),
+                                                       FNVector({plane.direction1.Y, plane.direction2.Y, (-1)*line.direction.Y, line.position.Y-plane.position.Y}),
+                                                       FNVector({plane.direction1.Z, plane.direction2.Z, (-1)*line.direction.Z, line.position.Z-plane.position.Z})
    }));
    
    switch(linearSystem.GetSolution().type)
@@ -101,10 +101,10 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line, FMathSphere sphere)
 { 
    FCalcReturn result;
 
-   FVector  e = sphere.Coordinate - line.Position;
-   float    a = UKismetMathLibrary::Dot_VectorVector(e, m.MakeUnitVector(line.Direction));
+   FVector  e = sphere.coordinate - line.position;
+   float    a = UKismetMathLibrary::Dot_VectorVector(e, m.MakeUnitVector(line.direction));
    float    f;
-   float fSqu = sphere.Radius*sphere.Radius - e.Size()*e.Size() + a*a;
+   float fSqu = sphere.radius*sphere.radius - e.Size()*e.Size() + a*a;
 
    if(FLOAT_EQ_ZERO(fSqu) < 0) 
    { 
@@ -116,13 +116,13 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line, FMathSphere sphere)
       if(f == 0)  
       { 
          result.relation = Relation::intersection; 
-         result.intersections.point = m.GetPointOnLine(line, a/line.Direction.Size());
+         result.intersections.point = m.GetPointOnLine(line, a/line.direction.Size());
       }
       else
       { 
          result.relation = Relation::intersection; 
-         result.intersections.puncture.entry = m.GetPointOnLine(line, (a-f)/line.Direction.Size());
-         result.intersections.puncture.exit  = m.GetPointOnLine(line, (a+f)/line.Direction.Size());
+         result.intersections.puncture.entry = m.GetPointOnLine(line, (a-f)/line.direction.Size());
+         result.intersections.puncture.exit  = m.GetPointOnLine(line, (a+f)/line.direction.Size());
       }   
    }
    return result;
@@ -141,14 +141,14 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane, FMathLine line)
 FCalcReturn CalcRelation::CalculateWith(FMathPlane plane1, FMathPlane plane2)   
 { 
    FCalcReturn result;
-   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane1.Direction1.X, plane1.Direction2.X, (-1)*plane2.Direction1.X, (-1)*plane2.Direction2.X, plane2.Position.X-plane1.Position.X}),
-                                                        FNVector({plane1.Direction1.Y, plane1.Direction2.Y, (-1)*plane2.Direction1.Y, (-1)*plane2.Direction2.Y, plane2.Position.Y-plane1.Position.Y}),
-                                                        FNVector({plane1.Direction1.Z, plane1.Direction2.Z, (-1)*plane2.Direction1.Z, (-1)*plane2.Direction2.Z, plane2.Position.Z-plane1.Position.Z})
+   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane1.direction1.X, plane1.direction2.X, (-1)*plane2.direction1.X, (-1)*plane2.direction2.X, plane2.position.X-plane1.position.X}),
+                                                        FNVector({plane1.direction1.Y, plane1.direction2.Y, (-1)*plane2.direction1.Y, (-1)*plane2.direction2.Y, plane2.position.Y-plane1.position.Y}),
+                                                        FNVector({plane1.direction1.Z, plane1.direction2.Z, (-1)*plane2.direction1.Z, (-1)*plane2.direction2.Z, plane2.position.Z-plane1.position.Z})
                                                        }));
    switch(linearSystem.GetSolution().type)
    {
       case LSSolutionType::endless:   
-         if(m.MakeUnitVector(plane1.Normal) == m.MakeUnitVector(plane2.Normal))
+         if(m.MakeUnitVector(plane1.normal) == m.MakeUnitVector(plane2.normal))
          {
             result.relation = Relation::identical; 
          }
@@ -173,21 +173,21 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane, FMathSphere sphere)
    }
    else
    {
-      FMathLine perpLine = FMathLine(sphere.Coordinate, plane.Normal);
+      FMathLine perpLine = FMathLine(sphere.coordinate, plane.normal);
       FMathPoint perpLineIntersection = CalculateWith(perpLine, plane).intersections.point;
 
       if(distance == 0)
       {
          result.relation = Relation::intersection; 
-         result.intersections.point = perpLineIntersection.Coordinate;
+         result.intersections.point = perpLineIntersection.coordinate;
       }
       else
       {
-         float dist = CalcDistance().CalculateWith(perpLineIntersection, sphere.Coordinate).distance;
-         float circleRadius = m.SetOfPythagorasGetA(dist, sphere.Radius);
+         float dist = CalcDistance().CalculateWith(perpLineIntersection, sphere.coordinate).distance;
+         float circleRadius = m.SetOfPythagorasGetA(dist, sphere.radius);
 
          result.relation = Relation::intersection;
-         result.intersections.circle = FMathCircle(perpLineIntersection.Coordinate, plane.Normal, circleRadius);
+         result.intersections.circle = FMathCircle(perpLineIntersection.coordinate, plane.normal, circleRadius);
       }
    }
    return result;

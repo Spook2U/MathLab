@@ -45,19 +45,19 @@ public:
 
 public:
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
-   ACoordinateSystemBase *CoordinateSystem;
+   ACoordinateSystemBase *coordinateSystem;
 
    //Saves all Components, which have a LaserMaterial
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
-   TArray<UStaticMeshComponent *> LaserCompoents;
+   TArray<UStaticMeshComponent *> laserCompoents;
 
    //Saves all objects, which are used a guides for the objcet
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
-   TArray<AVectorStruct *> VectorGuides;
+   TArray<AVectorStruct *> vectorGuides;
 
    //Used to determine the size of the object
    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "geometry")
-   float Size;
+   float size;
 
    GeometryType type;
 
@@ -65,29 +65,29 @@ public:
 
 public:
    //Converts the given Coordinate to the Location in the Scene
-   UFUNCTION(BlueprintPure, Category = "coordinate System|geometry|Util|")
+   UFUNCTION(BlueprintPure, Category = "math lab|geometry")
    FVector CoordinateToLocation(FVector coordinate);
 
    //Called, when the objects need to update the position or other vales
    virtual void Update();
 
    //Updates the visible area of the Material
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Update")
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void UpdateRendering();
 
    //Sets Location of the object based on the Coordinate
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Setup")
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void SetPosition(FVector coordinate);
 
    //Sets Color and Glowiness depending to the enum value and changes the Material of all Laser Components in the array
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry|Setup")
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void SetColor(LaserColors color);
 
    //Shows or Hides the guide objects
-   UFUNCTION(BlueprintCallable, Category = "coordinate System|geometry")
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void ShowVectorGuides(bool show);
 
-   void SetValuesGeometry(ACoordinateSystemBase *coordinateSystem, LaserColors color);
+   void SetValuesGeometry(ACoordinateSystemBase *inCoordinateSystem, LaserColors color);
    
 
 
