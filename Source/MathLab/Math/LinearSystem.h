@@ -14,7 +14,6 @@ enum class LSSolutionType : uint8
    one       UMETA(DisplayName = "Defined Solution"),   
    no        UMETA(DisplayName = "Not solvable"),   
    endless   UMETA(DisplayName = "Endless Solutions"),
-   parameter UMETA(DisplayName = "Solution with Parameter"),
    notSolved UMETA(DisplayName = "Not Solved")
 };
 
@@ -65,14 +64,17 @@ public:
    /* Default constructor (no initialization). */
    FLinearSystem();
 
-   /* Constructor to setup a coefficient matrix for a linear equalation. 
+   /* Constructor to setup a coefficient matrix for a linear system. 
       The Matrix needs to be in the format: n+1 columns, n rows. */
    FLinearSystem(const FNMatrix inMatrix);
 
    /* Returns the solution of the linear system. Solves it on first call. */
    FLSSolution GetSolution();
 
-   /* Get a textual representation of this linear equalation. */
+   /* Returns the number of variables within the linear system. */
+   int NumberOfVariables();
+
+   /* Get a textual representation of this linear system. */
    FString ToString() const;
 
 private:
@@ -87,8 +89,7 @@ private:
    bool CheckColumnZero();
    void PivotToOne();
    void MakeRowPivotToZero();
-   bool UniqueSolutionPossible();
-   bool CheckCoefficentZero();
-   bool CheckRowsZero();
+   bool CheckUnsolveable();
+   int CountNonZeroRows();
    void SolveLog(int row, FString notice, bool comment = true);
 };

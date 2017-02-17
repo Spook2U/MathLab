@@ -184,7 +184,7 @@ public:
 
    /* Returns the relative Positio from one geometry to the other.*/
    UFUNCTION(BlueprintCallable, Category = "coordinate System|Calculate", DisplayName = "Relative Position")
-   Relation GetRelativePosition(AGeometryBase *from, AGeometryBase *to);
+   FRelativePosition GetRelativePosition(AGeometryBase *from, AGeometryBase *to);
 
 
 

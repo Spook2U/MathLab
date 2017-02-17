@@ -17,7 +17,7 @@ FCalcReturn CalcDistance::CalculateWith(FMathPoint point, FMathLine line)
 }
 FCalcReturn CalcDistance::CalculateWith(FMathPoint point, FMathPlane plane)    
 { 
-   return FCalcReturn(m.HesseNormalFormPlugIn(plane, point)); 
+   return FCalcReturn(UKismetMathLibrary::Abs(m.HesseNormalFormPlugIn(plane, point))); 
 }
 FCalcReturn CalcDistance::CalculateWith(FMathPoint point, FMathSphere sphere)  
 { 
@@ -52,7 +52,7 @@ FCalcReturn CalcDistance::CalculateWith(FMathLine line, FMathPlane plane)
       case Relation::inside:       
       case Relation::intersection: distance = 0.f; break;
       case Relation::parallel:     distance = CalculateWith(FMathPoint(line.Position), plane); break;
-      default:                     MLD_WAR("Wrong Relative Position for line & planes"); break;
+      default:                     MLD_WAR("Wrong Relative Position for line & plane"); break;
    }
 
    return distance;
@@ -75,6 +75,15 @@ FCalcReturn CalcDistance::CalculateWith(FMathPlane plane, FMathLine line)
 FCalcReturn CalcDistance::CalculateWith(FMathPlane plane1, FMathPlane plane2)   
 { 
    FCalcReturn distance;
+
+   switch(CalcRelation().CalculateWith(plane1, plane2).relation)
+   {
+      case Relation::identical:    MLD_LOG("identical"); break;
+      case Relation::intersection: MLD_LOG("intersection"); break;
+      case Relation::parallel:     MLD_LOG("Parallel"); break;
+      default:                     MLD_WAR("Wrong Relative Position for 2 planes"); break;
+   }
+
    switch(CalcRelation().CalculateWith(plane1, plane2).relation)
    {
       case Relation::identical:    

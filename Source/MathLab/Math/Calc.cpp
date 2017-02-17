@@ -20,47 +20,49 @@ FCalcReturn Calc::Calculate(AGeometryBase *g1, AGeometryBase *g2)
 {
    if(!(MLD_PTR_CHECK(g1) && MLD_PTR_CHECK(g2))) return FCalcReturn();
 
+   FCalcReturn ret;
+
    switch(g1->type)
    {
       case GeometryType::point:  
          switch(g2->type)
          {
-            case GeometryType::point:  CalculateWith(((APointBase *) g1)->point, ((APointBase *)  g2)->point);  break;
-            case GeometryType::line:   CalculateWith(((APointBase *) g1)->point, ((ALineBase *)   g2)->line);   break;
-            case GeometryType::plane:  CalculateWith(((APointBase *) g1)->point, ((APlaneBase *)  g2)->plane);  break;
-            case GeometryType::sphere: CalculateWith(((APointBase *) g1)->point, ((ASphereBase *) g2)->sphere); break;
+            case GeometryType::point:  ret = CalculateWith(((APointBase *) g1)->point, ((APointBase *)  g2)->point);  break;
+            case GeometryType::line:   ret = CalculateWith(((APointBase *) g1)->point, ((ALineBase *)   g2)->line);   break;
+            case GeometryType::plane:  ret = CalculateWith(((APointBase *) g1)->point, ((APlaneBase *)  g2)->plane);  break;
+            case GeometryType::sphere: ret = CalculateWith(((APointBase *) g1)->point, ((ASphereBase *) g2)->sphere); break;
          }
       break;
       case GeometryType::line:   
          switch(g2->type)
          {
-            case GeometryType::point:  CalculateWith(((ALineBase *) g1)->line, ((APointBase *)  g2)->point);  break;
-            case GeometryType::line:   CalculateWith(((ALineBase *) g1)->line, ((ALineBase *)   g2)->line);   break;
-            case GeometryType::plane:  CalculateWith(((ALineBase *) g1)->line, ((APlaneBase *)  g2)->plane);  break;
-            case GeometryType::sphere: CalculateWith(((ALineBase *) g1)->line, ((ASphereBase *) g2)->sphere); break;
+            case GeometryType::point:  ret = CalculateWith(((ALineBase *) g1)->line, ((APointBase *)  g2)->point);  break;
+            case GeometryType::line:   ret = CalculateWith(((ALineBase *) g1)->line, ((ALineBase *)   g2)->line);   break;
+            case GeometryType::plane:  ret = CalculateWith(((ALineBase *) g1)->line, ((APlaneBase *)  g2)->plane);  break;
+            case GeometryType::sphere: ret = CalculateWith(((ALineBase *) g1)->line, ((ASphereBase *) g2)->sphere); break;
          }
       break;
       case GeometryType::plane:  
          switch(g2->type)
          {
-            case GeometryType::point:  CalculateWith(((APlaneBase *) g1)->plane, ((APointBase *)  g2)->point);  break;
-            case GeometryType::line:   CalculateWith(((APlaneBase *) g1)->plane, ((ALineBase *)   g2)->line);   break;
-            case GeometryType::plane:  CalculateWith(((APlaneBase *) g1)->plane, ((APlaneBase *)  g2)->plane);  break;
-            case GeometryType::sphere: CalculateWith(((APlaneBase *) g1)->plane, ((ASphereBase *) g2)->sphere); break;
+            case GeometryType::point:  ret = CalculateWith(((APlaneBase *) g1)->plane, ((APointBase *)  g2)->point);  break;
+            case GeometryType::line:   ret = CalculateWith(((APlaneBase *) g1)->plane, ((ALineBase *)   g2)->line);   break;
+            case GeometryType::plane:  ret = CalculateWith(((APlaneBase *) g1)->plane, ((APlaneBase *)  g2)->plane);  break;
+            case GeometryType::sphere: ret = CalculateWith(((APlaneBase *) g1)->plane, ((ASphereBase *) g2)->sphere); break;
          }
       break;
       case GeometryType::sphere: 
          switch(g2->type)
          {
-            case GeometryType::point:  CalculateWith(((ASphereBase *) g1)->sphere, ((APointBase *)  g2)->point);  break;
-            case GeometryType::line:   CalculateWith(((ASphereBase *) g1)->sphere, ((ALineBase *)   g2)->line);   break;
-            case GeometryType::plane:  CalculateWith(((ASphereBase *) g1)->sphere, ((APlaneBase *)  g2)->plane);  break;
-            case GeometryType::sphere: CalculateWith(((ASphereBase *) g1)->sphere, ((ASphereBase *) g2)->sphere); break;
+            case GeometryType::point:  ret = CalculateWith(((ASphereBase *) g1)->sphere, ((APointBase *)  g2)->point);  break;
+            case GeometryType::line:   ret = CalculateWith(((ASphereBase *) g1)->sphere, ((ALineBase *)   g2)->line);   break;
+            case GeometryType::plane:  ret = CalculateWith(((ASphereBase *) g1)->sphere, ((APlaneBase *)  g2)->plane);  break;
+            case GeometryType::sphere: ret = CalculateWith(((ASphereBase *) g1)->sphere, ((ASphereBase *) g2)->sphere); break;
          }
       break;
    }
 
-   return FCalcReturn();
+   return ret;
 }
 
 

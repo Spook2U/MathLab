@@ -39,7 +39,6 @@ FLSSolution FLinearSystem::GetSolution()
 
       if(pivot == 0)
       {
-         //if(LastPivot())       { break; }
          if(SwitchRow())       { pivotIndex--; continue; }
          if(CheckColumnZero()) { continue; }
       }
@@ -57,23 +56,38 @@ FLSSolution FLinearSystem::GetSolution()
    }
 
    // Interpretation of the solution
-   if(CheckRowsZero())            { solution = FLSSolution(LSSolutionType::endless); }
-   else if(CheckCoefficentZero()) { solution = FLSSolution(LSSolutionType::no);      }
+   if(CheckUnsolveable()) { solution = FLSSolution(LSSolutionType::no); }
+   else if(CountNonZeroRows() >= NumberOfVariables())
+   {
+      solution = FLSSolution(LSSolutionType::one, CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1));
+   }
    else
    {
-      if(UniqueSolutionPossible())
-      {
-         solution = FLSSolution(LSSolutionType::one, CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1));
-      }
-      else
-      {
-         solution = FLSSolution(LSSolutionType::parameter, FNVector({CoefficientMatrix.GetElement(CoefficientMatrix.RowNum(), CoefficientMatrix.RowNum()-1)}));
-      }
+      solution = FLSSolution(LSSolutionType::endless, FNVector({CoefficientMatrix.GetElement(CoefficientMatrix.RowNum(), CoefficientMatrix.RowNum()-1)}));
    }
+
+   //if(CountNonZeroRows() < NumberOfVariables()) { solution = FLSSolution(LSSolutionType::endless); }
+   //else if(CheckUnsolveable())                                         { solution = FLSSolution(LSSolutionType::no);      }
+   //else
+   //{
+   //   if(CoefficientMatrix.RowNum() >= NumberOfVariables())
+   //   {
+   //      solution = FLSSolution(LSSolutionType::one, CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1));
+   //   }
+   //   else
+   //   {
+   //      solution = FLSSolution(LSSolutionType::parameter, FNVector({CoefficientMatrix.GetElement(CoefficientMatrix.RowNum(), CoefficientMatrix.RowNum()-1)}));
+   //   }
+   //}
 
    SolveLog(0, "", false);
 
    return solution;
+}
+
+int FLinearSystem::NumberOfVariables()
+{
+   return CoefficientMatrix.ColumnNum() - 1;
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -230,40 +244,39 @@ void FLinearSystem::MakeRowPivotToZero()
    }
 }
 
-bool FLinearSystem::UniqueSolutionPossible()
+bool FLinearSystem::CheckUnsolveable()
 {
-   return CoefficientMatrix.RowNum() >= (CoefficientMatrix.ColumnNum() - 1);
-}
-
-bool FLinearSystem::CheckCoefficentZero()
-{
-   bool isZero = false;
+   bool unsolveable = false;
    for(int row = 0; row < CoefficientMatrix.RowNum(); row++)
    {
+      // Check if all coeffiecients are 0
       if(CheckRowZeroFromTo(row, 0, CoefficientMatrix.ColumnNum()-1))
       {
-         isZero = true;
-         break;
+         // Check if last colum is not 0
+         if(CoefficientMatrix.GetElement(CoefficientMatrix.ColumnNum()-1, row) != 0)
+         {
+            unsolveable = true;
+            break;
+         }
       }
    }
 
-   return isZero;
+   return unsolveable;
 }
 
-bool FLinearSystem::CheckRowsZero()
+int FLinearSystem::CountNonZeroRows()
 {
-   bool isZero = false;
+   int zeroRows = 0;
 
    for(int row = 0; row < CoefficientMatrix.RowNum(); row++)
    {
       if(CheckRowZeroFromTo(row, 0, CoefficientMatrix.ColumnNum()))
       {
-         isZero = true;
-         break;
+         zeroRows++;
       }
    }
 
-   return isZero;
+   return CoefficientMatrix.RowNum() - zeroRows;
 }
 
 void FLinearSystem::SolveLog(int row, FString notice, bool comment)

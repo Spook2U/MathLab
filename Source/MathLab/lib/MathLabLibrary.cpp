@@ -30,9 +30,10 @@ float MathLabLibrary::GetDistance(AGeometryBase *from, AGeometryBase *to)
 {
    return CalcDistance().Calculate(from, to).distance;
 }
-Relation MathLabLibrary::GetRelativePosition(AGeometryBase *from, AGeometryBase *with)
+FRelativePosition MathLabLibrary::GetRelativePosition(AGeometryBase *from, AGeometryBase *with)
 {
-   return CalcRelation().Calculate(from, with).relation;
+   FCalcReturn calcReturn = CalcRelation().Calculate(from, with);
+   return FRelativePosition(calcReturn.relation, calcReturn.intersections);
 }
 
 
@@ -113,7 +114,6 @@ FVector MathLabLibrary::GetPointOnPlane(FMathPlane plane, float scalar1, float s
 
 float MathLabLibrary::HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point)
 {
-   MLD_LOG("HesseNormalFormPlugIn: Point: %s   +   Plane: %s, %s, %s   = %f", *point.Coordinate.ToString(), *plane.Position.ToString(), *plane.Direction1.ToString(), *plane.Direction2.ToString(), UKismetMathLibrary::Dot_VectorVector(plane.Normal, point.Coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.Normal, plane.Position));
    return UKismetMathLibrary::Dot_VectorVector(plane.Normal, point.Coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.Normal, plane.Position);
 }
 

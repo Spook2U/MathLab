@@ -18,7 +18,7 @@ ACoordinateSystemBase::ACoordinateSystemBase()
 
    UnitSizeFactor = 0.5f;
    LaserSizeFactor = 0.4f;
-   Glowiness = 10.f;
+   Glowiness = 1.f;
 
    Elements;
    ConvertFactor = 0;
@@ -294,7 +294,7 @@ float ACoordinateSystemBase::Distance(AGeometryBase *from, AGeometryBase *to)
    return m.GetDistance(from, to);
 }
 
-Relation ACoordinateSystemBase::GetRelativePosition(AGeometryBase *from, AGeometryBase *to)
+FRelativePosition ACoordinateSystemBase::GetRelativePosition(AGeometryBase *from, AGeometryBase *to)
 {
    if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return Relation::undefined;
 

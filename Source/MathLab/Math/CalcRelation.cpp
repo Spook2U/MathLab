@@ -53,7 +53,8 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line1, FMathLine line2)
    else
    {
       FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({line1.Direction.X, (-1)*line2.Direction.X, line2.Position.X-line1.Position.X}), 
-                                                           FNVector({line1.Direction.Y, (-1)*line2.Direction.Y, line2.Position.Y-line1.Position.Y})
+                                                           FNVector({line1.Direction.Y, (-1)*line2.Direction.Y, line2.Position.Y-line1.Position.Y}),
+                                                           FNVector({line1.Direction.Z, (-1)*line2.Direction.Z, line2.Position.Z-line1.Position.Z})
                                                           }));
 
       FNVector scalars;
@@ -64,7 +65,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line1, FMathLine line2)
             if(m.GetPointOnLine(line1, scalars.Get(0)) == m.GetPointOnLine(line2, scalars.Get(1)))
             {
                result.relation = Relation::intersection;
-               result.intersections.point = m.GetPointOnLine(line1, scalars.Get(0));
+               result.intersections.point = FMathPoint(m.GetPointOnLine(line1, scalars.Get(0)));
             }
             else
             {
@@ -141,16 +142,23 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane1, FMathPlane plane2)
 { 
    FCalcReturn result;
    FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane1.Direction1.X, plane1.Direction2.X, (-1)*plane2.Direction1.X, (-1)*plane2.Direction2.X, plane2.Position.X-plane1.Position.X}),
-                                                       FNVector({plane1.Direction1.Y, plane1.Direction2.Y, (-1)*plane2.Direction1.Y, (-1)*plane2.Direction2.Y, plane2.Position.Y-plane1.Position.Y}),
-                                                       FNVector({plane1.Direction1.Z, plane1.Direction2.Z, (-1)*plane2.Direction1.Z, (-1)*plane2.Direction2.Z, plane2.Position.X-plane1.Position.Z})
-   }));
+                                                        FNVector({plane1.Direction1.Y, plane1.Direction2.Y, (-1)*plane2.Direction1.Y, (-1)*plane2.Direction2.Y, plane2.Position.Y-plane1.Position.Y}),
+                                                        FNVector({plane1.Direction1.Z, plane1.Direction2.Z, (-1)*plane2.Direction1.Z, (-1)*plane2.Direction2.Z, plane2.Position.Z-plane1.Position.Z})
+                                                       }));
    switch(linearSystem.GetSolution().type)
    {
-      case LSSolutionType::parameter: result.relation = Relation::intersection; 
-                                      result.intersections.line = m.GetIntersectionLine(plane2, (-1)*linearSystem.GetSolution().solution.Get(0)); 
+      case LSSolutionType::endless:   
+         if(m.MakeUnitVector(plane1.Normal) == m.MakeUnitVector(plane2.Normal))
+         {
+            result.relation = Relation::identical; 
+         }
+         else
+         {
+            result.relation = Relation::intersection; 
+            //result.intersections.line = m.GetIntersectionLine(plane2, (-1)*linearSystem.GetSolution().solution.Get(0)); 
+         }
       break;
-      case LSSolutionType::endless:   result.relation = Relation::identical; break;
-      case LSSolutionType::no:        result.relation = Relation::parallel; break;
+      case LSSolutionType::no: result.relation = Relation::parallel; break;
    }
    return result;
 }

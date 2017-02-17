@@ -91,7 +91,6 @@ public:
 class MATHLAB_API MathLabLibrary
 {
 public:
-
    MathLabLibrary();
    ~MathLabLibrary();
 
@@ -102,7 +101,7 @@ public:
 
    /* Determines the relatives position between 2 Geometry Objects.
    The return struct contains the relative position and depending on the relative postion an array of interception points. */
-   Relation GetRelativePosition(AGeometryBase *from, AGeometryBase *with);
+   FRelativePosition GetRelativePosition(AGeometryBase *from, AGeometryBase *with);
 
 // Vector Calculations -----------------------------------------------------------------------------
 
