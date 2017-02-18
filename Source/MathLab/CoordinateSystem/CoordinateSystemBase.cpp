@@ -249,41 +249,34 @@ void ACoordinateSystemBase::bp_debug_Screen(FString inString, FLinearColor color
    MLD_BLP(color.ToFColor(true), "%s", *inString); 
 }
 
-FString ACoordinateSystemBase::FNVectorToString(FNVector inNVector)
-{
-   return inNVector.ToString();
-}
-
-FString ACoordinateSystemBase::FNMatrixToString(FNMatrix inNMatrix)
-{
-   return inNMatrix.ToString();
-}
-
-FString ACoordinateSystemBase::FLinearEqualationToString(FLinearSystem inLinearEqualation)
-{
-   return inLinearEqualation.ToString();
-}
-
 void ACoordinateSystemBase::LE_Solve(FLinearSystem inLinearEqualation)
 {
    inLinearEqualation.GetSolution();
 }
 
-FString ACoordinateSystemBase::FPointToString(FMathPoint inPoint)
-{
-   return inPoint.coordinate.ToString();
-}
 
-APointBase *ACoordinateSystemBase::FPointToPointBP(FMathPoint inPoint)
-{
-   return AddPoint(laserColor, inPoint, false);
-}
 
-FMathPoint ACoordinateSystemBase::PointBPToFPoint(APointBase *inPoint)
-{
-   if(!MLD_PTR_CHECK(inPoint)) return FMathPoint();
-   return inPoint->point;
-}
+FString ACoordinateSystemBase::FNVectorToString(FNVector inNVector)          { return inNVector.ToString(); }
+FString ACoordinateSystemBase::FNMatrixToString(FNMatrix inNMatrix)          { return inNMatrix.ToString(); }
+FString ACoordinateSystemBase::FLinearSystemToString(FLinearSystem inSystem) { return inSystem.ToString(); }
+
+FString ACoordinateSystemBase::FMathCircleToString(FMathCircle inCircle) { return inCircle.ToString(); }
+FString ACoordinateSystemBase::FMathLineToString(FMathLine inLine)       { return inLine.ToString();   }
+FString ACoordinateSystemBase::FMathPlaneToString(FMathPlane inPlane)    { return inPlane.ToString();  }
+FString ACoordinateSystemBase::FMathPointToString(FMathPoint inPoint)    { return inPoint.ToString();  }
+FString ACoordinateSystemBase::FMathSphereToString(FMathSphere inSphere) { return inSphere.ToString(); }
+
+FString ACoordinateSystemBase::BPCircleToString(ACircleBase *inCircle)   { if(!MLD_PTR_CHECK(inCircle)) return ""; return inCircle->ToString(); }
+FString ACoordinateSystemBase::BPLineToString(ALineBase *inLine)         { if(!MLD_PTR_CHECK(inLine)) return "";   return inLine->ToString();   }
+FString ACoordinateSystemBase::BPPlaneToString(APlaneBase *inPlane)      { if(!MLD_PTR_CHECK(inPlane)) return "";  return inPlane->ToString();  }                                                                                                                                               
+FString ACoordinateSystemBase::BPPointToString(APointBase *inPoint)      { if(!MLD_PTR_CHECK(inPoint)) return "";  return inPoint->ToString();  }
+FString ACoordinateSystemBase::BPSphereToString(ASphereBase *inSphere)   { if(!MLD_PTR_CHECK(inSphere)) return ""; return inSphere->ToString(); }
+
+FMathCircle ACoordinateSystemBase::CircleBPToFCircle(ACircleBase *inCircle) { if(!MLD_PTR_CHECK(inCircle)) return FMathCircle(); return inCircle->circle; }                                                                                                                                                         
+FMathLine ACoordinateSystemBase::LineBPToFLine(ALineBase *inLine)           { if(!MLD_PTR_CHECK(inLine)) return FMathLine();     return inLine->line;     }                                                                                                                                                         
+FMathPlane ACoordinateSystemBase::PlaneBPToFPlane(APlaneBase *inPlane)      { if(!MLD_PTR_CHECK(inPlane)) return FMathPlane();   return inPlane->plane;   }                                                                                                                                                         
+FMathPoint ACoordinateSystemBase::PointBPToFPoint(APointBase *inPoint)      { if(!MLD_PTR_CHECK(inPoint)) return FMathPoint();   return inPoint->point;   }                                                                                                                                                         
+FMathSphere ACoordinateSystemBase::SphereBPToFSphere(ASphereBase *inSphere) { if(!MLD_PTR_CHECK(inSphere)) return FMathSphere(); return inSphere->sphere; }
 
 
 

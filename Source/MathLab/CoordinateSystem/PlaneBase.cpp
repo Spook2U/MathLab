@@ -25,7 +25,12 @@ FMathPlane::FMathPlane(FMathPoint inPoint, FVector inNormal)
    normal = inNormal;
 }
 
+FString FMathPlane::ToString()
+{
+   return FString::Printf(TEXT("Position %s, Direction 1: %s, Direction 2: %s"), *position.ToString(), *direction1.ToString(), *direction2.ToString());
+}
 
+// -------------------------------------------------------------------------------------------------
 
 APlaneBase::APlaneBase()
 {
@@ -95,6 +100,11 @@ void APlaneBase::BuildPlane()
       RotateLaserLookAt(plane.position, plane.position + plane.normal);
       SetLaserScale(planeMesh, FVector(coordinateSystem->MaxVisibleLength(), coordinateSystem->MaxVisibleLength(), NULL));
    }
+}
+
+FString APlaneBase::ToString()
+{
+   return FString::Printf(TEXT("%s; %s"), *Super::ToString(), *plane.ToString());
 }
 
 // Protected ----------------------------------------------------------------------------------------

@@ -13,6 +13,14 @@ FMathCircle::FMathCircle(FVector inCenter, FVector inNormal, float inRadius)
    radius = inRadius;
 }
 
+FString FMathCircle::ToString()
+{
+   return FString::Printf(TEXT("Center: %s, Radius: %f; laying on plane with Normal: %s"), *center.ToString(), radius, *normal.ToString());
+}
+
+// -------------------------------------------------------------------------------------------------
+
+
 void ACircleBase::SetComponents(TArray<UStaticMeshComponent*> components)
 {
    for(UStaticMeshComponent *c : components)
@@ -68,6 +76,11 @@ void ACircleBase::BuildCircle()
    else                        sizeFactor = 0.0391;
 
    circleMeshBorder->SetScalarParameterValueOnMaterials(FName(TEXT("Substraction Radius")), 0.5 - sizeFactor);
+}
+
+FString ACircleBase::ToString()
+{
+   return FString::Printf(TEXT("%s; %s"), *Super::ToString(), *circle.ToString());
 }
 
 // Protected ----------------------------------------------------------------------------------------

@@ -25,9 +25,11 @@ public:
    FMathCircle();
    /* Constructor to set the circle laying on a plane. */
    FMathCircle(FVector inCenter, FVector inNormal, float inRadius);
+   /* Get a textual representation of this Circle. */
+   FString ToString();
 };
 
-
+// -------------------------------------------------------------------------------------------------
 
 UCLASS()
 class MATHLAB_API ACircleBase : public AGeometryBase
@@ -42,7 +44,7 @@ private:
    UStaticMeshComponent *circleMesh;
    UStaticMeshComponent *circleMeshBorder;
 
-// -------------------------------------------------------------------------------------------------
+
 
 public:
    //Saves the StaticMeshReferences in the source file to work on
@@ -58,6 +60,9 @@ public:
    //Sets up the Components to display the circle
    UFUNCTION(BlueprintCallable, Category = "math lab|circle")
    void BuildCircle();
+
+   UFUNCTION(Blueprintcallable, Category = "math lab|circle")
+   virtual FString ToString() override;
 
 protected:
    virtual void CreateVectorGuides(LaserColors color) override;

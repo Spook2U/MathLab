@@ -14,6 +14,13 @@ ASphereBase::ASphereBase()
    sphereMesh = nullptr;
 }
 
+FString FMathSphere::ToString()
+{
+   return FString::Printf(TEXT("%s, Radius:s %f"), *Super::ToString(), radius);
+}
+
+// -------------------------------------------------------------------------------------------------
+
 void ASphereBase::BeginPlay()
 {
    Super::BeginPlay();
@@ -59,6 +66,11 @@ void ASphereBase::BuildSphere()
    ScaleSphere(sphereMesh, sphere.radius);
 }
 
+FString ASphereBase::ToString()
+{
+   return FString::Printf(TEXT("%s, Radius: %f"), *Super::ToString(), sphere.radius);
+}
+
 // Protected ----------------------------------------------------------------------------------------
 
 void ASphereBase::CreateVectorGuides(LaserColors color)
@@ -79,5 +91,4 @@ void ASphereBase::CreateVectorGuides(LaserColors color)
 
    AddVectorGuide(coordinateSystem->AddVectorStruct(color, sphere.coordinate, sphere.coordinate + FVector(sphere.radius, 0, 0), VectorStructMode::segment));
 }
-
 

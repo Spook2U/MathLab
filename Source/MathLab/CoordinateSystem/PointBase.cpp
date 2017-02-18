@@ -11,7 +11,12 @@
 FMathPoint::FMathPoint() {}
 FMathPoint::FMathPoint(FVector inCoordinate) : coordinate(inCoordinate) {}
 
+FString FMathPoint::ToString()
+{
+   return FString::Printf(TEXT("Coordinate %s"), *coordinate.ToString());
+}
 
+// -------------------------------------------------------------------------------------------------
 
 APointBase::APointBase()
 {
@@ -57,6 +62,11 @@ void APointBase::Update()
 {
    Super::Update();
    SetPosition(point.coordinate);
+}
+
+FString APointBase::ToString()
+{
+   return FString::Printf(TEXT("%s; %s"), *Super::ToString(), *point.ToString());
 }
 
 

@@ -15,7 +15,12 @@ FMathLine::FMathLine(FVector inPosition, FVector inDirection)
    direction = inDirection;
 }
 
+FString FMathLine::ToString()
+{
+   return FString::Printf(TEXT("Position %s, Direction: %s"), *position.ToString(), *direction.ToString());
+}
 
+// -------------------------------------------------------------------------------------------------
 
 ALineBase::ALineBase()
 {
@@ -28,9 +33,6 @@ void ALineBase::BeginPlay()
 {
    Super::BeginPlay();
 }
-
-
-
 
 void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
 {
@@ -92,6 +94,11 @@ void ALineBase::BuildLine()
    if     (mode == LineMode::line)    { SetLaserScale(lineMesh, FVector(NULL, NULL, coordinateSystem->MaxVisibleLength())); }
    else if(mode == LineMode::segment) { ScaleLine(lineMesh, UKismetMathLibrary::VSize(line.direction - line.position)); }
    else                               { ScaleVector(lineMesh, arrowheadMesh, UKismetMathLibrary::VSize(line.direction)); }
+}
+
+FString ALineBase::ToString()
+{
+   return FString::Printf(TEXT("%s; %s"), *Super::ToString(), *line.ToString());
 }
 
 // Protected ----------------------------------------------------------------------------------------

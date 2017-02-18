@@ -33,9 +33,11 @@ public:
    FMathLine();
    /* Constructor to set the line with position and direction. */
    FMathLine(FVector inPosition, FVector inDirection);
+   /* Get a textual representation of this Circle. */
+   FString ToString();
 };
 
-
+// -------------------------------------------------------------------------------------------------
 
 UCLASS()
 class MATHLAB_API ALineBase : public AGeometryBase
@@ -56,7 +58,7 @@ private:
    UStaticMeshComponent *lineMesh;
    UStaticMeshComponent *arrowheadMesh;
 
-// -------------------------------------------------------------------------------------------------
+
 
 public:
    /**Saves the StaticMeshReferences in the source file to work on*/
@@ -72,7 +74,10 @@ public:
    /**Sets up the Components to display the line in the selected mode*/
    UFUNCTION(BlueprintCallable, Category = "math lab|line")
    void BuildLine();
-   
+
+   UFUNCTION(Blueprintcallable, Category = "math lab|line")
+   virtual FString ToString() override;
+
 protected:
    virtual void CreateVectorGuides(LaserColors color) override;
 };

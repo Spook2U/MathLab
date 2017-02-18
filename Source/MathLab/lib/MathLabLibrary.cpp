@@ -12,6 +12,30 @@
 
 
 
+void FIntersections::SetCircle(FMathCircle inCircle)
+{
+   circle = inCircle;
+   type = IntersectionType::circle;
+}
+
+void FIntersections::SetLine(FMathLine inLine)
+{
+   line = inLine;
+   type = IntersectionType::line;
+}
+
+void FIntersections::SetPoint(FMathPoint inPoint)
+{
+   point = inPoint;
+   type = IntersectionType::point;
+}
+
+void FIntersections::SetPuncture(FPuncture inPuncture)
+{
+   puncture = inPuncture;
+   type = IntersectionType::puncture;
+}
+
 FRelativePosition::FRelativePosition(){}
 FRelativePosition::FRelativePosition(Relation inRelation, FIntersections inIntersections)
 {
@@ -141,8 +165,4 @@ float MathLabLibrary::SetOfPythagorasGetC(float a, float b)
 {
    return FMath::Sqrt(a*a + b*b);
 }
-
-
-
-
 

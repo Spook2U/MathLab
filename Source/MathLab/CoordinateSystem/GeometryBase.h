@@ -89,6 +89,7 @@ public:
 
    void SetValuesGeometry(ACoordinateSystemBase *inCoordinateSystem, LaserColors color);
    
+   virtual FString ToString();
 
 
 protected:

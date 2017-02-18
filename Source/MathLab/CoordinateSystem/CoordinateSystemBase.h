@@ -154,28 +154,51 @@ public:
    UFUNCTION(BlueprintCallable, DisplayName = "Print (Debug)", Category = "math lab|string", meta = (Keywords = "mld, print, debug, printdebug"))
    static void bp_debug_Screen(FString inString = "Hello", FLinearColor color = FLinearColor::White);
 
-   UFUNCTION(BlueprintPure, DisplayName = "ToString (nVector)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
-   FString FNVectorToString(FNVector inNVector);
-
-   UFUNCTION(BlueprintPure, DisplayName = "ToString (nMatrix)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
-   FString FNMatrixToString(FNMatrix inNMatrix);
-
-   UFUNCTION(BlueprintPure, DisplayName = "ToString (Linear Equalation)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
-   FString FLinearEqualationToString(FLinearSystem inLinearEqualation);
-
    UFUNCTION(BlueprintCallable, Category = "Math Lab|Linear Equalation")
    void LE_Solve(FLinearSystem inLinearEqualation);
 
+   // Autocast Function
+   
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (nVector)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString FNVectorToString(FNVector inNVector);
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (nMatrix)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString FNMatrixToString(FNMatrix inNMatrix);
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Linear System)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString FLinearSystemToString(FLinearSystem inSystem);
+   
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Math Circle)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString FMathCircleToString(FMathCircle inCircle);
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Math Line)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString FMathLineToString(FMathLine inLine);
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Math Plane)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString FMathPlaneToString(FMathPlane inPlane);
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Math Point)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString FMathPointToString(FMathPoint inPoint);
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Math Sphere)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString FMathSphereToString(FMathSphere inSphere);
+   
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Circle Base)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString BPCircleToString(ACircleBase *inCircle);
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Line Base)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString BPLineToString(ALineBase *inLine);
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Plane Base)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString BPPlaneToString(APlaneBase *inPlane);
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Point Base)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString BPPointToString(APointBase *inPoint);
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Sphere Base)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString BPSphereToString(ASphereBase *inSphere);
 
-
-   UFUNCTION(BlueprintPure, DisplayName = "ToString (Point)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
-   FString FPointToString(FMathPoint inPoint);
-
-   UFUNCTION(BlueprintPure, DisplayName = "ToPointBase (Point struct)", Category = "math lab|point", meta = (CompactNodeTitle = "->", BlueprintAutocast))
-   APointBase *FPointToPointBP(FMathPoint inPoint);
-
-   UFUNCTION(BlueprintPure, DisplayName = "ToPointStruct (Point)", Category = "math lab|point", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   UFUNCTION(BlueprintPure, DisplayName = "ToCircleStruct (Circle Base)", Category = "math lab|struct", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FMathCircle CircleBPToFCircle(ACircleBase *inCircle);
+   UFUNCTION(BlueprintPure, DisplayName = "ToLineStruct (Line Base)", Category = "math lab|struct", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FMathLine LineBPToFLine(ALineBase *inLine);
+   UFUNCTION(BlueprintPure, DisplayName = "ToPlaneStruct (Plane Base)", Category = "math lab|struct", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FMathPlane PlaneBPToFPlane(APlaneBase *inPlane);
+   UFUNCTION(BlueprintPure, DisplayName = "ToPointStruct (Point Base)", Category = "math lab|struct", meta = (CompactNodeTitle = "->", BlueprintAutocast))
    FMathPoint PointBPToFPoint(APointBase *inPoint);
+   UFUNCTION(BlueprintPure, DisplayName = "ToSphereStruct (Sphere Base)", Category = "math lab|struct", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FMathSphere SphereBPToFSphere(ASphereBase *inSphere);
+
 
 
    /* Returns the distance from one geometry to the other.*/

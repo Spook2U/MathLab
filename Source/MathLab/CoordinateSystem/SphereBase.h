@@ -17,9 +17,11 @@ public:
    UPROPERTY(BlueprintReadWrite, Category = "sphere")
    float radius;
 
+   /* Get a textual representation of this Plane. */
+   FString ToString();
 };
 
-
+// -------------------------------------------------------------------------------------------------
 
 UCLASS()
 class MATHLAB_API ASphereBase : public APointBase
@@ -38,7 +40,7 @@ public:
 private:
    UStaticMeshComponent *sphereMesh;
 
-// -------------------------------------------------------------------------------------------------
+
 
 public:
    //Saves the StaticMeshReferences in the source file to work on
@@ -54,6 +56,9 @@ public:
    //Sets up the Components to display the sphere with the specified radus
    UFUNCTION(BlueprintCallable, Category = "math lab|sphere")
    void BuildSphere();
+
+   UFUNCTION(Blueprintcallable, Category = "math lab|sphere")
+   virtual FString ToString() override;
 
 protected:
    virtual void CreateVectorGuides(LaserColors color) override;

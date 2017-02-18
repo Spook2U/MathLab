@@ -35,6 +35,17 @@ enum class Relation : uint8
    undefined     UMETA(DisplayName = "Undefined")
 };
 
+/* Defines the type of the intersection. */
+UENUM(BlueprintType)
+enum class IntersectionType : uint8
+{
+   point    UMETA(DisplayName = "Point"),   
+   line     UMETA(DisplayName = "Line"),   
+   circle   UMETA(DisplayName = "Circle"),   
+   puncture UMETA(DisplayName = "Puncture"),   
+   no       UMETA(DisplayName = "No")   
+};
+
 
 
 USTRUCT(BlueprintType)
@@ -58,13 +69,20 @@ struct FIntersections
 
 public:      
    UPROPERTY(BlueprintReadWrite, Category = "math lab")
-   FMathPoint point;
-   UPROPERTY(BlueprintReadWrite, Category = "math lab")
-   FMathLine line;
+   IntersectionType type;
    UPROPERTY(BlueprintReadWrite, Category = "math lab")
    FMathCircle circle;
    UPROPERTY(BlueprintReadWrite, Category = "math lab")
+   FMathLine line;
+   UPROPERTY(BlueprintReadWrite, Category = "math lab")
+   FMathPoint point;
+   UPROPERTY(BlueprintReadWrite, Category = "math lab")
    FPuncture puncture;
+
+   void SetPoint(FMathPoint inPoint);
+   void SetLine(FMathLine inLine);
+   void SetCircle(FMathCircle inCircle);
+   void SetPuncture(FPuncture inPuncture);
 };   
    
    
@@ -96,11 +114,11 @@ public:
 
 // Geometry Calculations ---------------------------------------------------------------------------
 
-   /* Calculates the Distance between 2 Geometry Objects.*/
+   /* Calculates the Distance between 2 Geometry Objects. */
    float GetDistance(AGeometryBase *from, AGeometryBase *to);
 
    /* Determines the relatives position between 2 Geometry Objects.
-   The return struct contains the relative position and depending on the relative postion an array of interception points. */
+      The return struct contains the relative position and depending on the relative postion an array of interception points. */
    FRelativePosition GetRelativePosition(AGeometryBase *from, AGeometryBase *with);
 
 // Vector Calculations -----------------------------------------------------------------------------

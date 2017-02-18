@@ -21,9 +21,11 @@ public:
    FMathPoint();
    /* Constructor to set the coordinate of the point. */
    FMathPoint(FVector inCoordinate);
+   /* Get a textual representation of this Plane. */
+   FString ToString();
 };
 
-
+// -------------------------------------------------------------------------------------------------
 
 UCLASS()
 class MATHLAB_API APointBase : public AGeometryBase
@@ -42,7 +44,7 @@ public:
 private:
    UStaticMeshComponent *pointMesh;
 
-// -------------------------------------------------------------------------------------------------
+
 
 public:
    //Saves the StaticMeshReferences in the source file to work on
@@ -54,6 +56,9 @@ public:
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "math lab|point")
    virtual void Update() override;
+
+   UFUNCTION(Blueprintcallable, Category = "math lab|point")
+   virtual FString ToString() override;
 
 
    

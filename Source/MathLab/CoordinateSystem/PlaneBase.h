@@ -39,9 +39,11 @@ public:
    FMathPlane(FVector inPosition, FVector inDirection1, FVector inDirection2);
    /* Constructor to set the plane with position and normal. */
    FMathPlane(FMathPoint inPoint, FVector inNormal);
+   /* Get a textual representation of this Plane. */
+   FString ToString();
 };
 
-
+// -------------------------------------------------------------------------------------------------
 
 UCLASS()
 class MATHLAB_API APlaneBase : public AGeometryBase
@@ -62,7 +64,7 @@ public:
 private:
    UStaticMeshComponent *planeMesh;
 
-// -------------------------------------------------------------------------------------------------
+
 
 public:
    //Saves the StaticMeshReferences in the source file to work on
@@ -82,6 +84,9 @@ public:
    //Sets up the Components to display the plane in the selected mode
    UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    void BuildPlane();
+
+   UFUNCTION(Blueprintcallable, Category = "math lab|plane")
+   virtual FString ToString() override;
 
 protected:
    virtual void CreateVectorGuides(LaserColors color) override;

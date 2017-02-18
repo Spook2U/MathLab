@@ -110,6 +110,11 @@ void AGeometryBase::SetValuesGeometry(ACoordinateSystemBase *inCoordinateSystem,
    SetColor(color);
 }
 
+FString AGeometryBase::ToString()
+{
+   return FString::Printf(TEXT(""));
+}
+
 
 
 // Protected-----------------------------------------------------------------------------------------
