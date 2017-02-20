@@ -10,19 +10,15 @@
 
 
 FMathPlane::FMathPlane() {}
-FMathPlane::FMathPlane(FVector inPosition, FVector inDirection1, FVector inDirection2)
+FMathPlane::FMathPlane(FVector inPosition, FVector inDirection1, FVector inDirection2) : position(inPosition), direction1(inDirection1), direction2(inDirection2)
 {
-   position = inPosition;
-   direction1 = inDirection1;
-   direction2 = inDirection2;
    normal = UKismetMathLibrary::Normal(UKismetMathLibrary::Cross_VectorVector(inDirection1, inDirection2));
 }
-FMathPlane::FMathPlane(FMathPoint inPoint, FVector inNormal)
+FMathPlane::FMathPlane(FMathPoint inPoint, FVector inNormal) : normal(inNormal)
 {
    position   = FVector(0, 0, UKismetMathLibrary::Dot_VectorVector(inPoint.coordinate, inNormal) / inNormal.Z);
    direction1 = FVector(1, 0, (-1) * inNormal.X / inNormal.Z);
    direction2 = FVector(0, 1, (-1) * inNormal.Y / inNormal.Z);
-   normal = inNormal;
 }
 
 FString FMathPlane::ToString()

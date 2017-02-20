@@ -58,12 +58,15 @@ public:
    FMathPoint entry;
    UPROPERTY(BlueprintReadWrite, Category = "math lab")
    FMathPoint exit;
+
+   FPuncture();
+   FPuncture(FMathPoint inEntry, FMathPoint inExit);
 };
 
 
 
 USTRUCT(BlueprintType)
-struct FIntersections
+struct FIntersection
 {
    GENERATED_BODY()
 
@@ -79,10 +82,11 @@ public:
    UPROPERTY(BlueprintReadWrite, Category = "math lab")
    FPuncture puncture;
 
-   void SetPoint(FMathPoint inPoint);
-   void SetLine(FMathLine inLine);
-   void SetCircle(FMathCircle inCircle);
-   void SetPuncture(FPuncture inPuncture);
+   FIntersection();
+   FIntersection(FMathPoint inPoint);
+   FIntersection(FMathLine inLine);
+   FIntersection(FMathCircle inCircle);
+   FIntersection(FPuncture inPuncture);
 };   
    
    
@@ -96,12 +100,12 @@ public:
    UPROPERTY(BlueprintReadWrite, Category = "math lab")
    Relation relation;
    UPROPERTY(BlueprintReadWrite, Category = "math lab")
-   FIntersections intersections;
+   FIntersection intersections;
 
    /* Default constructor (no initialization). */
    FRelativePosition();
    /* Constructor to initialise the Linear System Solution structure. */
-   FRelativePosition(Relation inRelation, FIntersections inIntersections = FIntersections());
+   FRelativePosition(Relation inRelation, FIntersection inIntersections = FIntersection());
 };
 
 

@@ -9,7 +9,7 @@ struct FCalcReturn
 public:
    float distance;
    Relation relation;
-   FIntersections intersections;
+   FIntersection intersections;
 
    FCalcReturn();
    FCalcReturn(float inDistance);

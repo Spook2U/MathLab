@@ -12,36 +12,17 @@
 
 
 
-void FIntersections::SetCircle(FMathCircle inCircle)
-{
-   circle = inCircle;
-   type = IntersectionType::circle;
-}
+FPuncture::FPuncture() {}
+FPuncture::FPuncture(FMathPoint inEntry, FMathPoint inExit) : entry(inEntry), exit(inExit) {}
 
-void FIntersections::SetLine(FMathLine inLine)
-{
-   line = inLine;
-   type = IntersectionType::line;
-}
-
-void FIntersections::SetPoint(FMathPoint inPoint)
-{
-   point = inPoint;
-   type = IntersectionType::point;
-}
-
-void FIntersections::SetPuncture(FPuncture inPuncture)
-{
-   puncture = inPuncture;
-   type = IntersectionType::puncture;
-}
+FIntersection::FIntersection() {}
+FIntersection::FIntersection(FMathCircle inCircle) : circle(inCircle), type(IntersectionType::circle) {}
+FIntersection::FIntersection(FMathLine inLine) : line(inLine), type(IntersectionType::line) {}
+FIntersection::FIntersection(FMathPoint inPoint) : point(inPoint), type(IntersectionType::point) {}
+FIntersection::FIntersection(FPuncture inPuncture) : puncture(inPuncture), type(IntersectionType::puncture) {}
 
 FRelativePosition::FRelativePosition(){}
-FRelativePosition::FRelativePosition(Relation inRelation, FIntersections inIntersections)
-{
-   relation = inRelation;
-   intersections = inIntersections;
-}
+FRelativePosition::FRelativePosition(Relation inRelation, FIntersection inIntersections) : relation(inRelation), intersections(inIntersections) {}
 
 
 

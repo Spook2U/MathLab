@@ -9,11 +9,7 @@
 
 
 FMathLine::FMathLine() {}
-FMathLine::FMathLine(FVector inPosition, FVector inDirection)
-{
-   position = inPosition;
-   direction = inDirection;
-}
+FMathLine::FMathLine(FVector inPosition, FVector inDirection) : position(inPosition), direction(inDirection) {}
 
 FString FMathLine::ToString()
 {

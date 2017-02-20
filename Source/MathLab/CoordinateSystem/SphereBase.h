@@ -17,6 +17,10 @@ public:
    UPROPERTY(BlueprintReadWrite, Category = "sphere")
    float radius;
 
+   /* Default constructor (no initialization). */
+   FMathSphere();
+   /* Constructor to set the coordinate of the point. */
+   FMathSphere(FVector inCoordinate, float inRadius);
    /* Get a textual representation of this Plane. */
    FString ToString();
 };

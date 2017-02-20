@@ -6,12 +6,7 @@
 
 
 FMathCircle::FMathCircle() {}
-FMathCircle::FMathCircle(FVector inCenter, FVector inNormal, float inRadius)
-{
-   center = inCenter;
-   normal = inNormal;
-   radius = inRadius;
-}
+FMathCircle::FMathCircle(FVector inCenter, FVector inNormal, float inRadius) : center(inCenter), normal(inNormal), radius(inRadius) {}
 
 FString FMathCircle::ToString()
 {

@@ -8,11 +8,8 @@
 
 
 
-ASphereBase::ASphereBase()
-{
-   sphere = FMathSphere();
-   sphereMesh = nullptr;
-}
+FMathSphere::FMathSphere() {}
+FMathSphere::FMathSphere(FVector inCoordinate, float inRadius) : Super(inCoordinate), radius(inRadius) {}
 
 FString FMathSphere::ToString()
 {
@@ -20,6 +17,14 @@ FString FMathSphere::ToString()
 }
 
 // -------------------------------------------------------------------------------------------------
+
+ASphereBase::ASphereBase()
+{
+   sphere = FMathSphere();
+   sphereMesh = nullptr;
+}
+
+
 
 void ASphereBase::BeginPlay()
 {

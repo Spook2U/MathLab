@@ -272,6 +272,37 @@ FString ACoordinateSystemBase::BPPlaneToString(APlaneBase *inPlane)      { if(!M
 FString ACoordinateSystemBase::BPPointToString(APointBase *inPoint)      { if(!MLD_PTR_CHECK(inPoint)) return "";  return inPoint->ToString();  }
 FString ACoordinateSystemBase::BPSphereToString(ASphereBase *inSphere)   { if(!MLD_PTR_CHECK(inSphere)) return ""; return inSphere->ToString(); }
 
+FString ACoordinateSystemBase::IntersectionToString(FIntersection inIntersection)
+{
+   FString s = "";
+   switch(inIntersection.type)
+   {
+      case IntersectionType::circle:   s = FString::Printf(TEXT("Circle: %s"), *inIntersection.circle.ToString()); break;
+      case IntersectionType::line:     s = FString::Printf(TEXT("Line: %s"), *inIntersection.line.ToString()); break;
+      case IntersectionType::point:    s = FString::Printf(TEXT("Point: %s"), *inIntersection.point.ToString()); break;
+      case IntersectionType::puncture: s = FString::Printf(TEXT("2 Points: %s, %s"), *inIntersection.puncture.entry.ToString(), *inIntersection.puncture.exit.ToString()); break;
+      case IntersectionType::no:       s = "No Intersections"; break;
+   }
+   return s;
+}
+
+FString ACoordinateSystemBase::RelativePositionToString(FRelativePosition inRelativePosition) 
+{ 
+   FString s = "";
+   switch(inRelativePosition.relation)
+   {
+      case Relation::different:     s = "Different"; break;
+      case Relation::identical:     s = "Identical"; break;
+      case Relation::inside:        s = "Inside"; break;
+      case Relation::outside:       s = "Outside"; break;
+      case Relation::parallel:      s = "Parallel"; break;
+      case Relation::skew:          s = "Skew"; break;
+      case Relation::undefined:     s = "Undefined"; break;
+      case Relation::intersection:  s = "Intersection: " + IntersectionToString(inRelativePosition.intersections); break;
+   }
+   return s; 
+}
+
 FMathCircle ACoordinateSystemBase::CircleBPToFCircle(ACircleBase *inCircle) { if(!MLD_PTR_CHECK(inCircle)) return FMathCircle(); return inCircle->circle; }                                                                                                                                                         
 FMathLine ACoordinateSystemBase::LineBPToFLine(ALineBase *inLine)           { if(!MLD_PTR_CHECK(inLine)) return FMathLine();     return inLine->line;     }                                                                                                                                                         
 FMathPlane ACoordinateSystemBase::PlaneBPToFPlane(APlaneBase *inPlane)      { if(!MLD_PTR_CHECK(inPlane)) return FMathPlane();   return inPlane->plane;   }                                                                                                                                                         

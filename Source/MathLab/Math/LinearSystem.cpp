@@ -5,11 +5,7 @@
 
 
 FLSSolution::FLSSolution(){}
-FLSSolution::FLSSolution(LSSolutionType inType, FNVector inSolution)
-{
-   type = inType;
-   solution = inSolution;
-}
+FLSSolution::FLSSolution(LSSolutionType inType, FNVector inSolution) : type(inType), solution(inSolution) {}
 
 // -------------------------------------------------------------------------------------------------
 

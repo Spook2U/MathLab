@@ -120,27 +120,27 @@ public:
    
    /* Spawns a Point in the Coordinate System*/
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   APointBase *AddPoint(LaserColors color, FMathPoint inPoint, bool showGuides);
+   APointBase *AddPoint(LaserColors color, FMathPoint inPoint, bool showGuides = false);
    
    /* Spawns a Line with the defines mode
       Mode line: Spawns an endless line using position and direction Vector.
       Mode segment: Spawns a segmented line between 2 points A (position) and B (direction).
       Mode vector: Spawns a vector pointing to direction, using position as offset from the orign.*/
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   ALineBase *AddLine(LaserColors color, FMathLine inLine, LineMode mode, bool showGuides);
+   ALineBase *AddLine(LaserColors color, FMathLine inLine, LineMode mode, bool showGuides = false);
    
    /* Spawns a Plane with the defines mode
       Mode plane: Spawns an endless plane using position and 2 direction Vector.*/
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   APlaneBase *AddPlane(LaserColors color, FMathPlane inPlane, PlaneMode mode, bool showGuides);
+   APlaneBase *AddPlane(LaserColors color, FMathPlane inPlane, PlaneMode mode, bool showGuides = false);
    
    /* Spawns a Sphere with the given values.*/
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   ASphereBase *AddSphere(LaserColors color, FMathSphere inSphere, bool showGuides);
+   ASphereBase *AddSphere(LaserColors color, FMathSphere inSphere, bool showGuides = false);
 
    /* Spawns a Circle on a plane with the efined values.*/
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   ACircleBase *AddCircle(LaserColors color, FMathCircle inCircle, bool showGuides);
+   ACircleBase *AddCircle(LaserColors color, FMathCircle inCircle, bool showGuides = false);
 
    AVectorStruct *AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode = VectorStructMode::general);
 
@@ -187,6 +187,11 @@ public:
    FString BPPointToString(APointBase *inPoint);
    UFUNCTION(BlueprintPure, DisplayName = "ToString (Sphere Base)", Category = "math lab|string", meta = (CompactNodeTitle = "->", BlueprintAutocast))
    FString BPSphereToString(ASphereBase *inSphere);
+   
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Intersection)", Category = "math lab|struct", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString IntersectionToString(FIntersection inIntersection);
+   UFUNCTION(BlueprintPure, DisplayName = "ToString (Relative Position)", Category = "math lab|struct", meta = (CompactNodeTitle = "->", BlueprintAutocast))
+   FString RelativePositionToString(FRelativePosition inRelativePosition);
 
    UFUNCTION(BlueprintPure, DisplayName = "ToCircleStruct (Circle Base)", Category = "math lab|struct", meta = (CompactNodeTitle = "->", BlueprintAutocast))
    FMathCircle CircleBPToFCircle(ACircleBase *inCircle);
@@ -198,7 +203,6 @@ public:
    FMathPoint PointBPToFPoint(APointBase *inPoint);
    UFUNCTION(BlueprintPure, DisplayName = "ToSphereStruct (Sphere Base)", Category = "math lab|struct", meta = (CompactNodeTitle = "->", BlueprintAutocast))
    FMathSphere SphereBPToFSphere(ASphereBase *inSphere);
-
 
 
    /* Returns the distance from one geometry to the other.*/

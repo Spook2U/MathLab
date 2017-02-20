@@ -65,7 +65,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line1, FMathLine line2)
             if(m.GetPointOnLine(line1, scalars.Get(0)) == m.GetPointOnLine(line2, scalars.Get(1)))
             {
                result.relation = Relation::intersection;
-               result.intersections.point = FMathPoint(m.GetPointOnLine(line1, scalars.Get(0)));
+               result.intersections = FIntersection(FMathPoint(m.GetPointOnLine(line1, scalars.Get(0))));
             }
             else
             {
@@ -90,7 +90,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line, FMathPlane plane)
    switch(linearSystem.GetSolution().type)
    {
       case LSSolutionType::one:     result.relation = Relation::intersection;
-                                    result.intersections.point = m.GetPointOnLine(line, linearSystem.GetSolution().solution.Get(2)); 
+                                    result.intersections = FIntersection(m.GetPointOnLine(line, linearSystem.GetSolution().solution.Get(2))); 
       break; 
       case LSSolutionType::endless: result.relation = Relation::inside;   break;
       case LSSolutionType::no:      result.relation = Relation::parallel; break;
@@ -116,13 +116,12 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line, FMathSphere sphere)
       if(f == 0)  
       { 
          result.relation = Relation::intersection; 
-         result.intersections.point = m.GetPointOnLine(line, a/line.direction.Size());
+         result.intersections = FIntersection(m.GetPointOnLine(line, a/line.direction.Size()));
       }
       else
       { 
          result.relation = Relation::intersection; 
-         result.intersections.puncture.entry = m.GetPointOnLine(line, (a-f)/line.direction.Size());
-         result.intersections.puncture.exit  = m.GetPointOnLine(line, (a+f)/line.direction.Size());
+         result.intersections = FIntersection(FPuncture(FMathPoint(m.GetPointOnLine(line, (a-f)/line.direction.Size())), FMathPoint(m.GetPointOnLine(line, (a+f)/line.direction.Size()))));
       }   
    }
    return result;
@@ -155,6 +154,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane1, FMathPlane plane2)
          else
          {
             result.relation = Relation::intersection; 
+            //result.intersections = FIntersection();
             //result.intersections.line = m.GetIntersectionLine(plane2, (-1)*linearSystem.GetSolution().solution.Get(0)); 
          }
       break;
@@ -179,7 +179,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane, FMathSphere sphere)
       if(distance == 0)
       {
          result.relation = Relation::intersection; 
-         result.intersections.point = perpLineIntersection.coordinate;
+         result.intersections = FIntersection(perpLineIntersection.coordinate);
       }
       else
       {
@@ -187,7 +187,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane, FMathSphere sphere)
          float circleRadius = m.SetOfPythagorasGetA(dist, sphere.radius);
 
          result.relation = Relation::intersection;
-         result.intersections.circle = FMathCircle(perpLineIntersection.coordinate, plane.normal, circleRadius);
+         result.intersections = FIntersection(FMathCircle(perpLineIntersection.coordinate, plane.normal, circleRadius));
       }
    }
    return result;
