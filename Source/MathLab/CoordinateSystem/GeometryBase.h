@@ -5,7 +5,7 @@
 #include "MathLabEnums.h"
 
 #include "GameFramework/Actor.h"
-#include "Runtime/Engine/Classes/Components/TextRenderComponent.h"
+//#include "Runtime/Engine/Classes/Components/TextRenderComponent.h"
 #include "GeometryBase.generated.h"
 
 class ACoordinateSystemBase;
@@ -13,16 +13,17 @@ class AVectorStruct;
 
 
 
+UENUM(BlueprintType)
 enum class GeometryType : uint8
 {
-   circle,
-   point,
-   unit,
-   line,
-   plane,
-   sphere,
-   vectorStruct,
-   other
+   circle UMETA(DisplayName = "Circle"),
+   line   UMETA(DisplayName = "Line"),
+   plane  UMETA(DisplayName = "Plane"),
+   point  UMETA(DisplayName = "Point"),
+   sphere UMETA(DisplayName = "Sphere"),
+   unit   UMETA(DisplayName = "Unit"),
+   vectorStruct UMETA(DisplayName = "VectorStruct"),
+   other   UMETA(DisplayName = "other")
 };
 
 enum class Direction : uint8
@@ -60,7 +61,18 @@ public:
    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "geometry")
    float size;
 
+   //Saves the color of the laser
+   UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
+   LaserColors color;
+
+   //Saves type of the geometry to determine the correct cast
+   UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
    GeometryType type;
+
+   // determines if the constructig Vectors should be shown
+   UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
+   bool showConstruction;
+
 
 //protected:
 //   UTextRenderComponent nameText;
@@ -72,7 +84,7 @@ public:
    UFUNCTION(BlueprintPure, Category = "math lab|geometry")
    FVector CoordinateToLocation(FVector coordinate);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color);
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor);
 
    //Called, when the objects need to update the position or other vales
    virtual void Update();
@@ -82,7 +94,7 @@ public:
 
    //Sets Color and Glowiness depending to the enum value and changes the Material of all Laser Components in the array
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
-   void SetColor(LaserColors color);
+   void SetColor(LaserColors inColor);
    //Sets Location of the object based on the Coordinate
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void SetPosition(FVector coordinate);

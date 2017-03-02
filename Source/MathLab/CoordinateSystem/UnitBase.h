@@ -30,7 +30,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FVector coordinate);
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector coordinate);
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
@@ -45,6 +45,6 @@ public:
 protected:
    void ScaleUnitLaser_AtAxis(UStaticMeshComponent *laser, UStaticMeshComponent *axis, float laserSize);
 
-   virtual void CreateVectorGuides(LaserColors color) override;
+   virtual void CreateVectorGuides(LaserColors inColor) override;
 
 };

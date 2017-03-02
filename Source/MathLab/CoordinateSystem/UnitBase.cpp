@@ -43,11 +43,11 @@ void AUnitBase::SetComponents(TArray<UStaticMeshComponent *> components)
    AddLaserComponent(yLaser);
 }
 
-void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FVector coordinate)
+void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector coordinate)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   Super::Init(inCoordinateSystem, color, FMathPoint(coordinate));
+   Super::Init(inCoordinateSystem, inColor, FMathPoint(coordinate));
 
    this->type = GeometryType::unit; //after InitPoint() to override the value from point
 }
@@ -84,7 +84,7 @@ void AUnitBase::OrientateToAxis(UStaticMeshComponent *axis)
 
 // -------------------------------------------------------------------------------------------------
 
-void AUnitBase::CreateVectorGuides(LaserColors color)
+void AUnitBase::CreateVectorGuides(LaserColors inColor)
 {
    //leave empty to override from Point, so Units dont create Guides
 }

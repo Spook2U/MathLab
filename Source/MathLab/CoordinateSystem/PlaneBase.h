@@ -71,7 +71,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathPlane inPlane, PlaneMode inMode);
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode);
 
    /* Returns the unified normal Vector of the plane. */
    UFUNCTION(BlueprintPure, Category = "math lab|plane")

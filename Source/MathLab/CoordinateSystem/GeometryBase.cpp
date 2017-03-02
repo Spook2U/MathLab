@@ -38,12 +38,13 @@ FVector AGeometryBase::CoordinateToLocation(FVector coordinate)
 
 // Callable Functions --------------------------------------------------------------------------------
 
-void AGeometryBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color)
+void AGeometryBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
    coordinateSystem = inCoordinateSystem;
-   SetColor(color);
+   color = inColor;
+   SetColor(inColor);
 }
 
 // --------------------------------------------------------------------------------------------------
@@ -71,12 +72,12 @@ void AGeometryBase::UpdateRendering()
 
 // --------------------------------------------------------------------------------------------------
 
-void AGeometryBase::SetColor(LaserColors color)
+void AGeometryBase::SetColor(LaserColors inColor)
 {
    FLinearColor newColor;
    float glow = 0.f;
 
-   switch(color)
+   switch(inColor)
    {
       case LaserColors::blue:    newColor = FLinearColor(0.05f, 0.1f,  1.f,   1.f); glow = 3.f;  break;
       case LaserColors::green:   newColor = FLinearColor(0.2f,  1.f,   0.05f, 1.f); glow = 1.f;  break;
@@ -103,6 +104,8 @@ void AGeometryBase::SetPosition(FVector coordinate)
 
 void AGeometryBase::ShowVectorGuides(bool show)
 {
+   showConstruction = show;
+
    for(AVectorStruct *g : vectorGuides)
    {
       MLD_PTR_CHECK(g); if(!g) continue;

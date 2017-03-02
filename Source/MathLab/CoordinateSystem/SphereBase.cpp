@@ -47,11 +47,11 @@ void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
 
 
-void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathSphere inSphere)
+void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   Super::Init(inCoordinateSystem, color, inSphere);
+   Super::Init(inCoordinateSystem, inColor, inSphere);
 
    this->sphere = inSphere;
    this->type = GeometryType::sphere; //after InitPoint() to override the value from point
@@ -79,9 +79,9 @@ FString ASphereBase::ToString()
 
 // Protected ----------------------------------------------------------------------------------------
 
-void ASphereBase::CreateVectorGuides(LaserColors color)
+void ASphereBase::CreateVectorGuides(LaserColors inColor)
 {
-   Super::CreateVectorGuides(color);
+   Super::CreateVectorGuides(inColor);
    AVectorStruct *pointVectorStruct = nullptr;
 
    for(AVectorStruct *v : vectorGuides)
@@ -95,6 +95,6 @@ void ASphereBase::CreateVectorGuides(LaserColors color)
    }
    pointVectorStruct->SetVisibilityPointB(true);
 
-   AddVectorGuide(coordinateSystem->AddVectorStruct(color, sphere.coordinate, sphere.coordinate + FVector(sphere.radius, 0, 0), VectorStructMode::segment));
+   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, sphere.coordinate, sphere.coordinate + FVector(sphere.radius, 0, 0), VectorStructMode::segment));
 }
 

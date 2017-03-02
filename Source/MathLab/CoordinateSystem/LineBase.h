@@ -52,6 +52,7 @@ public:
 public:
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "line")
    FMathLine line;
+   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "line")
    LineMode mode;
 
 private:
@@ -65,7 +66,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|line")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathLine inLine, LineMode inMode);
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode);
 
    /**Called, when the objects need to update the position or other vales*/
    UFUNCTION(BlueprintCallable, Category = "math lab|line")
@@ -79,5 +80,5 @@ public:
    virtual FString ToString() override;
 
 protected:
-   virtual void CreateVectorGuides(LaserColors color) override;
+   virtual void CreateVectorGuides(LaserColors inColor) override;
 };

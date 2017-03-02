@@ -53,11 +53,11 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
 
 
-void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathLine inLine, LineMode inMode)
+void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   Super::Init(inCoordinateSystem, color);
+   Super::Init(inCoordinateSystem, inColor);
    
    line = inLine;
    mode = inMode;
@@ -65,7 +65,7 @@ void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors colo
 
    switch(mode)
    {
-      case LineMode::line:    CreateVectorGuides(color); break;
+      case LineMode::line:    CreateVectorGuides(inColor); break;
       case LineMode::segment: break;
       case LineMode::vector:  arrowheadMesh->SetVisibility(true); break;
    }
@@ -100,8 +100,8 @@ FString ALineBase::ToString()
 
 // Protected ----------------------------------------------------------------------------------------
 
-void ALineBase::CreateVectorGuides(LaserColors color)
+void ALineBase::CreateVectorGuides(LaserColors inColor)
 {
-   AddVectorGuide(coordinateSystem->AddVectorStruct(color, FVector::ZeroVector, line.position, VectorStructMode::vector));
-   AddVectorGuide(coordinateSystem->AddVectorStruct(color, line.position, line.direction, VectorStructMode::vector));
+   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, FVector::ZeroVector, line.position, VectorStructMode::vector));
+   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, line.position, line.direction, VectorStructMode::vector));
 }

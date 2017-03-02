@@ -46,15 +46,15 @@ void APointBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
 
 
-void APointBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathPoint inPoint)
+void APointBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPoint inPoint)
 {  
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
   
-   Super::Init(inCoordinateSystem, color);
+   Super::Init(inCoordinateSystem, inColor);
 
    this->point = inPoint;
    this->type = GeometryType::point;
-   CreateVectorGuides(color);
+   CreateVectorGuides(inColor);
 }
 
 
@@ -74,8 +74,8 @@ FString APointBase::ToString()
 
 // Protected ----------------------------------------------------------------------------------------
 
-void APointBase::CreateVectorGuides(LaserColors color)
+void APointBase::CreateVectorGuides(LaserColors inColor)
 {
-   AddVectorGuide(coordinateSystem->AddVectorStruct(color, FVector::ZeroVector, point.coordinate, VectorStructMode::vector));
+   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, FVector::ZeroVector, point.coordinate, VectorStructMode::vector));
 }
 

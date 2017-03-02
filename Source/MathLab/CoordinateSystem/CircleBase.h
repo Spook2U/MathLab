@@ -51,7 +51,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|circle")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathCircle inCircle);
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle);
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "math lab|circle")
@@ -65,6 +65,6 @@ public:
    virtual FString ToString() override;
 
 protected:
-   virtual void CreateVectorGuides(LaserColors color) override;
+   virtual void CreateVectorGuides(LaserColors inColor) override;
 
 };
