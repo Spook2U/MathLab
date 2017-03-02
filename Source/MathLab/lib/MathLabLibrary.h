@@ -11,7 +11,7 @@
 #include "MathLabLibrary.generated.h"
 
 class  AGeometryBase;
-
+struct FNVector;
 
 
 // To prevent misstakes with float rounding
@@ -137,7 +137,7 @@ public:
    FVector GetPointOnPlane(FMathPlane plane, float scalar1, float scalar2);
 
    float HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point);
-   FMathLine GetIntersectionLine(FMathPlane plane, float u);
+   FMathLine GetIntersectionLine(FMathPlane plane, FNVector solution);
 
    // Algebra Calculations ----------------------------------------------------------------------------
 

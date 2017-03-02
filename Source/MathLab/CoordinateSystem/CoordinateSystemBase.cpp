@@ -167,7 +167,7 @@ void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int inde
 {
    AUnitBase *newUnit = (AUnitBase *)AddGeometry(unitBP);
    MLD_PTR_CHECK(newUnit); if(!newUnit) return;
-   newUnit->InitUnit(this, laserColor, axis->GetUpVector()*index);
+   newUnit->Init(this, laserColor, axis->GetUpVector()*index);
    newUnit->OrientateToAxis(axis);
 }
 
@@ -176,7 +176,7 @@ APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, FMathPoint inPoin
    APointBase *point = (APointBase *)AddGeometry(pointBP);
    
    MLD_PTR_CHECK(point); if(!point) return nullptr;
-   point->InitPoint(this, color, inPoint);
+   point->Init(this, color, inPoint);
    point->ShowVectorGuides(showGuides);
    return point;
 }
@@ -188,7 +188,7 @@ ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, FMathLine inLine, L
    ALineBase *line = (ALineBase *)AddGeometry(lineBP);
 
    MLD_PTR_CHECK(line); if(!line) return nullptr;
-   line->InitLine(this, color, inLine, mode);
+   line->Init(this, color, inLine, mode);
    line->ShowVectorGuides(showGuides);
    return line;
 }
@@ -199,7 +199,7 @@ APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, FMathPlane inPlan
 
    APlaneBase *plane = (APlaneBase *)AddGeometry(planeBP);
    MLD_PTR_CHECK(plane); if(!plane) return nullptr;
-   plane->InitPlane(this, color, inPlane, mode);
+   plane->Init(this, color, inPlane, mode);
    plane->ShowVectorGuides(showGuides);
    return plane;
 }
@@ -210,7 +210,7 @@ ASphereBase *ACoordinateSystemBase::AddSphere(LaserColors color, FMathSphere inS
 
    ASphereBase *sphere = (ASphereBase *)AddGeometry(sphereBP);
    MLD_PTR_CHECK(sphere); if(!sphere) return nullptr;
-   sphere->InitSphere(this, color, inSphere);
+   sphere->Init(this, color, inSphere);
    sphere->ShowVectorGuides(showGuides);
    return sphere;
 }
@@ -221,7 +221,7 @@ ACircleBase *ACoordinateSystemBase::AddCircle(LaserColors color, FMathCircle inC
 
    ACircleBase *circle = (ACircleBase *)AddGeometry(circleBP);
    MLD_PTR_CHECK(circle); if(!circle) return nullptr;
-   circle->InitCircle(this, color, inCircle);
+   circle->Init(this, color, inCircle);
    circle->ShowVectorGuides(showGuides);
    return circle;
 }
@@ -230,7 +230,7 @@ AVectorStruct *ACoordinateSystemBase::AddVectorStruct(LaserColors color, FVector
 {
    AVectorStruct *newVectorStruct = (AVectorStruct *)AddGeometry(vectorStructBP);
    MLD_PTR_CHECK(newVectorStruct); if(!newVectorStruct) return nullptr;
-   newVectorStruct->SetValuesVectorStruct(this, color, pointA, pointB, mode);
+   newVectorStruct->Init(this, color, pointA, pointB, mode);
    switch(mode)
    {
       case VectorStructMode::point:       newVectorStruct->SetVisibility(false, true,  false, false); break;

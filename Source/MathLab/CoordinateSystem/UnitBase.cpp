@@ -43,10 +43,12 @@ void AUnitBase::SetComponents(TArray<UStaticMeshComponent *> components)
    AddLaserComponent(yLaser);
 }
 
-void AUnitBase::InitUnit(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FVector coordinate)
+void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FVector coordinate)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
-   InitPoint(inCoordinateSystem, color, FMathPoint(coordinate));
+
+   Super::Init(inCoordinateSystem, color, FMathPoint(coordinate));
+
    this->type = GeometryType::unit; //after InitPoint() to override the value from point
 }
 

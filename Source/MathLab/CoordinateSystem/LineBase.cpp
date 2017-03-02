@@ -53,11 +53,12 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
 
 
-void ALineBase::InitLine(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathLine inLine, LineMode inMode)
+void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathLine inLine, LineMode inMode)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   SetValuesGeometry(inCoordinateSystem, color);
+   Super::Init(inCoordinateSystem, color);
+   
    line = inLine;
    mode = inMode;
    type = GeometryType::line;

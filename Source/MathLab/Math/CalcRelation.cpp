@@ -83,8 +83,8 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line, FMathPlane plane)
    FCalcReturn result;
 
    FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane.direction1.X, plane.direction2.X, (-1)*line.direction.X, line.position.X-plane.position.X}),
-                                                       FNVector({plane.direction1.Y, plane.direction2.Y, (-1)*line.direction.Y, line.position.Y-plane.position.Y}),
-                                                       FNVector({plane.direction1.Z, plane.direction2.Z, (-1)*line.direction.Z, line.position.Z-plane.position.Z})
+                                                        FNVector({plane.direction1.Y, plane.direction2.Y, (-1)*line.direction.Y, line.position.Y-plane.position.Y}),
+                                                        FNVector({plane.direction1.Z, plane.direction2.Z, (-1)*line.direction.Z, line.position.Z-plane.position.Z})
    }));
    
    switch(linearSystem.GetSolution().type)
@@ -140,10 +140,10 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane, FMathLine line)
 FCalcReturn CalcRelation::CalculateWith(FMathPlane plane1, FMathPlane plane2)   
 { 
    FCalcReturn result;
-   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane1.direction1.X, plane1.direction2.X, (-1)*plane2.direction1.X, (-1)*plane2.direction2.X, plane2.position.X-plane1.position.X}),
-                                                        FNVector({plane1.direction1.Y, plane1.direction2.Y, (-1)*plane2.direction1.Y, (-1)*plane2.direction2.Y, plane2.position.Y-plane1.position.Y}),
-                                                        FNVector({plane1.direction1.Z, plane1.direction2.Z, (-1)*plane2.direction1.Z, (-1)*plane2.direction2.Z, plane2.position.Z-plane1.position.Z})
+   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane1.normal.X, plane1.normal.Y, plane1.normal.Z, FVector::DotProduct(plane1.position, plane1.normal)}),
+                                                        FNVector({plane2.normal.X, plane2.normal.Y, plane2.normal.Z, FVector::DotProduct(plane2.position, plane2.normal)})
                                                        }));
+
    switch(linearSystem.GetSolution().type)
    {
       case LSSolutionType::endless:   
@@ -154,8 +154,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane1, FMathPlane plane2)
          else
          {
             result.relation = Relation::intersection; 
-            //result.intersections = FIntersection();
-            //result.intersections.line = m.GetIntersectionLine(plane2, (-1)*linearSystem.GetSolution().solution.Get(0)); 
+            result.intersections = FIntersection(m.GetIntersectionLine(plane2, linearSystem.GetSolution().solution)); 
          }
       break;
       case LSSolutionType::no: result.relation = Relation::parallel; break;

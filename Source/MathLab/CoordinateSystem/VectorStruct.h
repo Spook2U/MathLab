@@ -47,20 +47,16 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|vectorStruct")
    void SetComponents(TArray<UStaticMeshComponent *> laserComponents);
 
-   void SetValuesVectorStruct(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FVector inA, FVector inB, VectorStructMode inMode = VectorStructMode::general);
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FVector inA, FVector inB, VectorStructMode inMode = VectorStructMode::general);
 
    UFUNCTION(BlueprintCallable, Category = "math lab|vectorStruct|visibility")
    void SetVisibilityPointA(bool visibility);
-
    UFUNCTION(BlueprintCallable, Category = "math lab|vectorStruct|visibility")
    void SetVisibilityPointB(bool visibility);
-
    UFUNCTION(BlueprintCallable, Category = "math lab|vectorStruct|visibility")
    void SetVisibilityLine(bool visibility);
-
    UFUNCTION(BlueprintCallable, Category = "math lab|vectorStruct|visibility")
    void SetVisibilityArrowhead(bool visibility);
-
    UFUNCTION(BlueprintCallable, Category = "math lab|vectorStruct|visibility")
    void SetVisibilityForAll(bool visibility);
 
@@ -77,5 +73,5 @@ public:
 
    /**Moves PointB to the defined coordinate*/
    UFUNCTION(BlueprintCallable, Category = "math lab|vectorStruct")
-   void SetPointB();
+   void MovePointB();
 };

@@ -46,11 +46,12 @@ void AVectorStruct::SetComponents(TArray<UStaticMeshComponent*> components)
 
 
 
-void AVectorStruct::SetValuesVectorStruct(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FVector inA, FVector inB, VectorStructMode inMode)
+void AVectorStruct::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FVector inA, FVector inB, VectorStructMode inMode)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   SetValuesGeometry(inCoordinateSystem, color);
+   Super::Init(inCoordinateSystem, color);
+
    a = inA;
    b = inB;
    mode = inMode;
@@ -87,7 +88,7 @@ void AVectorStruct::Update()
    Super::Update();
    SetPosition(a);
    BuildLine();
-   SetPointB();
+   MovePointB();
 }
 
 void AVectorStruct::BuildLine()
@@ -99,7 +100,7 @@ void AVectorStruct::BuildLine()
    else                                  { ScaleVector(lineMesh, arrowheadMesh, UKismetMathLibrary::VSize(b)); }
 }
 
-void AVectorStruct::SetPointB()
+void AVectorStruct::MovePointB()
 {
    if(mode == VectorStructMode::segment) { pointBMesh->SetWorldLocation(CoordinateToLocation(b)); }
    else                                  { pointBMesh->SetWorldLocation(CoordinateToLocation(b + a)); }

@@ -51,7 +51,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|sphere")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void InitSphere(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathSphere inSphere);
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathSphere inSphere);
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "math lab|sphere")

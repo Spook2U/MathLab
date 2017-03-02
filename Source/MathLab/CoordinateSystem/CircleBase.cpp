@@ -32,11 +32,12 @@ void ACircleBase::SetComponents(TArray<UStaticMeshComponent*> components)
    AddLaserComponent(circleMeshBorder);
 }
 
-void ACircleBase::InitCircle(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathCircle inCircle)
+void ACircleBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathCircle inCircle)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   SetValuesGeometry(inCoordinateSystem, color);
+   Super::Init(inCoordinateSystem, color);
+   
    circle = inCircle;
 
    type = GeometryType::circle;

@@ -52,31 +52,23 @@ FLSSolution FLinearSystem::GetSolution()
    }
 
    // Interpretation of the solution
-   if(CheckUnsolveable()) { solution = FLSSolution(LSSolutionType::no); }
-   else if(CountNonZeroRows() >= NumberOfVariables())
+   if(IsSolveable())
    {
-      solution = FLSSolution(LSSolutionType::one, coefficientMatrix.GetColumn(coefficientMatrix.ColumnNum()-1));
+      if(CountNonZeroRows() >= NumberOfVariables())
+      {
+         solution = FLSSolution(LSSolutionType::one, coefficientMatrix.GetColumn(coefficientMatrix.ColumnNum()-1));
+      }
+      else
+      {
+         solution = FLSSolution(LSSolutionType::endless, FNVector({coefficientMatrix.GetRow(CountNonZeroRows()-1)}));
+      }
    }
    else
    {
-      solution = FLSSolution(LSSolutionType::endless, FNVector({coefficientMatrix.GetElement(coefficientMatrix.RowNum(), coefficientMatrix.RowNum()-1)}));
+      solution = FLSSolution(LSSolutionType::no);
    }
 
-   //if(CountNonZeroRows() < NumberOfVariables()) { solution = FLSSolution(LSSolutionType::endless); }
-   //else if(CheckUnsolveable())                                         { solution = FLSSolution(LSSolutionType::no);      }
-   //else
-   //{
-   //   if(CoefficientMatrix.RowNum() >= NumberOfVariables())
-   //   {
-   //      solution = FLSSolution(LSSolutionType::one, CoefficientMatrix.GetColumn(CoefficientMatrix.ColumnNum()-1));
-   //   }
-   //   else
-   //   {
-   //      solution = FLSSolution(LSSolutionType::parameter, FNVector({CoefficientMatrix.GetElement(CoefficientMatrix.RowNum(), CoefficientMatrix.RowNum()-1)}));
-   //   }
-   //}
-
-   SolveLog(0, "", false);
+    SolveLog(0, "", false);
 
    return solution;
 }
@@ -240,24 +232,24 @@ void FLinearSystem::MakeRowPivotToZero()
    }
 }
 
-bool FLinearSystem::CheckUnsolveable()
+bool FLinearSystem::IsSolveable()
 {
-   bool unsolveable = false;
+   bool solveable = true;
    for(int row = 0; row < coefficientMatrix.RowNum(); row++)
    {
       // Check if all coeffiecients are 0
       if(CheckRowZeroFromTo(row, 0, coefficientMatrix.ColumnNum()-1))
       {
-         // Check if last colum is not 0
+         // Check if last column is not 0
          if(coefficientMatrix.GetElement(coefficientMatrix.ColumnNum()-1, row) != 0)
          {
-            unsolveable = true;
+            solveable = false;
             break;
          }
       }
    }
 
-   return unsolveable;
+   return solveable;
 }
 
 int FLinearSystem::CountNonZeroRows()

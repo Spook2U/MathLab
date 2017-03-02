@@ -56,11 +56,12 @@ void APlaneBase::SetComponents(TArray<UStaticMeshComponent *> components)
 
 
 
-void APlaneBase::InitPlane(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathPlane inPlane, PlaneMode inMode)
+void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathPlane inPlane, PlaneMode inMode)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   SetValuesGeometry(inCoordinateSystem, color);
+   Super::Init(inCoordinateSystem, color);
+   
    plane = inPlane;
    plane.normal = UKismetMathLibrary::Normal(UKismetMathLibrary::Cross_VectorVector(plane.direction1, plane.direction2));
 

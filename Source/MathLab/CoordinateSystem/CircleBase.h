@@ -51,7 +51,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|circle")
    void SetComponents(TArray<UStaticMeshComponent *> components);
 
-   void InitCircle(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathCircle inCircle);
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathCircle inCircle);
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "math lab|circle")

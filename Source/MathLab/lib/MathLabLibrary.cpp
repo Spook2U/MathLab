@@ -122,11 +122,24 @@ float MathLabLibrary::HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point)
    return UKismetMathLibrary::Dot_VectorVector(plane.normal, point.coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.normal, plane.position);
 }
 
-FMathLine MathLabLibrary::GetIntersectionLine(FMathPlane plane, float u)
+FMathLine MathLabLibrary::GetIntersectionLine(FMathPlane plane, FNVector solution)
 {
    FMathLine line;
-   if(u != 0) { line = FMathLine(plane.position, plane.direction1 + plane.direction2 / u); }
-   else       { MLD_ERR("u = 0; Division through 0 not allowed."); }       
+   float a = plane.normal.X;
+   float b = plane.normal.Y;
+   float c = plane.normal.Z;
+   float d = FVector::DotProduct(plane.normal, plane.position);
+   
+   float e = solution.Get(solution.Size()-3);
+   float f = solution.Get(solution.Size()-2);
+   float g = solution.Get(solution.Size()-1);
+   if(f != 0) 
+   { 
+      FVector position  = {(d*e+b*g) / a*e, g/e, 0};
+      FVector direction = {(b*f+c*e / a*e), (-1)*f/e, 1};
+      line = FMathLine(position, direction); 
+   }
+   else { MLD_ERR("Divison through 0 not allowed."); } 
    return line;
 }
 

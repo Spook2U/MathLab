@@ -5,6 +5,7 @@
 #include "MathLabEnums.h"
 
 #include "GameFramework/Actor.h"
+#include "Runtime/Engine/Classes/Components/TextRenderComponent.h"
 #include "GeometryBase.generated.h"
 
 class ACoordinateSystemBase;
@@ -61,6 +62,9 @@ public:
 
    GeometryType type;
 
+//protected:
+//   UTextRenderComponent nameText;
+
 // -------------------------------------------------------------------------------------------------
 
 public:
@@ -68,37 +72,35 @@ public:
    UFUNCTION(BlueprintPure, Category = "math lab|geometry")
    FVector CoordinateToLocation(FVector coordinate);
 
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color);
+
    //Called, when the objects need to update the position or other vales
    virtual void Update();
-
    //Updates the visible area of the Material
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void UpdateRendering();
 
-   //Sets Location of the object based on the Coordinate
-   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
-   void SetPosition(FVector coordinate);
-
    //Sets Color and Glowiness depending to the enum value and changes the Material of all Laser Components in the array
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void SetColor(LaserColors color);
-
+   //Sets Location of the object based on the Coordinate
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
+   void SetPosition(FVector coordinate);
    //Shows or Hides the guide objects
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void ShowVectorGuides(bool show);
 
-   void SetValuesGeometry(ACoordinateSystemBase *inCoordinateSystem, LaserColors color);
    
    virtual FString ToString();
 
+// -------------------------------------------------------------------------------------------------
 
 protected:
+   virtual void CreateVectorGuides(LaserColors color);
    void AddVectorGuide(AVectorStruct *vectorGuide);
    void AddLaserComponent(UStaticMeshComponent *laser);
 
-   virtual void CreateVectorGuides(LaserColors color);
-
-   
+// -------------------------------------------------------------------------------------------------
 
    // Component Setup Library workaround
    void InitScalePoint(UStaticMeshComponent *point);
@@ -106,13 +108,14 @@ protected:
    void InitScaleArrowhead(UStaticMeshComponent *arrowhead);
 
    void SetLaserMatTransparency(UStaticMeshComponent *laser, float value);
+
    void MoveLaser(UStaticMeshComponent *laser, Direction dir, float length);
-   void RotateLaserLookAt(FVector from, FVector to);
-   /* When x, y or z should not be changed use NULL. Value 0 not possible as new scale*/
-   void SetLaserScale(UStaticMeshComponent *laser, FVector scale);
 
    void RotateLine(FVector direction);
+   void RotateLaserLookAt(FVector from, FVector to);
 
+   /* When x, y or z should not be changed use NULL. Value 0 not possible as new scale*/
+   void SetLaserScale(UStaticMeshComponent *laser, FVector scale);
    void ScaleLine(UStaticMeshComponent *line, float length);
    void ScaleVector(UStaticMeshComponent *line, UStaticMeshComponent *arrowhead, float lenght);
    void ScalePlane(UStaticMeshComponent *plane, float lenght);

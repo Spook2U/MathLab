@@ -47,12 +47,13 @@ void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
 
 
-void ASphereBase::InitSphere(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathSphere inSphere)
+void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors color, FMathSphere inSphere)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
+   Super::Init(inCoordinateSystem, color, inSphere);
+
    this->sphere = inSphere;
-   InitPoint(inCoordinateSystem, color, sphere);
    this->type = GeometryType::sphere; //after InitPoint() to override the value from point
 }
 
