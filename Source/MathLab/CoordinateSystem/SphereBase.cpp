@@ -33,7 +33,7 @@ void ASphereBase::BeginPlay()
 
 
 
-void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components)
+void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
 {
    for(UStaticMeshComponent *c : components)
    {
@@ -43,18 +43,21 @@ void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components)
 
    MLD_PTR_CHECK(sphereMesh); if(!sphereMesh) return;
    AddLaserComponent(sphereMesh);
+
+   if(!MLD_PTR_CHECK(inText)) return;
+   nameText = inText;
 }
 
 
 
-void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere)
+void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere, FText inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   Super::Init(inCoordinateSystem, inColor, inSphere);
+   type = GeometryType::sphere;
+   Super::Init(inCoordinateSystem, inColor, inSphere, inName);
 
-   this->sphere = inSphere;
-   this->type = GeometryType::sphere; //after InitPoint() to override the value from point
+   sphere = inSphere;
 }
 
 

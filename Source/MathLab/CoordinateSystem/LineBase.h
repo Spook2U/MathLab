@@ -64,9 +64,9 @@ private:
 public:
    /**Saves the StaticMeshReferences in the source file to work on*/
    UFUNCTION(BlueprintCallable, Category = "math lab|line")
-   void SetComponents(TArray<UStaticMeshComponent *> components);
+   void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode);
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode, FText inName = FText::FromString(""));
 
    /**Called, when the objects need to update the position or other vales*/
    UFUNCTION(BlueprintCallable, Category = "math lab|line")

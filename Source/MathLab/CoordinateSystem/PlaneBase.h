@@ -69,9 +69,9 @@ private:
 public:
    //Saves the StaticMeshReferences in the source file to work on
    UFUNCTION(BlueprintCallable, Category = "math lab|plane")
-   void SetComponents(TArray<UStaticMeshComponent *> components);
+   void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode);
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FText inName = FText::FromString(""));
 
    /* Returns the unified normal Vector of the plane. */
    UFUNCTION(BlueprintPure, Category = "math lab|plane")
@@ -89,7 +89,7 @@ public:
    virtual FString ToString() override;
 
 protected:
-   virtual void CreateVectorGuides(LaserColors color) override;
+   virtual void CreateVectorGuides(LaserColors inColor) override;
 
 	
 	

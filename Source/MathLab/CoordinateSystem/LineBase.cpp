@@ -30,7 +30,7 @@ void ALineBase::BeginPlay()
    Super::BeginPlay();
 }
 
-void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
+void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
 {
    for(UStaticMeshComponent *c : components)
    {
@@ -49,19 +49,22 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components)
    AddLaserComponent(arrowheadMesh);
 
    arrowheadMesh->SetVisibility(false);
+
+   if(!MLD_PTR_CHECK(inText)) return;
+   nameText = inText;
 }
 
 
 
-void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode)
+void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode, FText inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   Super::Init(inCoordinateSystem, inColor);
+   type = GeometryType::line;
+   Super::Init(inCoordinateSystem, inColor, inName);
    
    line = inLine;
    mode = inMode;
-   type = GeometryType::line;
 
    switch(mode)
    {

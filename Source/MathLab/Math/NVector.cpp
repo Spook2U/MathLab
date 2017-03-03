@@ -273,7 +273,7 @@ FString FNVector::ToString() const
 {
    FString s = "";
 
-   s += "{";
+   s += "(";
    for(int i = 0, max = coordinates.Num(); i < max; i++)
    {
       if(coordinates[i] < 10 && coordinates[i] > -10)
@@ -290,7 +290,7 @@ FString FNVector::ToString() const
          s += ", "; 
       }
    }
-   s += "}";
+   s += ")";
 
    return s;
 }

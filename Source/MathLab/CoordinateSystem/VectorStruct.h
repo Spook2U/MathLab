@@ -45,9 +45,9 @@ private:
 
 public:
    UFUNCTION(BlueprintCallable, Category = "math lab|vectorStruct")
-   void SetComponents(TArray<UStaticMeshComponent *> laserComponents);
+   void SetComponents(TArray<UStaticMeshComponent *> laserComponents, UTextRenderComponent *inText);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, VectorStructMode inMode = VectorStructMode::general);
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, VectorStructMode inMode = VectorStructMode::general, FText inName = FText::FromString(""));
 
    UFUNCTION(BlueprintCallable, Category = "math lab|vectorStruct|visibility")
    void SetVisibilityPointA(bool visibility);

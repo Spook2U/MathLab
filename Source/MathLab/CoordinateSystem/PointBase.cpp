@@ -31,29 +31,32 @@ void APointBase::BeginPlay()
 
 
 
-void APointBase::SetComponents(TArray<UStaticMeshComponent*> components)
+void APointBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
 {
    for(UStaticMeshComponent *c : components)
    {
       MLD_PTR_CHECK(c); if(!c) continue;
-      if(c->GetName().Equals("PointMesh")) { this->pointMesh = c; }
+      if(c->GetName().Equals("PointMesh")) { pointMesh = c; }
    }
    
    MLD_PTR_CHECK(pointMesh); if(!pointMesh) return;
    InitScalePoint(pointMesh);
    AddLaserComponent(pointMesh);
+
+   if(!MLD_PTR_CHECK(inText)) return;
+   nameText = inText;
 }
 
 
 
-void APointBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPoint inPoint)
+void APointBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPoint inPoint, FText inName)
 {  
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
   
-   Super::Init(inCoordinateSystem, inColor);
+   if(type == GeometryType::other) type = GeometryType::point; //to prevent override of Unit and Sphere
+   Super::Init(inCoordinateSystem, inColor, inName);
 
-   this->point = inPoint;
-   this->type = GeometryType::point;
+   point = inPoint;
    CreateVectorGuides(inColor);
 }
 

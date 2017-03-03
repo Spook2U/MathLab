@@ -24,6 +24,15 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    convertFactor = 0;
    maxCoordinate = 0;
 
+   circleCounter      = 1;
+   lineCounter        = 1;
+   planeCounter       = 1;
+   pointCounter       = 1;
+   sphereCounter      = 1;
+   unitCounter        = 1;
+   constVectorCounter = 1;
+   geometryCounter    = 1;
+
    xAxis = nullptr;
    yAxis = nullptr;
    zAxis = nullptr;
@@ -146,7 +155,7 @@ AGeometryBase *ACoordinateSystemBase::AddGeometry(TSubclassOf<AGeometryBase> geo
    MLD_PTR_CHECK(newGeometry); if(!newGeometry) return nullptr;
    newGeometry->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
    elements.Add(newGeometry);
-   
+
    return newGeometry;
 }
 
@@ -167,70 +176,77 @@ void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int inde
 {
    AUnitBase *newUnit = (AUnitBase *)AddGeometry(unitBP);
    MLD_PTR_CHECK(newUnit); if(!newUnit) return;
-   newUnit->Init(this, laserColor, axis->GetUpVector()*index);
+   newUnit->Init(this, laserColor, axis->GetUpVector()*index, FText::FromString(FString::Printf(TEXT("%d"), index)));
    newUnit->OrientateToAxis(axis);
+   newUnit->Update();
 }
 
-APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, FMathPoint inPoint, bool showGuides)
+APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, FMathPoint inPoint, FText inName, bool showGuides)
 {  
    APointBase *point = (APointBase *)AddGeometry(pointBP);
-   
+
    MLD_PTR_CHECK(point); if(!point) return nullptr;
-   point->Init(this, color, inPoint);
+   point->Init(this, color, inPoint, inName);
    point->ShowVectorGuides(showGuides);
+   point->Update();
    return point;
 }
 
-ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, FMathLine inLine, LineMode mode, bool showGuides)
+ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, FMathLine inLine, LineMode mode, FText inName, bool showGuides)
 {
    if(inLine.direction.Size() == 0) { MLD_ERR("Line not created. Invalid diection. Direction of the line cannt be {0, 0, 0}."); return nullptr; }
 
    ALineBase *line = (ALineBase *)AddGeometry(lineBP);
 
    MLD_PTR_CHECK(line); if(!line) return nullptr;
-   line->Init(this, color, inLine, mode);
+   line->Init(this, color, inLine, mode, inName);
    line->ShowVectorGuides(showGuides);
+   line->Update();
    return line;
 }
 
-APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, FMathPlane inPlane, PlaneMode mode, bool showGuides)
+APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, FMathPlane inPlane, PlaneMode mode, FText inName, bool showGuides)
 {
    if((inPlane.direction1.Size() == 0) || (inPlane.direction2.Size() == 0)) { MLD_ERR("Plane not created. Invalid diection. No direction of the plane shall be {0, 0, 0}."); return nullptr; }
 
    APlaneBase *plane = (APlaneBase *)AddGeometry(planeBP);
    MLD_PTR_CHECK(plane); if(!plane) return nullptr;
-   plane->Init(this, color, inPlane, mode);
+   plane->Init(this, color, inPlane, mode, inName);
    plane->ShowVectorGuides(showGuides);
+   plane->Update();
    return plane;
 }
 
-ASphereBase *ACoordinateSystemBase::AddSphere(LaserColors color, FMathSphere inSphere, bool showGuides)
+ASphereBase *ACoordinateSystemBase::AddSphere(LaserColors color, FMathSphere inSphere, FText inName, bool showGuides)
 {
    if(inSphere.radius <= 0) { MLD_ERR("Sphere not created. Invalid radius. Cannt create Sphere with radius <= 0."); return nullptr; }
 
    ASphereBase *sphere = (ASphereBase *)AddGeometry(sphereBP);
    MLD_PTR_CHECK(sphere); if(!sphere) return nullptr;
-   sphere->Init(this, color, inSphere);
+   sphere->Init(this, color, inSphere, inName);
    sphere->ShowVectorGuides(showGuides);
+   sphere->Update();
    return sphere;
 }
 
-ACircleBase *ACoordinateSystemBase::AddCircle(LaserColors color, FMathCircle inCircle, bool showGuides)
+ACircleBase *ACoordinateSystemBase::AddCircle(LaserColors color, FMathCircle inCircle, FText inName, bool showGuides)
 {
    if(inCircle.radius <= 0) { MLD_ERR("Circle not created. Invalid radius. Cannt create Circle with radius <= 0."); return nullptr; }
 
    ACircleBase *circle = (ACircleBase *)AddGeometry(circleBP);
    MLD_PTR_CHECK(circle); if(!circle) return nullptr;
-   circle->Init(this, color, inCircle);
+   circle->Init(this, color, inCircle, inName);
    circle->ShowVectorGuides(showGuides);
+   circle->Update();
    return circle;
 }
 
-AVectorStruct *ACoordinateSystemBase::AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode)
+AVectorStruct *ACoordinateSystemBase::AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode, FText inName)
 {
    AVectorStruct *newVectorStruct = (AVectorStruct *)AddGeometry(vectorStructBP);
    MLD_PTR_CHECK(newVectorStruct); if(!newVectorStruct) return nullptr;
-   newVectorStruct->Init(this, color, pointA, pointB, mode);
+   newVectorStruct->Init(this, color, pointA, pointB, mode, inName);
+   newVectorStruct->Update();
    switch(mode)
    {
       case VectorStructMode::point:       newVectorStruct->SetVisibility(false, true,  false, false); break;

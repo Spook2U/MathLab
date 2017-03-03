@@ -22,7 +22,7 @@ void AUnitBase::BeginPlay()
 
 
 
-void AUnitBase::SetComponents(TArray<UStaticMeshComponent *> components)
+void AUnitBase::SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText)
 {
    for(UStaticMeshComponent *c : components)
    {
@@ -41,15 +41,17 @@ void AUnitBase::SetComponents(TArray<UStaticMeshComponent *> components)
 
    AddLaserComponent(xLaser);
    AddLaserComponent(yLaser);
+
+   if(!MLD_PTR_CHECK(inText)) return;
+   nameText = inText;
 }
 
-void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector coordinate)
+void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector coordinate, FText inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   Super::Init(inCoordinateSystem, inColor, FMathPoint(coordinate));
-
-   this->type = GeometryType::unit; //after InitPoint() to override the value from point
+   type = GeometryType::unit;
+   Super::Init(inCoordinateSystem, inColor, FMathPoint(coordinate), inName);
 }
 
 
@@ -80,6 +82,7 @@ void AUnitBase::OrientateToAxis(UStaticMeshComponent *axis)
 {
    float thickness = coordinateSystem->axisSize*coordinateSystem->unitSizeFactor;
    SetActorTransform(FTransform(axis->GetComponentRotation(), GetActorLocation(), FVector(thickness, thickness, 0.1f)));
+   nameText->SetWorldScale3D(FVector(1.f, 1.f, 1.f));
 }
 
 // -------------------------------------------------------------------------------------------------

@@ -17,7 +17,7 @@ AVectorStruct::AVectorStruct()
 
 
 
-void AVectorStruct::SetComponents(TArray<UStaticMeshComponent*> components)
+void AVectorStruct::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
 {
    for(UStaticMeshComponent *c : components)
    {
@@ -42,20 +42,23 @@ void AVectorStruct::SetComponents(TArray<UStaticMeshComponent*> components)
    AddLaserComponent(pointBMesh);
    AddLaserComponent(lineMesh);
    AddLaserComponent(arrowheadMesh);
+
+   if(!MLD_PTR_CHECK(inText)) return;
+   nameText = inText;
 }
 
 
 
-void AVectorStruct::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, VectorStructMode inMode)
+void AVectorStruct::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, VectorStructMode inMode, FText inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   Super::Init(inCoordinateSystem, inColor);
+   type = GeometryType::vectorStruct;
+   Super::Init(inCoordinateSystem, inColor, inName);
 
    a = inA;
    b = inB;
    mode = inMode;
-   type = GeometryType::vectorStruct;
 }
 
 

@@ -5,7 +5,7 @@
 #include "MathLabEnums.h"
 
 #include "GameFramework/Actor.h"
-//#include "Runtime/Engine/Classes/Components/TextRenderComponent.h"
+#include "Runtime/Engine/Classes/Components/TextRenderComponent.h"
 #include "GeometryBase.generated.h"
 
 class ACoordinateSystemBase;
@@ -44,6 +44,7 @@ public:
 	AGeometryBase();
    
    virtual void BeginPlay() override;
+   virtual void Tick(float DeltaTime) override;
 
 public:
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
@@ -69,13 +70,14 @@ public:
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
    GeometryType type;
 
-   // determines if the constructig Vectors should be shown
+   // Determines if the constructig Vectors should be shown
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
    bool showConstruction;
 
 
+
 //protected:
-//   UTextRenderComponent nameText;
+   UTextRenderComponent *nameText;
 
 // -------------------------------------------------------------------------------------------------
 
@@ -84,13 +86,16 @@ public:
    UFUNCTION(BlueprintPure, Category = "math lab|geometry")
    FVector CoordinateToLocation(FVector coordinate);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor);
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FText inName = FText::FromString(""));
 
    //Called, when the objects need to update the position or other vales
    virtual void Update();
    //Updates the visible area of the Material
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void UpdateRendering();
+   //Rotates the TextRender Components, so they are turning to the player
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
+   void RotateText();
 
    //Sets Color and Glowiness depending to the enum value and changes the Material of all Laser Components in the array
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
@@ -98,6 +103,9 @@ public:
    //Sets Location of the object based on the Coordinate
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void SetPosition(FVector coordinate);
+   //Sets Name of the object, if empty uses generic Name
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
+   void SetName(FText inName);
    //Shows or Hides the guide objects
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void ShowVectorGuides(bool show);
@@ -108,7 +116,7 @@ public:
 // -------------------------------------------------------------------------------------------------
 
 protected:
-   virtual void CreateVectorGuides(LaserColors color);
+   virtual void CreateVectorGuides(LaserColors inColor);
    void AddVectorGuide(AVectorStruct *vectorGuide);
    void AddLaserComponent(UStaticMeshComponent *laser);
 

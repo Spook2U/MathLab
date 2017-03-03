@@ -16,7 +16,7 @@ FString FMathCircle::ToString()
 // -------------------------------------------------------------------------------------------------
 
 
-void ACircleBase::SetComponents(TArray<UStaticMeshComponent*> components)
+void ACircleBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
 {
    for(UStaticMeshComponent *c : components)
    {
@@ -30,17 +30,19 @@ void ACircleBase::SetComponents(TArray<UStaticMeshComponent*> components)
    if(!(circleMesh && circleMeshBorder)) return;
    AddLaserComponent(circleMesh);
    AddLaserComponent(circleMeshBorder);
+
+   if(!MLD_PTR_CHECK(inText)) return;
+   nameText = inText;
 }
 
-void ACircleBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle)
+void ACircleBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle, FText inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   Super::Init(inCoordinateSystem, inColor);
+   type = GeometryType::circle;
+   Super::Init(inCoordinateSystem, inColor, inName);
    
    circle = inCircle;
-
-   type = GeometryType::circle;
 }
 
 void ACircleBase::Update()

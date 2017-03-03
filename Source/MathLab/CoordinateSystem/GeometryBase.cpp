@@ -10,7 +10,7 @@
 
 AGeometryBase::AGeometryBase()              
 { 
-   PrimaryActorTick.bCanEverTick = false; 
+   PrimaryActorTick.bCanEverTick = true; 
 
    coordinateSystem = NULL;
    laserCompoents;
@@ -21,6 +21,12 @@ AGeometryBase::AGeometryBase()
 
 void AGeometryBase::BeginPlay() { 
    Super::BeginPlay();
+}
+
+void AGeometryBase::Tick(float DeltaTime) 
+{ 
+   Super::Tick(DeltaTime);
+   RotateText(); 
 }
 
 // Pure Functions -----------------------------------------------------------------------------------
@@ -38,13 +44,14 @@ FVector AGeometryBase::CoordinateToLocation(FVector coordinate)
 
 // Callable Functions --------------------------------------------------------------------------------
 
-void AGeometryBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor)
+void AGeometryBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FText inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
    coordinateSystem = inCoordinateSystem;
    color = inColor;
    SetColor(inColor);
+   SetName(inName);
 }
 
 // --------------------------------------------------------------------------------------------------
@@ -57,6 +64,7 @@ void AGeometryBase::Update()
       MLD_PTR_CHECK(g); if(!g) continue;
       g->Update();
    }
+
 }
 
 void AGeometryBase::UpdateRendering()
@@ -68,6 +76,19 @@ void AGeometryBase::UpdateRendering()
       laser->SetVectorParameterValueOnMaterials(TEXT("Location"), coordinateSystem->GetActorLocation());
       laser->SetVectorParameterValueOnMaterials(TEXT("Bounds"), FVector(bound, bound, bound));
    }
+}
+
+void AGeometryBase::RotateText()
+{
+   if(!nameText) return;
+
+   FVector actorLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->GetActorLocation() + FVector(0, 0, 64);
+   FVector textLocation  = GetActorLocation();
+
+   FVector norm = UKismetMathLibrary::Normal(actorLocation - textLocation);
+   FVector rotatedVector = UKismetMathLibrary::GreaterGreater_VectorRotator(norm, FRotator(0, 0, 0));
+   FRotator newRotation = UKismetMathLibrary::Conv_VectorToRotator(rotatedVector);
+   nameText->SetWorldRotation(newRotation);
 }
 
 // --------------------------------------------------------------------------------------------------
@@ -102,6 +123,35 @@ void AGeometryBase::SetPosition(FVector coordinate)
    SetActorLocation(CoordinateToLocation(coordinate));
 }
 
+void AGeometryBase::SetName(FText inName)
+{
+   FText newText;
+
+   if(inName.EqualTo(FText::FromString("")))
+   {
+      FString string = "";
+      switch(type)
+      {
+         case GeometryType::circle:       string = FString::Printf(TEXT("Circle%02d"),      coordinateSystem->circleCounter++); break;
+         case GeometryType::line:         string = FString::Printf(TEXT("Line%02d"),        coordinateSystem->lineCounter++); break;
+         case GeometryType::plane:        string = FString::Printf(TEXT("Plane%02d"),       coordinateSystem->planeCounter++); break;
+         case GeometryType::point:        string = FString::Printf(TEXT("Point%02d"),       coordinateSystem->pointCounter++); break;
+         case GeometryType::sphere:       string = FString::Printf(TEXT("Sphere%02d"),      coordinateSystem->sphereCounter++); break;
+         case GeometryType::unit:         string = FString::Printf(TEXT("Unit%02d"),        coordinateSystem->unitCounter++); break;
+         case GeometryType::vectorStruct: string = FString::Printf(TEXT("ConstVector%02d"), coordinateSystem->constVectorCounter++); break;
+         case GeometryType::other:        
+         default:                         string = FString::Printf(TEXT("Geomety%02d"),     coordinateSystem->geometryCounter++); break;
+      }
+      newText = FText::FromString(string);
+   }
+   else
+   {
+      newText = inName;
+   }
+
+   nameText->SetText(newText);
+}
+
 void AGeometryBase::ShowVectorGuides(bool show)
 {
    showConstruction = show;
@@ -122,7 +172,7 @@ FString AGeometryBase::ToString()
 
 // Protected-----------------------------------------------------------------------------------------
 
-void AGeometryBase::CreateVectorGuides(LaserColors color)
+void AGeometryBase::CreateVectorGuides(LaserColors inColor)
 {
 }
 

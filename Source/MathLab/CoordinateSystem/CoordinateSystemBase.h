@@ -68,7 +68,14 @@ public:
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "coordinate system")
    float maxCoordinate;
 
-
+   int circleCounter;
+   int lineCounter;
+   int planeCounter;
+   int pointCounter;
+   int sphereCounter;
+   int unitCounter;
+   int constVectorCounter;
+   int geometryCounter;
 
 
 private:
@@ -120,29 +127,29 @@ public:
    
    /* Spawns a Point in the Coordinate System*/
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   APointBase *AddPoint(LaserColors color, FMathPoint inPoint, bool showGuides = false);
+   APointBase *AddPoint(LaserColors color, FMathPoint inPoint, FText inName = FText::FromString(""), bool showGuides = false);
    
    /* Spawns a Line with the defines mode
       Mode line: Spawns an endless line using position and direction Vector.
       Mode segment: Spawns a segmented line between 2 points A (position) and B (direction).
       Mode vector: Spawns a vector pointing to direction, using position as offset from the orign.*/
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   ALineBase *AddLine(LaserColors color, FMathLine inLine, LineMode mode, bool showGuides = false);
+   ALineBase *AddLine(LaserColors color, FMathLine inLine, LineMode mode, FText inName = FText::FromString(""), bool showGuides = false);
    
    /* Spawns a Plane with the defines mode
       Mode plane: Spawns an endless plane using position and 2 direction Vector.*/
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   APlaneBase *AddPlane(LaserColors color, FMathPlane inPlane, PlaneMode mode, bool showGuides = false);
+   APlaneBase *AddPlane(LaserColors color, FMathPlane inPlane, PlaneMode mode, FText inName = FText::FromString(""), bool showGuides = false);
    
    /* Spawns a Sphere with the given values.*/
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   ASphereBase *AddSphere(LaserColors color, FMathSphere inSphere, bool showGuides = false);
+   ASphereBase *AddSphere(LaserColors color, FMathSphere inSphere, FText inName = FText::FromString(""), bool showGuides = false);
 
    /* Spawns a Circle on a plane with the efined values.*/
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   ACircleBase *AddCircle(LaserColors color, FMathCircle inCircle, bool showGuides = false);
+   ACircleBase *AddCircle(LaserColors color, FMathCircle inCircle, FText inName = FText::FromString(""), bool showGuides = false);
 
-   AVectorStruct *AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode = VectorStructMode::general);
+   AVectorStruct *AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode = VectorStructMode::general, FText inName = FText::FromString(""));
 
 
 
