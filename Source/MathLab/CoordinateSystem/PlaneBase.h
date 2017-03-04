@@ -41,6 +41,7 @@ public:
    FMathPlane(FMathPoint inPoint, FVector inNormal);
    /* Get a textual representation of this Plane. */
    FString ToString();
+   FString ToStringShort();
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -71,7 +72,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FText inName = FText::FromString(""));
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FString inName = "");
 
    /* Returns the unified normal Vector of the plane. */
    UFUNCTION(BlueprintPure, Category = "math lab|plane")

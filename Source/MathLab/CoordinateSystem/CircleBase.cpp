@@ -12,6 +12,10 @@ FString FMathCircle::ToString()
 {
    return FString::Printf(TEXT("Center: %s, Radius: %f; laying on plane with Normal: %s"), *center.ToString(), radius, *normal.ToString());
 }
+FString FMathCircle::ToStringShort()
+{
+   return FString::Printf(TEXT("(%s, %s, %s), R:%s)"), *FString::SanitizeFloat(center.X),  *FString::SanitizeFloat(center.Y),  *FString::SanitizeFloat(center.Z), *FString::SanitizeFloat(radius));
+}
 
 // -------------------------------------------------------------------------------------------------
 
@@ -35,14 +39,14 @@ void ACircleBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextR
    nameText = inText;
 }
 
-void ACircleBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle, FText inName)
+void ACircleBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle, FString inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
    type = GeometryType::circle;
-   Super::Init(inCoordinateSystem, inColor, inName);
-   
    circle = inCircle;
+   mathDataString = inCircle.ToStringShort();
+   Super::Init(inCoordinateSystem, inColor, inName);
 }
 
 void ACircleBase::Update()

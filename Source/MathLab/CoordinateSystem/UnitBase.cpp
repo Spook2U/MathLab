@@ -46,12 +46,13 @@ void AUnitBase::SetComponents(TArray<UStaticMeshComponent *> components, UTextRe
    nameText = inText;
 }
 
-void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector coordinate, FText inName)
+void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inCoordinate, FString inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
    type = GeometryType::unit;
-   Super::Init(inCoordinateSystem, inColor, FMathPoint(coordinate), inName);
+   coordinate = inCoordinate;
+   Super::Init(inCoordinateSystem, inColor, inName);
 }
 
 
@@ -59,6 +60,7 @@ void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inCo
 void AUnitBase::Update()
 {
    Super::Update();
+   SetPosition(coordinate);
    ScaleUnitLaser();
 }
 
@@ -88,6 +90,4 @@ void AUnitBase::OrientateToAxis(UStaticMeshComponent *axis)
 // -------------------------------------------------------------------------------------------------
 
 void AUnitBase::CreateVectorGuides(LaserColors inColor)
-{
-   //leave empty to override from Point, so Units dont create Guides
-}
+{}

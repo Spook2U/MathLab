@@ -21,8 +21,9 @@ public:
    FMathPoint();
    /* Constructor to set the coordinate of the point. */
    FMathPoint(FVector inCoordinate);
-   /* Get a textual representation of this Plane. */
+   /* Get a textual representation of this Point. */
    FString ToString();
+   FString ToStringShort();
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -51,7 +52,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|point")
    void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPoint inPoint, FText inName = FText::FromString(""));
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPoint inPoint, FString inName = "");
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "math lab|point")

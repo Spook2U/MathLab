@@ -8,7 +8,7 @@
 
 
 UCLASS()
-class MATHLAB_API AUnitBase : public APointBase
+class MATHLAB_API AUnitBase : public AGeometryBase
 {
 	GENERATED_BODY()
 
@@ -16,6 +16,8 @@ public:
    AUnitBase();
 
    virtual void BeginPlay() override;
+
+   FVector coordinate;
 
 private:
    UStaticMeshComponent *xAxis;
@@ -30,9 +32,9 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector coordinate, FText inName = FText::FromString(""));
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inCoordinate, FString inName = "");
 
-   //Called, when the objects need to update the position or other vales
+   //Called, when the objects need to update the position or other values
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    virtual void Update() override;
 
@@ -41,6 +43,8 @@ public:
    void ScaleUnitLaser();
 
    void OrientateToAxis(UStaticMeshComponent *axis);
+
+
 
 protected:
    void ScaleUnitLaser_AtAxis(UStaticMeshComponent *laser, UStaticMeshComponent *axis, float laserSize);

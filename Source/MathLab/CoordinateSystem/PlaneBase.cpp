@@ -25,6 +25,12 @@ FString FMathPlane::ToString()
 {
    return FString::Printf(TEXT("Position %s, Direction 1: %s, Direction 2: %s"), *position.ToString(), *direction1.ToString(), *direction2.ToString());
 }
+FString FMathPlane::ToStringShort()
+{
+   return FString::Printf(TEXT("(%s, %s, %s), (%s, %s, %s), (%s, %s, %s)"), *FString::SanitizeFloat(position.X),   *FString::SanitizeFloat(position.Y),   *FString::SanitizeFloat(position.Z), 
+                                                                            *FString::SanitizeFloat(direction1.X), *FString::SanitizeFloat(direction1.Y), *FString::SanitizeFloat(direction1.Z),
+                                                                            *FString::SanitizeFloat(direction2.X), *FString::SanitizeFloat(direction2.Y), *FString::SanitizeFloat(direction2.Z));
+}
 
 // -------------------------------------------------------------------------------------------------
 
@@ -59,16 +65,17 @@ void APlaneBase::SetComponents(TArray<UStaticMeshComponent *> components, UTextR
 
 
 
-void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FText inName)
+void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FString inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
    type = GeometryType::plane;
-   Super::Init(inCoordinateSystem, inColor, inName);
-   
    plane = inPlane;
+   mathDataString = inPlane.ToStringShort();
    plane.normal = UKismetMathLibrary::Normal(UKismetMathLibrary::Cross_VectorVector(plane.direction1, plane.direction2));
 
+   Super::Init(inCoordinateSystem, inColor, inName);
+   
    mode = inMode;
 
    switch(inMode)
@@ -89,6 +96,7 @@ void APlaneBase::Update()
    Super::Update();
    SetPosition(plane.position);
    BuildPlane();
+
 }
 
 

@@ -49,16 +49,15 @@ void AVectorStruct::SetComponents(TArray<UStaticMeshComponent*> components, UTex
 
 
 
-void AVectorStruct::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, VectorStructMode inMode, FText inName)
+void AVectorStruct::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, VectorStructMode inMode, FString inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
    type = GeometryType::vectorStruct;
-   Super::Init(inCoordinateSystem, inColor, inName);
-
    a = inA;
    b = inB;
    mode = inMode;
+   Super::Init(inCoordinateSystem, inColor, inName);
 }
 
 

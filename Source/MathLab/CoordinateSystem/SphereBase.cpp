@@ -9,11 +9,15 @@
 
 
 FMathSphere::FMathSphere() {}
-FMathSphere::FMathSphere(FVector inCoordinate, float inRadius) : Super(inCoordinate), radius(inRadius) {}
+FMathSphere::FMathSphere(FVector inCenter, float inRadius) : center(inCenter), radius(inRadius) {}
 
 FString FMathSphere::ToString()
 {
-   return FString::Printf(TEXT("%s, Radius:s %f"), *Super::ToString(), radius);
+   return FString::Printf(TEXT("%s, Radius:s %f"), *center.ToString(), radius);
+}
+FString FMathSphere::ToStringShort()
+{
+   return FString::Printf(TEXT("(%s, %s, %s), R:%s)"), *FString::SanitizeFloat(center.X),  *FString::SanitizeFloat(center.Y),  *FString::SanitizeFloat(center.Z), *FString::SanitizeFloat(radius));
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -50,14 +54,14 @@ void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextR
 
 
 
-void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere, FText inName)
+void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere, FString inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
    type = GeometryType::sphere;
-   Super::Init(inCoordinateSystem, inColor, inSphere, inName);
-
    sphere = inSphere;
+   mathDataString = inSphere.ToStringShort();
+   Super::Init(inCoordinateSystem, inColor, inName);
 }
 
 
@@ -65,6 +69,7 @@ void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors in
 void ASphereBase::Update()
 {
    Super::Update();
+   SetPosition(sphere.center);
    BuildSphere();
 }
 
@@ -77,27 +82,14 @@ void ASphereBase::BuildSphere()
 
 FString ASphereBase::ToString()
 {
-   return FString::Printf(TEXT("%s, Radius: %f"), *Super::ToString(), sphere.radius);
+   return FString::Printf(TEXT("%s; %s"), *Super::ToString(), *sphere.ToString());
 }
 
 // Protected ----------------------------------------------------------------------------------------
 
 void ASphereBase::CreateVectorGuides(LaserColors inColor)
 {
-   Super::CreateVectorGuides(inColor);
-   AVectorStruct *pointVectorStruct = nullptr;
-
-   for(AVectorStruct *v : vectorGuides)
-   {
-      MLD_PTR_CHECK(v); if(!v) continue;
-      if(v->a.Equals(FVector::ZeroVector) && v->b.Equals(point.coordinate))
-      {
-         pointVectorStruct = v;
-         break;
-      } 
-   }
-   pointVectorStruct->SetVisibilityPointB(true);
-
-   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, sphere.coordinate, sphere.coordinate + FVector(sphere.radius, 0, 0), VectorStructMode::segment));
+   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, FVector::ZeroVector, sphere.center, VectorStructMode::vectorPoint));
+   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, sphere.center, sphere.center + FVector(sphere.radius, 0, 0), VectorStructMode::segment));
 }
 

@@ -76,8 +76,13 @@ public:
 
 
 
-//protected:
+protected:
    UTextRenderComponent *nameText;
+
+   FString nameString;
+   FString mathDataString;
+   bool showName;
+   bool showMathData;
 
 // -------------------------------------------------------------------------------------------------
 
@@ -86,7 +91,7 @@ public:
    UFUNCTION(BlueprintPure, Category = "math lab|geometry")
    FVector CoordinateToLocation(FVector coordinate);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FText inName = FText::FromString(""));
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FString inName = "");
 
    //Called, when the objects need to update the position or other vales
    virtual void Update();
@@ -103,14 +108,22 @@ public:
    //Sets Location of the object based on the Coordinate
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void SetPosition(FVector coordinate);
-   //Sets Name of the object, if empty uses generic Name
-   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
-   void SetName(FText inName);
    //Shows or Hides the guide objects
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void ShowVectorGuides(bool show);
+   //Shows or Hides the Name of the Object
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
+   void ShowName(bool show);
+   //Shows or Hides the mathematical Data on the Name
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
+   void ShowMathData(bool show);
+   // Sets the name of the object
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
+   void SetName(FString inName);
+   // Sets the Name to default
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
+   void ClearName();
 
-   
    virtual FString ToString();
 
 // -------------------------------------------------------------------------------------------------
@@ -119,6 +132,8 @@ protected:
    virtual void CreateVectorGuides(LaserColors inColor);
    void AddVectorGuide(AVectorStruct *vectorGuide);
    void AddLaserComponent(UStaticMeshComponent *laser);
+   FText BuildText(FString inName);
+   void UpdateTextVisibility();
 
 // -------------------------------------------------------------------------------------------------
 

@@ -16,6 +16,12 @@ FString FMathLine::ToString()
    return FString::Printf(TEXT("Position %s, Direction: %s"), *position.ToString(), *direction.ToString());
 }
 
+FString FMathLine::ToStringShort()
+{
+   return FString::Printf(TEXT("(%s, %s, %s), (%s, %s, %s)"), *FString::SanitizeFloat(position.X),  *FString::SanitizeFloat(position.Y),  *FString::SanitizeFloat(position.Z), 
+                                                              *FString::SanitizeFloat(direction.X), *FString::SanitizeFloat(direction.Y), *FString::SanitizeFloat(direction.Z));
+}
+
 // -------------------------------------------------------------------------------------------------
 
 ALineBase::ALineBase()
@@ -56,16 +62,16 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRen
 
 
 
-void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode, FText inName)
+void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode, FString inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
    type = GeometryType::line;
-   Super::Init(inCoordinateSystem, inColor, inName);
-   
    line = inLine;
    mode = inMode;
-
+   mathDataString = inLine.ToStringShort();
+   Super::Init(inCoordinateSystem, inColor, inName);
+   
    switch(mode)
    {
       case LineMode::line:    CreateVectorGuides(inColor); break;

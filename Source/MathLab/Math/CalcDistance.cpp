@@ -21,7 +21,7 @@ FCalcReturn CalcDistance::CalculateWith(FMathPoint point, FMathPlane plane)
 }
 FCalcReturn CalcDistance::CalculateWith(FMathPoint point, FMathSphere sphere)  
 { 
-   return FCalcReturn(CalculateWith(FMathPoint(sphere.coordinate), point).distance - sphere.radius);
+   return FCalcReturn(CalculateWith(FMathPoint(sphere.center), point).distance - sphere.radius);
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ FCalcReturn CalcDistance::CalculateWith(FMathLine line, FMathPlane plane)
 }
 FCalcReturn CalcDistance::CalculateWith(FMathLine line, FMathSphere sphere)  
 { 
-   return FCalcReturn(CalculateWith(FMathPoint(sphere.coordinate), line).distance - sphere.radius); 
+   return FCalcReturn(CalculateWith(FMathPoint(sphere.center), line).distance - sphere.radius); 
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ FCalcReturn CalcDistance::CalculateWith(FMathPlane plane1, FMathPlane plane2)
 }
 FCalcReturn CalcDistance::CalculateWith(FMathPlane plane, FMathSphere sphere)  
 { 
-   return FCalcReturn(CalculateWith(FMathPoint(sphere.coordinate), plane).distance - sphere.radius); 
+   return FCalcReturn(CalculateWith(FMathPoint(sphere.center), plane).distance - sphere.radius); 
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -115,5 +115,5 @@ FCalcReturn CalcDistance::CalculateWith(FMathSphere sphere, FMathPlane plane)
 }
 FCalcReturn CalcDistance::CalculateWith(FMathSphere sphere1, FMathSphere sphere2) 
 { 
-   return FCalcReturn(CalculateWith(FMathPoint(sphere2.coordinate), FMathPoint(sphere1.coordinate)).distance - sphere1.radius - sphere2.radius); 
+   return FCalcReturn(CalculateWith(FMathPoint(sphere2.center), FMathPoint(sphere1.center)).distance - sphere1.radius - sphere2.radius); 
 }

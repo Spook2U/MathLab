@@ -27,6 +27,7 @@ public:
    FMathCircle(FVector inCenter, FVector inNormal, float inRadius);
    /* Get a textual representation of this Circle. */
    FString ToString();
+   FString ToStringShort();
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -51,7 +52,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|circle")
    void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle, FText inName = FText::FromString(""));
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle, FString inName = "");
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "math lab|circle")

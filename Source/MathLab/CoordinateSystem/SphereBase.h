@@ -9,26 +9,29 @@
 
 /* Defines a mathematical sphere. */
 USTRUCT(BlueprintType)
-struct FMathSphere : public FMathPoint
+struct FMathSphere
 {
    GENERATED_BODY()
 
 public:      
+   UPROPERTY(BlueprintReadWrite, Category = "sphere")
+   FVector center;
    UPROPERTY(BlueprintReadWrite, Category = "sphere")
    float radius;
 
    /* Default constructor (no initialization). */
    FMathSphere();
    /* Constructor to set the coordinate of the point. */
-   FMathSphere(FVector inCoordinate, float inRadius);
+   FMathSphere(FVector inCenter, float inRadius);
    /* Get a textual representation of this Plane. */
    FString ToString();
+   FString ToStringShort();
 };
 
 // -------------------------------------------------------------------------------------------------
 
 UCLASS()
-class MATHLAB_API ASphereBase : public APointBase
+class MATHLAB_API ASphereBase : public AGeometryBase
 {
 	GENERATED_BODY()
 
@@ -51,7 +54,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|sphere")
    void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere, FText inName = FText::FromString(""));
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere, FString inName = "");
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "math lab|sphere")

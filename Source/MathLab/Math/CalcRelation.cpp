@@ -30,8 +30,8 @@ FCalcReturn CalcRelation::CalculateWith(FMathPoint point, FMathPlane plane)
 FCalcReturn CalcRelation::CalculateWith(FMathPoint point, FMathSphere sphere)  
 { 
    FCalcReturn result;
-   if(CalcDistance().CalculateWith(point, FMathPoint(sphere.coordinate)).distance <= sphere.radius) { result.relation = Relation::inside;  }
-   else                                                                                             { result.relation = Relation::outside; }
+   if(CalcDistance().CalculateWith(point, FMathPoint(sphere.center)).distance <= sphere.radius) { result.relation = Relation::inside;  }
+   else                                                                                         { result.relation = Relation::outside; }
    return result;
 }
 
@@ -101,7 +101,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line, FMathSphere sphere)
 { 
    FCalcReturn result;
 
-   FVector  e = sphere.coordinate - line.position;
+   FVector  e = sphere.center - line.position;
    float    a = UKismetMathLibrary::Dot_VectorVector(e, m.MakeUnitVector(line.direction));
    float    f;
    float fSqu = sphere.radius*sphere.radius - e.Size()*e.Size() + a*a;
@@ -172,7 +172,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane, FMathSphere sphere)
    }
    else
    {
-      FMathLine perpLine = FMathLine(sphere.coordinate, plane.normal);
+      FMathLine perpLine = FMathLine(sphere.center, plane.normal);
       FMathPoint perpLineIntersection = CalculateWith(perpLine, plane).intersections.point;
 
       if(distance == 0)
@@ -182,7 +182,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane, FMathSphere sphere)
       }
       else
       {
-         float dist = CalcDistance().CalculateWith(perpLineIntersection, sphere.coordinate).distance;
+         float dist = CalcDistance().CalculateWith(perpLineIntersection, sphere.center).distance;
          float circleRadius = m.SetOfPythagorasGetA(dist, sphere.radius);
 
          result.relation = Relation::intersection;

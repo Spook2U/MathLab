@@ -16,6 +16,11 @@ FString FMathPoint::ToString()
    return FString::Printf(TEXT("Coordinate %s"), *coordinate.ToString());
 }
 
+FString FMathPoint::ToStringShort()
+{
+   return FString::Printf(TEXT("(%s, %s, %s)"), *FString::SanitizeFloat(coordinate.X), *FString::SanitizeFloat(coordinate.Y), *FString::SanitizeFloat(coordinate.Z));
+}
+
 // -------------------------------------------------------------------------------------------------
 
 APointBase::APointBase()
@@ -49,14 +54,14 @@ void APointBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRe
 
 
 
-void APointBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPoint inPoint, FText inName)
+void APointBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPoint inPoint, FString inName)
 {  
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
   
-   if(type == GeometryType::other) type = GeometryType::point; //to prevent override of Unit and Sphere
-   Super::Init(inCoordinateSystem, inColor, inName);
-
+   type = GeometryType::point;
    point = inPoint;
+   mathDataString = inPoint.ToStringShort();
+   Super::Init(inCoordinateSystem, inColor, inName);
    CreateVectorGuides(inColor);
 }
 
