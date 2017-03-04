@@ -87,6 +87,6 @@ FString ACircleBase::ToString()
 
 // Protected ----------------------------------------------------------------------------------------
 
-void ACircleBase::CreateVectorGuides(LaserColors inColor)
+void ACircleBase::CreateCVector(LaserColors inColor)
 {
 }

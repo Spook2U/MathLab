@@ -14,7 +14,7 @@
 #include "PointBase.h"
 #include "SphereBase.h"
 #include "UnitBase.h"
-#include "VectorStruct.h"
+#include "CVector.h"
 
 #include "CoordinateSystemBase.generated.h"
 
@@ -155,7 +155,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
    ACircleBase *AddCircle(LaserColors color, FMathCircle inCircle, FString inName = "", bool showGuides = false);
 
-   AVectorStruct *AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode = VectorStructMode::general, FString inName = "");
+   ACVector *AddCVector(LaserColors color, FVector pointA, FVector pointB, CVectorMode mode = CVectorMode::general, FString inName = "");
 
 
 

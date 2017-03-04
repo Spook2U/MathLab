@@ -4,7 +4,7 @@
 #include "PointBase.h"
 
 #include "CoordinateSystemBase.h"
-#include "VectorStruct.h"
+#include "CVector.h"
 
 
 
@@ -62,7 +62,7 @@ void APointBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inC
    point = inPoint;
    mathDataString = inPoint.ToStringShort();
    Super::Init(inCoordinateSystem, inColor, inName);
-   CreateVectorGuides(inColor);
+   CreateCVector(inColor);
 }
 
 
@@ -82,8 +82,8 @@ FString APointBase::ToString()
 
 // Protected ----------------------------------------------------------------------------------------
 
-void APointBase::CreateVectorGuides(LaserColors inColor)
+void APointBase::CreateCVector(LaserColors inColor)
 {
-   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, FVector::ZeroVector, point.coordinate, VectorStructMode::vector));
+   AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, point.coordinate, CVectorMode::vector));
 }
 

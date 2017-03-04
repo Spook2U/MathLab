@@ -243,19 +243,19 @@ ACircleBase *ACoordinateSystemBase::AddCircle(LaserColors color, FMathCircle inC
    return circle;
 }
 
-AVectorStruct *ACoordinateSystemBase::AddVectorStruct(LaserColors color, FVector pointA, FVector pointB, VectorStructMode mode, FString inName)
+ACVector *ACoordinateSystemBase::AddCVector(LaserColors color, FVector pointA, FVector pointB, CVectorMode mode, FString inName)
 {
-   AVectorStruct *newVectorStruct = (AVectorStruct *)AddGeometry(vectorStructBP);
+   ACVector *newVectorStruct = (ACVector *)AddGeometry(vectorStructBP);
    MLD_PTR_CHECK(newVectorStruct); if(!newVectorStruct) return nullptr;
    newVectorStruct->Init(this, color, pointA, pointB, mode, inName);
    newVectorStruct->Update();
    switch(mode)
    {
-      case VectorStructMode::point:       newVectorStruct->SetVisibility(false, true,  false, false); break;
-      case VectorStructMode::segment:     newVectorStruct->SetVisibility(false, false, true,  false); break;
-      case VectorStructMode::vector:      newVectorStruct->SetVisibility(false, false, true,  true);  break;
-      case VectorStructMode::vectorPoint: newVectorStruct->SetVisibility(false, true,  true,  true);  break;
-      case VectorStructMode::general:     newVectorStruct->SetVisibilityForAll(false);                break;
+      case CVectorMode::point:       newVectorStruct->SetVisibility(false, true,  false, false); break;
+      case CVectorMode::segment:     newVectorStruct->SetVisibility(false, false, true,  false); break;
+      case CVectorMode::vector:      newVectorStruct->SetVisibility(false, false, true,  true);  break;
+      case CVectorMode::vectorPoint: newVectorStruct->SetVisibility(false, true,  true,  true);  break;
+      case CVectorMode::general:     newVectorStruct->SetVisibilityForAll(false);                break;
    }
    return newVectorStruct;
 }

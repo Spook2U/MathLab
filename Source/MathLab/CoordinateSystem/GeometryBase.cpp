@@ -4,7 +4,7 @@
 #include "GeometryBase.h"
 
 #include "CoordinateSystemBase.h"
-#include "VectorStruct.h"
+#include "CVector.h"
 
 
 
@@ -64,7 +64,7 @@ void AGeometryBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors 
 void AGeometryBase::Update()
 {
    UpdateRendering();
-   for(AVectorStruct *g : vectorGuides)
+   for(ACVector *g : vectorGuides)
    {
       MLD_PTR_CHECK(g); if(!g) continue;
       g->Update();
@@ -159,7 +159,7 @@ void AGeometryBase::ShowVectorGuides(bool show)
 {
    showConstruction = show;
 
-   for(AVectorStruct *g : vectorGuides)
+   for(ACVector *g : vectorGuides)
    {
       MLD_PTR_CHECK(g); if(!g) continue;
       g->RootComponent->SetHiddenInGame(!show, true);
@@ -175,7 +175,7 @@ FString AGeometryBase::ToString()
 
 // Protected-----------------------------------------------------------------------------------------
 
-void AGeometryBase::CreateVectorGuides(LaserColors inColor)
+void AGeometryBase::CreateCVector(LaserColors inColor)
 {
 }
 
@@ -184,7 +184,7 @@ void AGeometryBase::AddLaserComponent(UStaticMeshComponent *laser)
    laserCompoents.Add(laser);
 }
 
-void AGeometryBase::AddVectorGuide(AVectorStruct *guide)
+void AGeometryBase::AddCVector(ACVector *guide)
 {
    vectorGuides.Add(guide);
 }

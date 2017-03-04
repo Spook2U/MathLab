@@ -49,6 +49,6 @@ public:
 protected:
    void ScaleUnitLaser_AtAxis(UStaticMeshComponent *laser, UStaticMeshComponent *axis, float laserSize);
 
-   virtual void CreateVectorGuides(LaserColors inColor) override;
+   virtual void CreateCVector(LaserColors inColor) override;
 
 };

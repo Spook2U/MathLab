@@ -28,5 +28,6 @@ public:
    FMathSphere sphere;
    UPROPERTY(BlueprintReadWrite, Category = "geometrySaveData")
    FMathCircle circle;
+
 };
 

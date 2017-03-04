@@ -4,7 +4,7 @@
 #include "LineBase.h"
 
 #include "CoordinateSystemBase.h"
-#include "VectorStruct.h"
+#include "CVector.h"
 
 
 
@@ -74,7 +74,7 @@ void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inCo
    
    switch(mode)
    {
-      case LineMode::line:    CreateVectorGuides(inColor); break;
+      case LineMode::line:    CreateCVector(inColor); break;
       case LineMode::segment: break;
       case LineMode::vector:  arrowheadMesh->SetVisibility(true); break;
    }
@@ -109,8 +109,8 @@ FString ALineBase::ToString()
 
 // Protected ----------------------------------------------------------------------------------------
 
-void ALineBase::CreateVectorGuides(LaserColors inColor)
+void ALineBase::CreateCVector(LaserColors inColor)
 {
-   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, FVector::ZeroVector, line.position, VectorStructMode::vector));
-   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, line.position, line.direction, VectorStructMode::vector));
+   AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, line.position, CVectorMode::vector));
+   AddCVector(coordinateSystem->AddCVector(inColor, line.position, line.direction, CVectorMode::vector));
 }

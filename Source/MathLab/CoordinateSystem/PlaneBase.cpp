@@ -5,7 +5,7 @@
 
 #include "CoordinateSystemBase.h"
 #include "PointBase.h"
-#include "VectorStruct.h"
+#include "CVector.h"
 
 
 
@@ -80,7 +80,7 @@ void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inC
 
    switch(inMode)
    {
-      case PlaneMode::plane: CreateVectorGuides(inColor); break;
+      case PlaneMode::plane: CreateCVector(inColor); break;
    }
 }
 
@@ -117,10 +117,10 @@ FString APlaneBase::ToString()
 
 // Protected ----------------------------------------------------------------------------------------
 
-void APlaneBase::CreateVectorGuides(LaserColors inColor)
+void APlaneBase::CreateCVector(LaserColors inColor)
 {
-   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, FVector::ZeroVector, plane.position, VectorStructMode::vectorPoint));
-   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, plane.position, plane.direction1, VectorStructMode::vectorPoint));
-   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, plane.position, plane.direction2, VectorStructMode::vectorPoint));
-   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, plane.position, plane.normal, VectorStructMode::vector));
+   AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, plane.position, CVectorMode::vectorPoint));
+   AddCVector(coordinateSystem->AddCVector(inColor, plane.position, plane.direction1, CVectorMode::vectorPoint));
+   AddCVector(coordinateSystem->AddCVector(inColor, plane.position, plane.direction2, CVectorMode::vectorPoint));
+   AddCVector(coordinateSystem->AddCVector(inColor, plane.position, plane.normal, CVectorMode::vector));
 }

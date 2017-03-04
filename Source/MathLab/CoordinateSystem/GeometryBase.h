@@ -9,7 +9,7 @@
 #include "GeometryBase.generated.h"
 
 class ACoordinateSystemBase;
-class AVectorStruct;
+class ACVector;
 
 
 
@@ -56,7 +56,7 @@ public:
 
    //Saves all objects, which are used a guides for the objcet
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
-   TArray<AVectorStruct *> vectorGuides;
+   TArray<ACVector *> vectorGuides;
 
    //Used to determine the size of the object
    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "geometry")
@@ -70,7 +70,7 @@ public:
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
    GeometryType type;
 
-   // Determines if the constructig Vectors should be shown
+   // Determines if the constructing Vectors should be shown
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
    bool showConstruction;
 
@@ -129,8 +129,8 @@ public:
 // -------------------------------------------------------------------------------------------------
 
 protected:
-   virtual void CreateVectorGuides(LaserColors inColor);
-   void AddVectorGuide(AVectorStruct *vectorGuide);
+   virtual void CreateCVector(LaserColors inColor);
+   void AddCVector(ACVector *vectorGuide);
    void AddLaserComponent(UStaticMeshComponent *laser);
    FText BuildText(FString inName);
    void UpdateTextVisibility();

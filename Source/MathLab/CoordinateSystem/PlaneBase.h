@@ -90,7 +90,7 @@ public:
    virtual FString ToString() override;
 
 protected:
-   virtual void CreateVectorGuides(LaserColors inColor) override;
+   virtual void CreateCVector(LaserColors inColor) override;
 
 	
 	

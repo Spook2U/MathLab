@@ -89,5 +89,5 @@ void AUnitBase::OrientateToAxis(UStaticMeshComponent *axis)
 
 // -------------------------------------------------------------------------------------------------
 
-void AUnitBase::CreateVectorGuides(LaserColors inColor)
+void AUnitBase::CreateCVector(LaserColors inColor)
 {}

@@ -64,7 +64,7 @@ public:
 
    
 protected:
-   virtual void CreateVectorGuides(LaserColors inColor) override;	
+   virtual void CreateCVector(LaserColors inColor) override;	
 
 	
 	

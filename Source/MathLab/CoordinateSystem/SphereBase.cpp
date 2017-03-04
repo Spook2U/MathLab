@@ -4,7 +4,7 @@
 #include "SphereBase.h"
 
 #include "CoordinateSystemBase.h"
-#include "VectorStruct.h"
+#include "CVector.h"
 
 
 
@@ -87,9 +87,9 @@ FString ASphereBase::ToString()
 
 // Protected ----------------------------------------------------------------------------------------
 
-void ASphereBase::CreateVectorGuides(LaserColors inColor)
+void ASphereBase::CreateCVector(LaserColors inColor)
 {
-   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, FVector::ZeroVector, sphere.center, VectorStructMode::vectorPoint));
-   AddVectorGuide(coordinateSystem->AddVectorStruct(inColor, sphere.center, sphere.center + FVector(sphere.radius, 0, 0), VectorStructMode::segment));
+   AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, sphere.center, CVectorMode::vectorPoint));
+   AddCVector(coordinateSystem->AddCVector(inColor, sphere.center, sphere.center + FVector(sphere.radius, 0, 0), CVectorMode::segment));
 }
 
