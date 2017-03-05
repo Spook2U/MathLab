@@ -3,6 +3,8 @@
 #include "MathLab.h"
 #include "CVectorBase.h"
 
+#include "CoordinateSystemBase.h"
+
 
 
 ACVectorBase::ACVectorBase()
@@ -53,11 +55,24 @@ void ACVectorBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors i
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
-   type = GeometryType::vectorStruct;
+   type = GeometryType::cVector;
    a = inA;
    b = inB;
    mode = inMode;
+   
+   switch(inMode)
+   {
+      case CVectorMode::point:       mathDataString = FString::Printf(TEXT("(%s, %s, %s)"),               *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z)); break;
+      case CVectorMode::segment:     mathDataString = FString::Printf(TEXT("(%s, %s, %s), (%s, %s, %s)"), *FString::SanitizeFloat(a.X), *FString::SanitizeFloat(a.Y), *FString::SanitizeFloat(a.Z), 
+                                                                                                          *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z)); break;
+      case CVectorMode::vector:      
+      case CVectorMode::vectorPoint: mathDataString = FString::Printf(TEXT("(%s, %s, %s)"),               *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z)); break;
+      case CVectorMode::general:     
+      default:                       break;
+   }
+   
    Super::Init(inCoordinateSystem, inColor, inName);
+   InitText(inName);
 }
 
 
@@ -87,7 +102,6 @@ void ACVectorBase::SetVisibility(bool showPointA, bool showPointB, bool showLine
 
 void ACVectorBase::Update()
 {
-   MLD_LOG("%s %s", *a.ToString(), *b.ToString());
    Super::Update();
    SetPosition(a);
    BuildCVector();
@@ -102,14 +116,21 @@ void ACVectorBase::BuildCVector()
    if(mode == CVectorMode::segment) { ScaleLine(lineMesh, UKismetMathLibrary::VSize(b - a)); }
    else                             { ScaleVector(lineMesh, arrowheadMesh, UKismetMathLibrary::VSize(b)); }
 
-   //if(mode == CVectorMode::segment) { MoveText(nameText, (a + b) / 2); }
-   //else                             { MoveText(nameText,  a + b/2); }
+   if(mode == CVectorMode::segment) { MoveText(nameText, (a + b) / 2); }
+   else                             { MoveText(nameText,  a + b/2); }
 }
 
 void ACVectorBase::MovePointB()
 {
    if(mode == CVectorMode::segment) { pointBMesh->SetWorldLocation(CoordinateToLocation(b)); }
    else                             { pointBMesh->SetWorldLocation(CoordinateToLocation(b + a)); }
+}
+
+void ACVectorBase::InitText(FString inName)
+{
+   ShowName(coordinateSystem->showCVectorName);
+   ShowMathData(coordinateSystem->showCVectorMathData);
+   SetName(inName);
 }
 
 

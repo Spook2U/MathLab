@@ -46,7 +46,9 @@ void ACircleBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors in
    type = GeometryType::circle;
    circle = inCircle;
    mathDataString = inCircle.ToStringShort();
+
    Super::Init(inCoordinateSystem, inColor, inName);
+   InitText(inName);
 }
 
 void ACircleBase::Update()

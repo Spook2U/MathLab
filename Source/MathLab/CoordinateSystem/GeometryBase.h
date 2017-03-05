@@ -16,13 +16,13 @@ class ACVectorBase;
 UENUM(BlueprintType)
 enum class GeometryType : uint8
 {
-   circle UMETA(DisplayName = "Circle"),
-   line   UMETA(DisplayName = "Line"),
-   plane  UMETA(DisplayName = "Plane"),
-   point  UMETA(DisplayName = "Point"),
-   sphere UMETA(DisplayName = "Sphere"),
-   unit   UMETA(DisplayName = "Unit"),
-   vectorStruct UMETA(DisplayName = "VectorStruct"),
+   circle  UMETA(DisplayName = "Circle"),
+   line    UMETA(DisplayName = "Line"),
+   plane   UMETA(DisplayName = "Plane"),
+   point   UMETA(DisplayName = "Point"),
+   sphere  UMETA(DisplayName = "Sphere"),
+   unit    UMETA(DisplayName = "Unit"),
+   cVector UMETA(DisplayName = "Constr Vector"),
    other   UMETA(DisplayName = "other")
 };
 
@@ -56,7 +56,7 @@ public:
 
    //Saves all objects, which are used a guides for the objcet
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
-   TArray<ACVectorBase *> vectorGuides;
+   TArray<ACVectorBase *> constVectors;
 
    //Used to determine the size of the object
    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "geometry")
@@ -117,6 +117,12 @@ public:
    //Shows or Hides the mathematical Data on the Name
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void ShowMathData(bool show);
+   //Shows or Hides the Names of the constructing vectors
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
+   void ShowCVectorName(bool show);
+   //Shows or Hides the mathematical Data of the constructing vectors
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
+   void ShowCVectorMathData(bool show);
    // Sets the name of the object
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void SetName(FString inName);
@@ -134,6 +140,7 @@ protected:
    void AddLaserComponent(UStaticMeshComponent *laser);
    FText BuildText(FString inName);
    void UpdateTextVisibility();
+   virtual void InitText(FString inName);
 
 // -------------------------------------------------------------------------------------------------
 

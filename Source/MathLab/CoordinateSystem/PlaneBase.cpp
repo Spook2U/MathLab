@@ -82,6 +82,8 @@ void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inC
    {
       case PlaneMode::plane: CreateCVector(inColor); break;
    }
+
+   InitText(inName);
 }
 
 FVector APlaneBase::GetNormal()
@@ -119,8 +121,8 @@ FString APlaneBase::ToString()
 
 void APlaneBase::CreateCVector(LaserColors inColor)
 {
-   AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, plane.position, CVectorMode::vectorPoint));
-   AddCVector(coordinateSystem->AddCVector(inColor, plane.position, plane.direction1, CVectorMode::vectorPoint));
-   AddCVector(coordinateSystem->AddCVector(inColor, plane.position, plane.direction2, CVectorMode::vectorPoint));
-   AddCVector(coordinateSystem->AddCVector(inColor, plane.position, plane.normal, CVectorMode::vector));
+   AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, plane.position, CVectorMode::vectorPoint, "Position"));
+   AddCVector(coordinateSystem->AddCVector(inColor, plane.position, plane.direction1, CVectorMode::vectorPoint, "Direction 1"));
+   AddCVector(coordinateSystem->AddCVector(inColor, plane.position, plane.direction2, CVectorMode::vectorPoint, "Direction 2"));
+   AddCVector(coordinateSystem->AddCVector(inColor, plane.position, plane.normal, CVectorMode::vector, "Normal"));
 }

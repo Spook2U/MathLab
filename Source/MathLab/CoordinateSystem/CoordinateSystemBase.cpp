@@ -11,6 +11,7 @@ ACoordinateSystemBase::ACoordinateSystemBase()
 { 
    PrimaryActorTick.bCanEverTick = true;
 
+// Coordinate System -------------------------------------------------------------------------------
    axisLength = 1;
    axisSize = 0.03f;
    unitCount = 10;
@@ -19,9 +20,19 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    unitSizeFactor = 0.5f;
    laserSizeFactor = 0.4f;
    glowiness = 1.f;
+
+// Text --------------------------------------------------------------------------------------------
    showNames = true;
    showMathData = true;
+   nameTextSize = 10;
+   unitTextSize = 10;
 
+   showCVectorName = false;
+   showCVectorMathData = false;
+   cVectorTextSize = 10;
+   textGlowiness = 5;
+
+// Protected ---------------------------------------------------------------------------------------
    elements;
    convertFactor = 0;
    maxCoordinate = 0;
@@ -245,7 +256,6 @@ ACircleBase *ACoordinateSystemBase::AddCircle(LaserColors color, FMathCircle inC
 
 ACVectorBase *ACoordinateSystemBase::AddCVector(LaserColors color, FVector pointA, FVector pointB, CVectorMode mode, FString inName)
 {
-   MLD_CALLTEST();
    ACVectorBase *newCVector = (ACVectorBase *)AddGeometry(cVectorBP);
    MLD_PTR_CHECK(newCVector); if(!newCVector) return nullptr;
    newCVector->Init(this, color, pointA, pointB, mode, inName);

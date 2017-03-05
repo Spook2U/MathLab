@@ -52,7 +52,9 @@ void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inCo
 
    type = GeometryType::unit;
    coordinate = inCoordinate;
+
    Super::Init(inCoordinateSystem, inColor, inName);
+   InitText(inName);
 }
 
 

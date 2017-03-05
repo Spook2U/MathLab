@@ -62,6 +62,8 @@ void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors in
    sphere = inSphere;
    mathDataString = inSphere.ToStringShort();
    Super::Init(inCoordinateSystem, inColor, inName);
+   CreateCVector(inColor);
+   InitText(inName);
 }
 
 
@@ -89,7 +91,7 @@ FString ASphereBase::ToString()
 
 void ASphereBase::CreateCVector(LaserColors inColor)
 {
-   AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, sphere.center, CVectorMode::vectorPoint));
-   AddCVector(coordinateSystem->AddCVector(inColor, sphere.center, sphere.center + FVector(sphere.radius, 0, 0), CVectorMode::segment));
+   AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, sphere.center, CVectorMode::vectorPoint, "Position"));
+   AddCVector(coordinateSystem->AddCVector(inColor, sphere.center, sphere.center + FVector(sphere.radius, 0, 0), CVectorMode::segment, "Radius"));
 }
 

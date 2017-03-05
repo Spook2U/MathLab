@@ -52,11 +52,6 @@ void AGeometryBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors 
    coordinateSystem = inCoordinateSystem;
    color = inColor;
    SetColor(inColor);
-   
-   nameString = inName;
-   ShowName(inCoordinateSystem->showNames);
-   ShowMathData(inCoordinateSystem->showMathData);
-   SetName(inName);
 }
 
 // --------------------------------------------------------------------------------------------------
@@ -64,7 +59,7 @@ void AGeometryBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors 
 void AGeometryBase::Update()
 {
    UpdateRendering();
-   for(ACVectorBase *g : vectorGuides)
+   for(ACVectorBase *g : constVectors)
    {
       MLD_PTR_CHECK(g); if(!g) continue;
       g->Update();
@@ -144,6 +139,23 @@ void AGeometryBase::ShowMathData(bool show)
    UpdateTextVisibility();
 }
 
+void AGeometryBase::ShowCVectorName(bool show)
+{
+   for(ACVectorBase *cv : constVectors)
+   {
+      cv->ShowName(show);
+   }
+}
+
+void AGeometryBase::ShowCVectorMathData(bool show)
+{
+   for(ACVectorBase *cv : constVectors)
+   {
+      cv->ShowMathData(show);
+   }
+}
+
+
 void AGeometryBase::SetName(FString inName)
 {
    nameString = inName;
@@ -159,7 +171,7 @@ void AGeometryBase::ShowVectorGuides(bool show)
 {
    showConstruction = show;
 
-   for(ACVectorBase *g : vectorGuides)
+   for(ACVectorBase *g : constVectors)
    {
       MLD_PTR_CHECK(g); if(!g) continue;
       g->RootComponent->SetHiddenInGame(!show, true);
@@ -186,7 +198,7 @@ void AGeometryBase::AddLaserComponent(UStaticMeshComponent *laser)
 
 void AGeometryBase::AddCVector(ACVectorBase *guide)
 {
-   vectorGuides.Add(guide);
+   constVectors.Add(guide);
 }
 
 FText AGeometryBase::BuildText(FString inName)
@@ -205,7 +217,7 @@ FText AGeometryBase::BuildText(FString inName)
             case GeometryType::point:        string += FString::Printf(TEXT("Point%02d"),       coordinateSystem->pointCounter++); break;
             case GeometryType::sphere:       string += FString::Printf(TEXT("Sphere%02d"),      coordinateSystem->sphereCounter++); break;
             case GeometryType::unit:         string += FString::Printf(TEXT("Unit%02d"),        coordinateSystem->unitCounter++); break;
-            case GeometryType::vectorStruct: string += FString::Printf(TEXT("ConstVector%02d"), coordinateSystem->constVectorCounter++); break;
+            case GeometryType::cVector: string += FString::Printf(TEXT("ConstVector%02d"), coordinateSystem->constVectorCounter++); break;
             case GeometryType::other:        
             default:                         string += FString::Printf(TEXT("Geomety%02d"),     coordinateSystem->geometryCounter++); break;
          }
@@ -229,6 +241,15 @@ FText AGeometryBase::BuildText(FString inName)
 void AGeometryBase::UpdateTextVisibility()
 {
    nameText->SetVisibility(showName||showMathData);
+}
+
+void AGeometryBase::InitText(FString inName)
+{
+   ShowName(coordinateSystem->showNames);
+   ShowMathData(coordinateSystem->showMathData);
+   ShowCVectorName(coordinateSystem->showCVectorName),
+   ShowCVectorMathData(coordinateSystem->showCVectorMathData);
+   SetName(inName);
 }
 
 

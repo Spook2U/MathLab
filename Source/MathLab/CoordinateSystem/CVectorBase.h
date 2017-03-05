@@ -74,4 +74,7 @@ public:
    /**Moves PointB to the defined coordinate*/
    UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector")
    void MovePointB();
+
+protected:
+   virtual void InitText(FString inName) override;
 };

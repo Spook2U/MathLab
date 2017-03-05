@@ -79,6 +79,7 @@ void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inCo
       case LineMode::vector:  arrowheadMesh->SetVisibility(true); break;
    }
 
+   InitText(inName);
 }
 
 
@@ -100,9 +101,6 @@ void ALineBase::BuildCVector()
    if     (mode == LineMode::line)    { SetLaserScale(lineMesh, FVector(NULL, NULL, coordinateSystem->MaxVisibleLength())); }
    else if(mode == LineMode::segment) { ScaleLine(lineMesh, UKismetMathLibrary::VSize(line.direction - line.position)); }
    else                               { ScaleVector(lineMesh, arrowheadMesh, UKismetMathLibrary::VSize(line.direction)); }
-   
-   if(mode == LineMode::segment) { MoveText(nameText, (line.position + line.direction) / 2); }
-   else                          { MoveText(nameText,  line.position + line.direction/2); }
 }
 
 FString ALineBase::ToString()
@@ -114,6 +112,6 @@ FString ALineBase::ToString()
 
 void ALineBase::CreateCVector(LaserColors inColor)
 {
-   AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, line.position, CVectorMode::vector));
-   AddCVector(coordinateSystem->AddCVector(inColor, line.position, line.direction, CVectorMode::vector));
+   AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, line.position, CVectorMode::vector, "Position"));
+   AddCVector(coordinateSystem->AddCVector(inColor, line.position, line.direction, CVectorMode::vector, "Direction"));
 }

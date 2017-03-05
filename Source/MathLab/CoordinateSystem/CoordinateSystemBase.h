@@ -75,6 +75,15 @@ public:
    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "text", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
    float unitTextSize;
 
+   /* Toughles if names from the constructing vectors should be shown by default. */
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "text")
+   bool showCVectorName;
+   /* Toughles if mathematical data from the constructing vectors should be shown by default. */
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "text")
+   bool showCVectorMathData;
+   /* determines the size if the constructing vector text. */
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "text", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
+   float cVectorTextSize;
    /* Glow intensity of the texts. */
    UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "text", meta = (ClampMin = 0))
    float textGlowiness;
