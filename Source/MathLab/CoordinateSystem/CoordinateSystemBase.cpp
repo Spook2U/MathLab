@@ -14,12 +14,16 @@ ACoordinateSystemBase::ACoordinateSystemBase()
 // Coordinate System -------------------------------------------------------------------------------
    axisLength = 1;
    axisSize = 0.03f;
-   unitCount = 10;
-   laserColor = LaserColors::green;
 
-   unitSizeFactor = 0.5f;
-   laserSizeFactor = 0.4f;
    glowiness = 10.f;
+
+// Coordinate System - Units------------------------------------------------------------------------
+
+   unitCount = 10;
+   unitLaserColor = LaserColors::green;
+   unitGlowiness = 10.f;
+   unitSizeFactor = 0.5f;
+   unitLaserSizeFactor = 0.4f;
 
 // Text --------------------------------------------------------------------------------------------
    showNames = true;
@@ -189,7 +193,7 @@ void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int inde
 {
    AUnitBase *newUnit = (AUnitBase *)AddGeometry(unitBP);
    MLD_PTR_CHECK(newUnit); if(!newUnit) return;
-   newUnit->Init(this, laserColor, axis->GetUpVector()*index, FString::Printf(TEXT("%d"), index));
+   newUnit->Init(this, unitLaserColor, axis->GetUpVector()*index, FString::Printf(TEXT("%d"), index));
    newUnit->OrientateToAxis(axis);
    newUnit->Update();
 }

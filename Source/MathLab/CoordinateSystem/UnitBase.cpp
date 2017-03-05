@@ -75,8 +75,8 @@ void AUnitBase::SetName(FString inName)
 
 void AUnitBase::ScaleUnitLaser()
 {
-   ScaleUnitLaser_AtAxis(xAxis, xLaser, coordinateSystem->laserSizeFactor);
-   ScaleUnitLaser_AtAxis(yAxis, yLaser, coordinateSystem->laserSizeFactor);
+   ScaleUnitLaser_AtAxis(xAxis, xLaser, coordinateSystem->unitLaserSizeFactor);
+   ScaleUnitLaser_AtAxis(yAxis, yLaser, coordinateSystem->unitLaserSizeFactor);
 }
 
 void AUnitBase::ScaleUnitLaser_AtAxis(UStaticMeshComponent *axis, UStaticMeshComponent *laser, float laserSize)

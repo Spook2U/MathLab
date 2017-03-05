@@ -113,7 +113,8 @@ void AGeometryBase::SetColor(LaserColors inColor)
       case LaserColors::white:   newColor = FLinearColor(1.f,   1.f,   1.f,   1.f); glow = 1.f;  break;
       case LaserColors::yellow:  newColor = FLinearColor(0.75f, 1.f,   0.05f, 1.f); glow = 1.f;  break;
    }
-   glow *= coordinateSystem->glowiness;
+   if(type == GeometryType::unit) { glow *= coordinateSystem->unitGlowiness; }
+   else                           { glow *= coordinateSystem->glowiness; }
 
    for(UStaticMeshComponent *laser : laserCompoents)
    {

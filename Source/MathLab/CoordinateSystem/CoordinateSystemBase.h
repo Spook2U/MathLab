@@ -43,36 +43,42 @@ public:
    /* Diameter of the Axis and Unit in m*/
    UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate system", meta = (ClampMin = 0.01, UIMin = 1))
    float axisSize;
-   /* Number of Units shown on each positive and negative side of each axis*/
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate system", meta = (ClampMin = 1, UIMin = 1, UIMax = 50))
-   int unitCount;
-   /* Color of the laser grid from the Units*/
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate system")
-   LaserColors laserColor;
 
-   /* Size in percent from the AxisSize (diameter)*/
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "coordinate system", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
-   float unitSizeFactor;
-   /* Size in percent from the AxisSize (diameter)*/
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "coordinate system", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
-   float laserSizeFactor;
    /* Glow intensity of the laser of the Units*/
    UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "coordinate system", meta = (ClampMin = 0))
    float glowiness;
 
+// Coordinate System - Units------------------------------------------------------------------------
+
+   /* Number of Units shown on each positive and negative side of each axis*/
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate system|unit", meta = (ClampMin = 1, UIMin = 1, UIMax = 50))
+   int unitCount;
+   /* Color of the laser grid from the Units*/
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate system|unit")
+   LaserColors unitLaserColor;
+   /* Glow intensity of the laser of the Units*/
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "coordinate system", meta = (ClampMin = 0))
+   float unitGlowiness;
+   /* Size in percent from the AxisSize (diameter)*/
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate system|unit", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
+   float unitSizeFactor;
+   /* Size in percent from the AxisSize (diameter)*/
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate system|unit", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
+   float unitLaserSizeFactor;
+
 // Text --------------------------------------------------------------------------------------------
 
    /* Tougles if names from objects should be shown by default. */
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "text")
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "text")
    bool showNames;
    /* Toughles if mathematical data should be shown by default. */
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "text")
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "text")
    bool showMathData;
    /* Determines the size of the text of all geometry objects. */
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "text", meta = (ClampMin = 0.01, UIMin = 2, UIMax = 20))
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "text", meta = (ClampMin = 0.01, UIMin = 2, UIMax = 20))
    float nameTextSize;
    /* determines the size if the unit text. */
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "text", meta = (ClampMin = 0.01, UIMin = 2, UIMax = 20))
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "text", meta = (ClampMin = 0.01, UIMin = 2, UIMax = 20))
    float unitTextSize;
 
    /* Toughles if names from the constructing vectors should be shown by default. */
