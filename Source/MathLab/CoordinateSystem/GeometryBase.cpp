@@ -4,7 +4,7 @@
 #include "GeometryBase.h"
 
 #include "CoordinateSystemBase.h"
-#include "CVector.h"
+#include "CVectorBase.h"
 
 
 
@@ -64,7 +64,7 @@ void AGeometryBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors 
 void AGeometryBase::Update()
 {
    UpdateRendering();
-   for(ACVector *g : vectorGuides)
+   for(ACVectorBase *g : vectorGuides)
    {
       MLD_PTR_CHECK(g); if(!g) continue;
       g->Update();
@@ -88,7 +88,7 @@ void AGeometryBase::RotateText()
    if(!nameText) return;
 
    FVector actorLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->GetActorLocation() + FVector(0, 0, 64);
-   FVector textLocation  = GetActorLocation();
+   FVector textLocation  = nameText->GetComponentLocation();
 
    FVector norm = UKismetMathLibrary::Normal(actorLocation - textLocation);
    FVector rotatedVector = UKismetMathLibrary::GreaterGreater_VectorRotator(norm, FRotator(0, 0, 0));
@@ -159,7 +159,7 @@ void AGeometryBase::ShowVectorGuides(bool show)
 {
    showConstruction = show;
 
-   for(ACVector *g : vectorGuides)
+   for(ACVectorBase *g : vectorGuides)
    {
       MLD_PTR_CHECK(g); if(!g) continue;
       g->RootComponent->SetHiddenInGame(!show, true);
@@ -184,7 +184,7 @@ void AGeometryBase::AddLaserComponent(UStaticMeshComponent *laser)
    laserCompoents.Add(laser);
 }
 
-void AGeometryBase::AddCVector(ACVector *guide)
+void AGeometryBase::AddCVector(ACVectorBase *guide)
 {
    vectorGuides.Add(guide);
 }
@@ -267,6 +267,14 @@ void AGeometryBase::MoveLaser(UStaticMeshComponent *laser, Direction dir, float 
       case Direction::up:      moveDirection = laser->GetUpVector();break;
    }
    laser->SetWorldLocation(((coordinateSystem->convertFactor*length)*moveDirection) + GetActorLocation());
+}
+
+void AGeometryBase::MoveText(UTextRenderComponent *textRender, FVector coordinate)
+{
+   MLD_PTR_CHECK(textRender); if(!textRender) return;
+   MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
+
+   textRender->SetWorldLocation(CoordinateToLocation(coordinate));
 }
 
 void AGeometryBase::RotateLine(FVector direction)

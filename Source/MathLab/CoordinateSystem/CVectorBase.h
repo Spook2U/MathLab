@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoordinateSystem/GeometryBase.h"
-#include "CVector.generated.h"
+#include "CVectorBase.generated.h"
 
 
 
@@ -20,12 +20,12 @@ enum class CVectorMode : uint8
 
 
 UCLASS()
-class MATHLAB_API ACVector : public AGeometryBase
+class MATHLAB_API ACVectorBase : public AGeometryBase
 {
 	GENERATED_BODY()
 	
 public:
-   ACVector();
+   ACVectorBase();
 
 public:
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "constructingVector")
@@ -44,7 +44,7 @@ private:
 // -------------------------------------------------------------------------------------------------
 
 public:
-   UFUNCTION(BlueprintCallable, Category = "math lab|vectorStruct")
+   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector")
    void SetComponents(TArray<UStaticMeshComponent *> laserComponents, UTextRenderComponent *inText);
 
    void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, CVectorMode inMode = CVectorMode::general, FString inName = "");
@@ -69,7 +69,7 @@ public:
 
    /**Sets up the Components to display the line in the selected mode*/
    UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector")
-   void BuildLine();
+   void BuildCVector();
 
    /**Moves PointB to the defined coordinate*/
    UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector")

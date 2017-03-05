@@ -63,9 +63,9 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    static ConstructorHelpers::FObjectFinder<UBlueprint> UnitBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Unit.Unit'"));
    if(UnitBlueprint.Object) { unitBP = (UClass *)UnitBlueprint.Object->GeneratedClass; }
 
-   vectorStructBP = nullptr;
-   static ConstructorHelpers::FObjectFinder<UBlueprint> VectorStructBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/VectorStruct.VectorStruct'"));
-   if(VectorStructBlueprint.Object) { vectorStructBP = (UClass *)VectorStructBlueprint.Object->GeneratedClass; }
+   cVectorBP = nullptr;
+   static ConstructorHelpers::FObjectFinder<UBlueprint> CVectorBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/CVector.CVector'"));
+   if(CVectorBlueprint.Object) { cVectorBP = (UClass *)CVectorBlueprint.Object->GeneratedClass; }
 }
 
 // Unreal Events -----------------------------------------------------------------------------------
@@ -243,21 +243,22 @@ ACircleBase *ACoordinateSystemBase::AddCircle(LaserColors color, FMathCircle inC
    return circle;
 }
 
-ACVector *ACoordinateSystemBase::AddCVector(LaserColors color, FVector pointA, FVector pointB, CVectorMode mode, FString inName)
+ACVectorBase *ACoordinateSystemBase::AddCVector(LaserColors color, FVector pointA, FVector pointB, CVectorMode mode, FString inName)
 {
-   ACVector *newVectorStruct = (ACVector *)AddGeometry(vectorStructBP);
-   MLD_PTR_CHECK(newVectorStruct); if(!newVectorStruct) return nullptr;
-   newVectorStruct->Init(this, color, pointA, pointB, mode, inName);
-   newVectorStruct->Update();
+   MLD_CALLTEST();
+   ACVectorBase *newCVector = (ACVectorBase *)AddGeometry(cVectorBP);
+   MLD_PTR_CHECK(newCVector); if(!newCVector) return nullptr;
+   newCVector->Init(this, color, pointA, pointB, mode, inName);
+   newCVector->Update();
    switch(mode)
    {
-      case CVectorMode::point:       newVectorStruct->SetVisibility(false, true,  false, false); break;
-      case CVectorMode::segment:     newVectorStruct->SetVisibility(false, false, true,  false); break;
-      case CVectorMode::vector:      newVectorStruct->SetVisibility(false, false, true,  true);  break;
-      case CVectorMode::vectorPoint: newVectorStruct->SetVisibility(false, true,  true,  true);  break;
-      case CVectorMode::general:     newVectorStruct->SetVisibilityForAll(false);                break;
+      case CVectorMode::point:       newCVector->SetVisibility(false, true,  false, false); break;
+      case CVectorMode::segment:     newCVector->SetVisibility(false, false, true,  false); break;
+      case CVectorMode::vector:      newCVector->SetVisibility(false, false, true,  true);  break;
+      case CVectorMode::vectorPoint: newCVector->SetVisibility(false, true,  true,  true);  break;
+      case CVectorMode::general:     newCVector->SetVisibilityForAll(false);                break;
    }
-   return newVectorStruct;
+   return newCVector;
 }
 
 

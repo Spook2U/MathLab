@@ -4,7 +4,7 @@
 #include "LineBase.h"
 
 #include "CoordinateSystemBase.h"
-#include "CVector.h"
+#include "CVectorBase.h"
 
 
 
@@ -87,12 +87,12 @@ void ALineBase::Update()
 {
    Super::Update();
    SetPosition(line.position);
-   BuildLine();
+   BuildCVector();
 }
 
 
 
-void ALineBase::BuildLine()
+void ALineBase::BuildCVector()
 {
    if(mode == LineMode::segment) { RotateLaserLookAt(line.position, line.direction); }
    else                          { RotateLine(line.direction); }
@@ -100,6 +100,9 @@ void ALineBase::BuildLine()
    if     (mode == LineMode::line)    { SetLaserScale(lineMesh, FVector(NULL, NULL, coordinateSystem->MaxVisibleLength())); }
    else if(mode == LineMode::segment) { ScaleLine(lineMesh, UKismetMathLibrary::VSize(line.direction - line.position)); }
    else                               { ScaleVector(lineMesh, arrowheadMesh, UKismetMathLibrary::VSize(line.direction)); }
+   
+   if(mode == LineMode::segment) { MoveText(nameText, (line.position + line.direction) / 2); }
+   else                          { MoveText(nameText,  line.position + line.direction/2); }
 }
 
 FString ALineBase::ToString()

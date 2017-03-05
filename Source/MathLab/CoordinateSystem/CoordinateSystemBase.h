@@ -14,7 +14,7 @@
 #include "PointBase.h"
 #include "SphereBase.h"
 #include "UnitBase.h"
-#include "CVector.h"
+#include "CVectorBase.h"
 
 #include "CoordinateSystemBase.generated.h"
 
@@ -35,6 +35,8 @@ public:
    virtual void Tick( float DeltaSeconds ) override;
 
 public:
+// Coordinate System -------------------------------------------------------------------------------
+   
    /* Length of each positive and negative side of the axis in m*/
    UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate system", meta = (ClampMin = 0.5, UIMin = 1, UIMax = 9))
    float axisLength;
@@ -57,12 +59,27 @@ public:
    /* Glow intensity of the laser of the Units*/
    UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "coordinate system", meta = (ClampMin = 0))
    float glowiness;
+
+// Text --------------------------------------------------------------------------------------------
+
    /* Tougles if names from objects should be shown by default. */
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "coordinate system")
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "text")
    bool showNames;
    /* Toughles if mathematical data should be shown by default. */
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "coordinate system")
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "text")
    bool showMathData;
+   /* Determines the size of the text of all geometry objects. */
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "text", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
+   float nameTextSize;
+   /* determines the size if the unit text. */
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "text", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
+   float unitTextSize;
+
+   /* Glow intensity of the texts. */
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "text", meta = (ClampMin = 0))
+   float textGlowiness;
+
+// No Settings -------------------------------------------------------------------------------------
 
    /* Saves all Objects created in the CoordinateSystem*/
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "coordinate system") 
@@ -95,7 +112,7 @@ private:
    TSubclassOf<AGeometryBase> pointBP;
    TSubclassOf<AGeometryBase> sphereBP;
    TSubclassOf<AGeometryBase> unitBP;
-   TSubclassOf<AGeometryBase> vectorStructBP;
+   TSubclassOf<AGeometryBase> cVectorBP;
 
    //Temp Object, cause static Library not possible with Unreal v4.14 (Known Bug)
    MathLabLibrary m;
@@ -155,7 +172,7 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
    ACircleBase *AddCircle(LaserColors color, FMathCircle inCircle, FString inName = "", bool showGuides = false);
 
-   ACVector *AddCVector(LaserColors color, FVector pointA, FVector pointB, CVectorMode mode = CVectorMode::general, FString inName = "");
+   ACVectorBase *AddCVector(LaserColors color, FVector pointA, FVector pointB, CVectorMode mode = CVectorMode::general, FString inName = "");
 
 
 

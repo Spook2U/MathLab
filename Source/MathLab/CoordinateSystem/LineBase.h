@@ -75,7 +75,7 @@ public:
 
    /**Sets up the Components to display the line in the selected mode*/
    UFUNCTION(BlueprintCallable, Category = "math lab|line")
-   void BuildLine();
+   void BuildCVector();
 
    UFUNCTION(Blueprintcallable, Category = "math lab|line")
    virtual FString ToString() override;

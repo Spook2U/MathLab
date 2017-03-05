@@ -52,7 +52,7 @@ enum MLog
 #define MLD_SCN(color, string, ...)                                        debug_uescreen(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__), color, MLog::Scrn)
 #define MLD_BLP(color, string, ...)                                        debug_uescreen(MLD_CLASS_NAME, FString::Printf(TEXT(string),##__VA_ARGS__), color, MLog::Blue)
 
-#define MLD_CALLTEST(string, ...)   UE_LOG(MLogLog, Log,     TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT("%s() %s"), MLD_FUNCTION_NAME, *FString::Printf(TEXT(string),##__VA_ARGS__)))) 
+#define MLD_CALLTEST()              UE_LOG(MLogLog, Log,     TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT("%s() %s"), MLD_FUNCTION_NAME))) 
 #else
 #define MLD_PTR_CHECK(x)
 #define MLD_LOG(string, ...) 

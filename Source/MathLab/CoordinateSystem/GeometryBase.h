@@ -9,7 +9,7 @@
 #include "GeometryBase.generated.h"
 
 class ACoordinateSystemBase;
-class ACVector;
+class ACVectorBase;
 
 
 
@@ -56,7 +56,7 @@ public:
 
    //Saves all objects, which are used a guides for the objcet
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
-   TArray<ACVector *> vectorGuides;
+   TArray<ACVectorBase *> vectorGuides;
 
    //Used to determine the size of the object
    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "geometry")
@@ -130,7 +130,7 @@ public:
 
 protected:
    virtual void CreateCVector(LaserColors inColor);
-   void AddCVector(ACVector *vectorGuide);
+   void AddCVector(ACVectorBase *vectorGuide);
    void AddLaserComponent(UStaticMeshComponent *laser);
    FText BuildText(FString inName);
    void UpdateTextVisibility();
@@ -145,6 +145,7 @@ protected:
    void SetLaserMatTransparency(UStaticMeshComponent *laser, float value);
 
    void MoveLaser(UStaticMeshComponent *laser, Direction dir, float length);
+   void MoveText(UTextRenderComponent *textRender, FVector coordinate);
 
    void RotateLine(FVector direction);
    void RotateLaserLookAt(FVector from, FVector to);
