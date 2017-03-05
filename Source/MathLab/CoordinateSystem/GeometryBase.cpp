@@ -211,15 +211,15 @@ FText AGeometryBase::BuildText(FString inName)
       {
          switch(type)
          {
-            case GeometryType::circle:       string += FString::Printf(TEXT("Circle%02d"),      coordinateSystem->circleCounter++); break;
-            case GeometryType::line:         string += FString::Printf(TEXT("Line%02d"),        coordinateSystem->lineCounter++); break;
-            case GeometryType::plane:        string += FString::Printf(TEXT("Plane%02d"),       coordinateSystem->planeCounter++); break;
-            case GeometryType::point:        string += FString::Printf(TEXT("Point%02d"),       coordinateSystem->pointCounter++); break;
-            case GeometryType::sphere:       string += FString::Printf(TEXT("Sphere%02d"),      coordinateSystem->sphereCounter++); break;
-            case GeometryType::unit:         string += FString::Printf(TEXT("Unit%02d"),        coordinateSystem->unitCounter++); break;
+            case GeometryType::circle:  string += FString::Printf(TEXT("Circle%02d"),      coordinateSystem->circleCounter++); break;
+            case GeometryType::line:    string += FString::Printf(TEXT("Line%02d"),        coordinateSystem->lineCounter++); break;
+            case GeometryType::plane:   string += FString::Printf(TEXT("Plane%02d"),       coordinateSystem->planeCounter++); break;
+            case GeometryType::point:   string += FString::Printf(TEXT("Point%02d"),       coordinateSystem->pointCounter++); break;
+            case GeometryType::sphere:  string += FString::Printf(TEXT("Sphere%02d"),      coordinateSystem->sphereCounter++); break;
+            case GeometryType::unit:    string += FString::Printf(TEXT("Unit%02d"),        coordinateSystem->unitCounter++); break;
             case GeometryType::cVector: string += FString::Printf(TEXT("ConstVector%02d"), coordinateSystem->constVectorCounter++); break;
             case GeometryType::other:        
-            default:                         string += FString::Printf(TEXT("Geomety%02d"),     coordinateSystem->geometryCounter++); break;
+            default:                    string += FString::Printf(TEXT("Geomety%02d"),     coordinateSystem->geometryCounter++); break;
          }
       }
       else
@@ -245,11 +245,24 @@ void AGeometryBase::UpdateTextVisibility()
 
 void AGeometryBase::InitText(FString inName)
 {
+   float size = 0;
+
+   ShowText();
+   SetName(inName);
+
+   if     (type == GeometryType::unit)    { size = coordinateSystem->unitTextSize; }
+   else if(type == GeometryType::cVector) { size = coordinateSystem->cVectorTextSize; }
+   else                                   { size = coordinateSystem->nameTextSize; }
+
+   nameText->SetWorldSize(size);
+}
+
+void AGeometryBase::ShowText()
+{
    ShowName(coordinateSystem->showNames);
    ShowMathData(coordinateSystem->showMathData);
-   ShowCVectorName(coordinateSystem->showCVectorName),
+   ShowCVectorName(coordinateSystem->showCVectorName);
    ShowCVectorMathData(coordinateSystem->showCVectorMathData);
-   SetName(inName);
 }
 
 

@@ -19,18 +19,18 @@ ACoordinateSystemBase::ACoordinateSystemBase()
 
    unitSizeFactor = 0.5f;
    laserSizeFactor = 0.4f;
-   glowiness = 1.f;
+   glowiness = 10.f;
 
 // Text --------------------------------------------------------------------------------------------
    showNames = true;
    showMathData = true;
-   nameTextSize = 10;
+   nameTextSize = 7.5f;
    unitTextSize = 10;
 
    showCVectorName = false;
    showCVectorMathData = false;
-   cVectorTextSize = 10;
-   textGlowiness = 5;
+   cVectorTextSize = 5;
+   //textGlowiness = 5;
 
 // Protected ---------------------------------------------------------------------------------------
    elements;

@@ -76,5 +76,5 @@ public:
    void MovePointB();
 
 protected:
-   virtual void InitText(FString inName) override;
+   virtual void ShowText() override;
 };

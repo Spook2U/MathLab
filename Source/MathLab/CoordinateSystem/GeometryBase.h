@@ -140,7 +140,8 @@ protected:
    void AddLaserComponent(UStaticMeshComponent *laser);
    FText BuildText(FString inName);
    void UpdateTextVisibility();
-   virtual void InitText(FString inName);
+   void InitText(FString inName);
+   virtual void ShowText();
 
 // -------------------------------------------------------------------------------------------------
 

@@ -126,11 +126,10 @@ void ACVectorBase::MovePointB()
    else                             { pointBMesh->SetWorldLocation(CoordinateToLocation(b + a)); }
 }
 
-void ACVectorBase::InitText(FString inName)
+void ACVectorBase::ShowText()
 {
    ShowName(coordinateSystem->showCVectorName);
    ShowMathData(coordinateSystem->showCVectorMathData);
-   SetName(inName);
 }
 
 
