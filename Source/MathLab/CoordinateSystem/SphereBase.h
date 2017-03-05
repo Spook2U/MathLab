@@ -23,6 +23,14 @@ public:
    FMathSphere();
    /* Constructor to set the coordinate of the point. */
    FMathSphere(FVector inCenter, float inRadius);
+
+   /* Copy another sphere into this one. */
+   FMathSphere& operator=(const FMathSphere& Other);
+   /* Check against another sphere for equality. */
+   bool operator==(const FMathSphere& Other) const;
+   /* Check against another sphere for inequality. */
+   bool operator!=(const FMathSphere& Other) const;
+
    /* Get a textual representation of this Plane. */
    FString ToString();
    FString ToStringShort();

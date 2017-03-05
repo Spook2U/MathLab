@@ -91,6 +91,11 @@ void AGeometryBase::RotateText()
    nameText->SetWorldRotation(newRotation);
 }
 
+FString AGeometryBase::GetGeometryName()
+{
+   return nameString;
+}
+
 // --------------------------------------------------------------------------------------------------
 
 void AGeometryBase::SetColor(LaserColors inColor)
@@ -158,7 +163,9 @@ void AGeometryBase::ShowCVectorMathData(bool show)
 
 void AGeometryBase::SetName(FString inName)
 {
-   nameString = inName;
+   if(coordinateSystem->NameNotUsed(inName)) { nameString = inName; }
+   else                                      { nameString = ""; }   
+
    nameText->SetText(BuildText(nameString));
 }
 
@@ -221,6 +228,8 @@ FText AGeometryBase::BuildText(FString inName)
             case GeometryType::other:        
             default:                    string += FString::Printf(TEXT("Geomety%02d"),     coordinateSystem->geometryCounter++); break;
          }
+         
+         nameString = string;
       }
       else
       {
@@ -245,16 +254,16 @@ void AGeometryBase::UpdateTextVisibility()
 
 void AGeometryBase::InitText(FString inName)
 {
-   float size = 0;
+   float textSize = 0;
 
    ShowText();
    SetName(inName);
 
-   if     (type == GeometryType::unit)    { size = coordinateSystem->unitTextSize; }
-   else if(type == GeometryType::cVector) { size = coordinateSystem->cVectorTextSize; }
-   else                                   { size = coordinateSystem->nameTextSize; }
+   if     (type == GeometryType::unit)    { textSize = coordinateSystem->unitTextSize; }
+   else if(type == GeometryType::cVector) { textSize = coordinateSystem->cVectorTextSize; }
+   else                                   { textSize = coordinateSystem->nameTextSize; }
 
-   nameText->SetWorldSize(size);
+   nameText->SetWorldSize(textSize);
 }
 
 void AGeometryBase::ShowText()
@@ -324,7 +333,7 @@ void AGeometryBase::SetLaserScale(UStaticMeshComponent *laser, FVector scale)
 {
    MLD_PTR_CHECK(laser); if(!laser) return;
    laser->SetWorldScale3D(FVector((scale.X ? scale.X : laser->GetComponentScale().X), 
-      (scale.Y ? scale.Y : laser->GetComponentScale().Y), 
+                                  (scale.Y ? scale.Y : laser->GetComponentScale().Y), 
                                   (scale.Z ? scale.Z : laser->GetComponentScale().Z)
    ));
 }

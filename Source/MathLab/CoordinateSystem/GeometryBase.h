@@ -102,6 +102,10 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void RotateText();
 
+   //Returns the name of the object
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
+   FString GetGeometryName();
+
    //Sets Color and Glowiness depending to the enum value and changes the Material of all Laser Components in the array
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void SetColor(LaserColors inColor);
@@ -125,7 +129,7 @@ public:
    void ShowCVectorMathData(bool show);
    // Sets the name of the object
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
-   void SetName(FString inName);
+   virtual void SetName(FString inName);
    // Sets the Name to default
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void ClearName();

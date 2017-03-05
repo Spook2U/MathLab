@@ -271,6 +271,142 @@ ACVectorBase *ACoordinateSystemBase::AddCVector(LaserColors color, FVector point
    return newCVector;
 }
 
+AGeometryBase* ACoordinateSystemBase::FindGeometryWithName(FString inName, bool &found)
+{
+   AGeometryBase *wanted = nullptr;
+   found = false;
+
+   for(AGeometryBase *g : elements)
+   {
+      if(g->type == GeometryType::cVector) { continue; }
+      if(g->type == GeometryType::unit)    { continue; }
+
+      if(g->GetGeometryName() == inName)
+      {
+         found = true;
+         wanted = g;
+         break;
+      }
+   }
+   return wanted;
+}
+
+TArray<ACircleBase *> ACoordinateSystemBase::FindCircle(FMathCircle inCircle, bool &found)
+{
+   TArray<ACircleBase *> wanted = TArray<ACircleBase*>();
+   found = false;
+
+   for(AGeometryBase *g : elements)
+   {
+      if(g->type != GeometryType::circle) { continue; }
+
+      ACircleBase *e = ((ACircleBase *)g);
+      if(e->circle == inCircle)
+      {
+         found = true;
+         wanted.Add(e);
+      }
+   }   
+   return wanted;
+}
+
+TArray<ALineBase *> ACoordinateSystemBase::FindLine(FMathLine inLine, bool &found)
+{
+   TArray<ALineBase *> wanted = TArray<ALineBase*>();
+   found = false;
+
+   for(AGeometryBase *g : elements)
+   {
+      if(g->type != GeometryType::line) { continue; }
+
+      ALineBase *e = ((ALineBase *)g);
+      if(e->line == inLine)
+      {
+         found = true;
+         wanted.Add(e);
+      }
+   }   
+   return wanted;
+}
+
+TArray<APlaneBase *> ACoordinateSystemBase::FindPlane(FMathPlane inPlane, bool &found)
+{
+   TArray<APlaneBase *> wanted = TArray<APlaneBase*>();
+   found = false;
+
+   for(AGeometryBase *g : elements)
+   {
+      if(g->type != GeometryType::plane) { continue; }
+
+      APlaneBase *e = ((APlaneBase *)g);
+      if(e->plane == inPlane)
+      {
+         found = true;
+         wanted.Add(e);
+      }
+   }   
+   return wanted;
+}
+
+TArray<APointBase *> ACoordinateSystemBase::FindPoint(FMathPoint inPoint, bool &found)
+{
+   TArray<APointBase *> wanted = TArray<APointBase*>();
+   found = false;
+
+   for(AGeometryBase *g : elements)
+   {
+      if(g->type != GeometryType::point) { continue; }
+
+      APointBase *e = ((APointBase *)g);
+      if(e->point == inPoint)
+      {
+         found = true;
+         wanted.Add(e);
+      }
+   }   
+   return wanted;
+}
+
+TArray<ASphereBase *> ACoordinateSystemBase::FindSphere(FMathSphere inSphere, bool &found)
+{
+   TArray<ASphereBase *> wanted = TArray<ASphereBase*>();
+   found = false;
+
+   for(AGeometryBase *g : elements)
+   {
+      if(g->type != GeometryType::sphere) { continue; }
+
+      ASphereBase *e = ((ASphereBase *)g);
+      if(e->sphere == inSphere)
+      {
+         found = true;
+         wanted.Add(e);
+      }
+   }   
+   return wanted;
+}
+
+void ACoordinateSystemBase::Remove(AGeometryBase *target)
+{
+   elements.Remove(target);
+   target->Destroy();
+}
+
+bool ACoordinateSystemBase::NameNotUsed(FString inName)
+{
+   bool nameNotUsed = true;;
+
+   for(AGeometryBase *g : elements)
+   {
+      if(g->GetGeometryName() == inName)
+      {
+         nameNotUsed = false;
+         break;
+      }
+   }
+   return nameNotUsed;
+}
+
 
 
 void ACoordinateSystemBase::bp_debug_Screen(FString inString, FLinearColor color) 

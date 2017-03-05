@@ -11,6 +11,22 @@
 FMathLine::FMathLine() {}
 FMathLine::FMathLine(FVector inPosition, FVector inDirection) : position(inPosition), direction(inDirection) {}
 
+FMathLine &FMathLine::operator=(const FMathLine &Other)
+{
+   this->position = Other.position;
+   this->direction = Other.direction; 
+
+   return *this;
+}
+bool FMathLine::operator==(const FMathLine &Other) const
+{
+   return (this->position == Other.position) && (this->direction == Other.direction);
+}
+bool FMathLine::operator!=(const FMathLine &Other) const
+{
+   return !(this == &Other);
+}
+
 FString FMathLine::ToString()
 {
    return FString::Printf(TEXT("Position %s, Direction: %s"), *position.ToString(), *direction.ToString());

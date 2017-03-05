@@ -21,6 +21,14 @@ public:
    FMathPoint();
    /* Constructor to set the coordinate of the point. */
    FMathPoint(FVector inCoordinate);
+
+   /* Copy another point into this one. */
+   FMathPoint& operator=(const FMathPoint& Other);
+   /* Check against another point for equality. */
+   bool operator==(const FMathPoint& Other) const;
+   /* Check against another point for inequality. */
+   bool operator!=(const FMathPoint& Other) const;
+
    /* Get a textual representation of this Point. */
    FString ToString();
    FString ToStringShort();

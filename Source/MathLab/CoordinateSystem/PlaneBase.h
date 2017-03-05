@@ -39,6 +39,14 @@ public:
    FMathPlane(FVector inPosition, FVector inDirection1, FVector inDirection2);
    /* Constructor to set the plane with position and normal. */
    FMathPlane(FMathPoint inPoint, FVector inNormal);
+
+   /* Copy another plane into this one. */
+   FMathPlane& operator=(const FMathPlane& Other);
+   /* Check against another plane for equality. */
+   bool operator==(const FMathPlane& Other) const;
+   /* Check against another plane for inequality. */
+   bool operator!=(const FMathPlane& Other) const;
+
    /* Get a textual representation of this Plane. */
    FString ToString();
    FString ToStringShort();

@@ -25,6 +25,14 @@ public:
    FMathCircle();
    /* Constructor to set the circle laying on a plane. */
    FMathCircle(FVector inCenter, FVector inNormal, float inRadius);
+   
+   /* Copy another cicle into this one. */
+   FMathCircle& operator=(const FMathCircle& Other);
+   /* Check against another cicle for equality. */
+   bool operator==(const FMathCircle& Other) const;
+   /* Check against another cicle for inequality. */
+   bool operator!=(const FMathCircle& Other) const;
+
    /* Get a textual representation of this Circle. */
    FString ToString();
    FString ToStringShort();

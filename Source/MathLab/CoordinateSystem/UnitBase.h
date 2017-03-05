@@ -38,6 +38,10 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    virtual void Update() override;
 
+   // Sets the name of the object
+   UFUNCTION(BlueprintCallable, Category = "math lab|unit")
+   virtual void SetName(FString inName);
+
    //Scales the laser of the Unit to have the same length as the Axis
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    void ScaleUnitLaser();

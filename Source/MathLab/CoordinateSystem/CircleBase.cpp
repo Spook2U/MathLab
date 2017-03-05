@@ -8,6 +8,23 @@
 FMathCircle::FMathCircle() {}
 FMathCircle::FMathCircle(FVector inCenter, FVector inNormal, float inRadius) : center(inCenter), normal(inNormal), radius(inRadius) {}
 
+FMathCircle &FMathCircle::operator=(const FMathCircle &Other)
+{
+   this->center = Other.center;
+   this->normal = Other.normal; 
+   this->radius = Other.radius;
+
+   return *this;
+}
+bool FMathCircle::operator==(const FMathCircle &Other) const
+{
+   return (this->center == Other.center) && (this->normal == Other.normal) && (this->radius == Other.radius);
+}
+bool FMathCircle::operator!=(const FMathCircle &Other) const
+{
+   return !(this == &Other);
+}
+
 FString FMathCircle::ToString()
 {
    return FString::Printf(TEXT("Center: %s, Radius: %f; laying on plane with Normal: %s"), *center.ToString(), radius, *normal.ToString());

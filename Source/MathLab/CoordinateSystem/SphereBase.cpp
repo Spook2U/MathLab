@@ -11,6 +11,22 @@
 FMathSphere::FMathSphere() {}
 FMathSphere::FMathSphere(FVector inCenter, float inRadius) : center(inCenter), radius(inRadius) {}
 
+FMathSphere &FMathSphere::operator=(const FMathSphere &Other)
+{
+   this->center = Other.center;
+   this->radius = Other.radius;
+
+   return *this;
+}
+bool FMathSphere::operator==(const FMathSphere &Other) const
+{
+   return (this->center == Other.center) && (this->radius == Other.radius);
+}
+bool FMathSphere::operator!=(const FMathSphere &Other) const
+{
+   return !(this == &Other);
+}
+
 FString FMathSphere::ToString()
 {
    return FString::Printf(TEXT("%s, Radius:s %f"), *center.ToString(), radius);

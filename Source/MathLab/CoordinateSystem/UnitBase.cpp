@@ -66,6 +66,11 @@ void AUnitBase::Update()
    ScaleUnitLaser();
 }
 
+void AUnitBase::SetName(FString inName)
+{
+   nameText->SetText(BuildText(inName));
+}
+
 
 
 void AUnitBase::ScaleUnitLaser()

@@ -11,6 +11,21 @@
 FMathPoint::FMathPoint() {}
 FMathPoint::FMathPoint(FVector inCoordinate) : coordinate(inCoordinate) {}
 
+FMathPoint &FMathPoint::operator=(const FMathPoint &Other)
+{
+   this->coordinate = Other.coordinate;
+
+   return *this;
+}
+bool FMathPoint::operator==(const FMathPoint &Other) const
+{
+   return (this->coordinate == Other.coordinate);
+}
+bool FMathPoint::operator!=(const FMathPoint &Other) const
+{
+   return !(this == &Other);
+}
+
 FString FMathPoint::ToString()
 {
    return FString::Printf(TEXT("Coordinate %s"), *coordinate.ToString());

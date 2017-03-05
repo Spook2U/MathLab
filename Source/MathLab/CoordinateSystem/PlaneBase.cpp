@@ -21,6 +21,23 @@ FMathPlane::FMathPlane(FMathPoint inPoint, FVector inNormal) : normal(inNormal)
    direction2 = FVector(0, 1, (-1) * inNormal.Y / inNormal.Z);
 }
 
+FMathPlane &FMathPlane::operator=(const FMathPlane &Other)
+{
+   this->position = Other.position;
+   this->direction1 = Other.direction1; 
+   this->direction2 = Other.direction2;
+
+   return *this;
+}
+bool FMathPlane::operator==(const FMathPlane &Other) const
+{
+   return (this->position == Other.position) && (this->direction1 == Other.direction1) && (this->direction2 == Other.direction2);
+}
+bool FMathPlane::operator!=(const FMathPlane &Other) const
+{
+   return !(this == &Other);
+}
+
 FString FMathPlane::ToString()
 {
    return FString::Printf(TEXT("Position %s, Direction 1: %s, Direction 2: %s"), *position.ToString(), *direction1.ToString(), *direction2.ToString());

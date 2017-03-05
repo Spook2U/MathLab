@@ -33,6 +33,14 @@ public:
    FMathLine();
    /* Constructor to set the line with position and direction. */
    FMathLine(FVector inPosition, FVector inDirection);
+
+   /* Copy another line into this one. */
+   FMathLine& operator=(const FMathLine& Other);
+   /* Check against another line for equality. */
+   bool operator==(const FMathLine& Other) const;
+   /* Check against another line for inequality. */
+   bool operator!=(const FMathLine& Other) const;
+
    /* Get a textual representation of this Circle. */
    FString ToString();
    FString ToStringShort();

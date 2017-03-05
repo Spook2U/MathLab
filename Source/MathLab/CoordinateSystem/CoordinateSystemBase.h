@@ -185,6 +185,32 @@ public:
 
    ACVectorBase *AddCVector(LaserColors color, FVector pointA, FVector pointB, CVectorMode mode = CVectorMode::general, FString inName = "");
 
+   /* Searches for the geometry with the selected name. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|find")
+   AGeometryBase *FindGeometryWithName(FString inName, bool &found);
+   /* Searches alles circle with the selected data. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|find")
+   TArray<ACircleBase *> FindCircle(FMathCircle inCircle, bool &found);
+   /* Searches alles lies with the selected data. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|find")
+   TArray<ALineBase *>   FindLine(FMathLine inLine, bool &found);
+   /* Searches alles planes with the selected data. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|find")
+   TArray<APlaneBase *>  FindPlane(FMathPlane inPlane, bool &found);
+   /* Searches alles points with the selected data. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|find")
+   TArray<APointBase *>  FindPoint(FMathPoint inPoint, bool &found);
+   /* Searches alles sphere with the selected data. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|find")
+   TArray<ASphereBase *> FindSphere(FMathSphere inSphere, bool &found);
+
+   /* Removes the target geometry from the coordinatesystem. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|remove")
+   void Remove(AGeometryBase *targetGeometry);
+
+   //Checks if the name is already in use
+   bool NameNotUsed(FString inName);
+
 
 
 // -------------------------------------------------------------------------------------------------
