@@ -77,7 +77,7 @@ public:
 
 
 protected:
-   UTextRenderComponent *nameText;
+   UTextRenderComponent *nameRender;
 
    FString nameString;
    FString mathDataString;
@@ -146,6 +146,7 @@ protected:
    void UpdateTextVisibility();
    void InitText(FString inName);
    virtual void ShowText();
+   FString NameCheck(FString inName);
 
 // -------------------------------------------------------------------------------------------------
 

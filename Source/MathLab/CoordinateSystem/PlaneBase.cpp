@@ -77,7 +77,7 @@ void APlaneBase::SetComponents(TArray<UStaticMeshComponent *> components, UTextR
    AddLaserComponent(planeMesh);
 
    if(!MLD_PTR_CHECK(inText)) return;
-   nameText = inText;
+   nameRender = inText;
 }
 
 

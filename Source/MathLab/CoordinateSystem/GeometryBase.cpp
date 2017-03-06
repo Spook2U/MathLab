@@ -80,15 +80,15 @@ void AGeometryBase::UpdateRendering()
 
 void AGeometryBase::RotateText()
 {
-   if(!nameText) return;
+   if(!nameRender) return;
 
    FVector actorLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->GetActorLocation() + FVector(0, 0, 64);
-   FVector textLocation  = nameText->GetComponentLocation();
+   FVector textLocation  = nameRender->GetComponentLocation();
 
    FVector norm = UKismetMathLibrary::Normal(actorLocation - textLocation);
    FVector rotatedVector = UKismetMathLibrary::GreaterGreater_VectorRotator(norm, FRotator(0, 0, 0));
    FRotator newRotation = UKismetMathLibrary::Conv_VectorToRotator(rotatedVector);
-   nameText->SetWorldRotation(newRotation);
+   nameRender->SetWorldRotation(newRotation);
 }
 
 FString AGeometryBase::GetGeometryName()
@@ -129,19 +129,99 @@ void AGeometryBase::SetPosition(FVector coordinate)
    SetActorLocation(CoordinateToLocation(coordinate));
 }
 
+// Text Functions------------------------------------------------------------------------------------
+
+void AGeometryBase::InitText(FString inName)
+{
+   float textSize = 0;
+
+   nameString = NameCheck(inName);
+   ShowText();
+   SetName(inName);
+
+   if     (type == GeometryType::unit)    { textSize = coordinateSystem->unitTextSize; }
+   else if(type == GeometryType::cVector) { textSize = coordinateSystem->cVectorTextSize; }
+   else                                   { textSize = coordinateSystem->nameTextSize; }
+   nameRender->SetWorldSize(textSize);
+}
+
+FString AGeometryBase::NameCheck(FString inName)
+{
+   FString name;
+   if(coordinateSystem->NameNotUsed(inName)) { name = inName; }
+   else                                      { name = ""; }   
+   return name;
+}
+
+void AGeometryBase::SetName(FString inName)
+{
+   if(nameString != inName)
+   {
+      nameString = NameCheck(inName);
+   }
+
+   nameRender->SetText(BuildText(nameString));
+}
+
+FText AGeometryBase::BuildText(FString inName)
+{
+   FString string = "";
+   if(showName)
+   {
+      if(inName == "")
+      {
+         switch(type)
+         {
+            case GeometryType::circle:  string += FString::Printf(TEXT("Circle%02d"),      coordinateSystem->circleCounter++); break;
+            case GeometryType::line:    string += FString::Printf(TEXT("Line%02d"),        coordinateSystem->lineCounter++); break;
+            case GeometryType::plane:   string += FString::Printf(TEXT("Plane%02d"),       coordinateSystem->planeCounter++); break;
+            case GeometryType::point:   string += FString::Printf(TEXT("Point%02d"),       coordinateSystem->pointCounter++); break;
+            case GeometryType::sphere:  string += FString::Printf(TEXT("Sphere%02d"),      coordinateSystem->sphereCounter++); break;
+            case GeometryType::unit:    string += FString::Printf(TEXT("Unit%02d"),        coordinateSystem->unitCounter++); break;
+            case GeometryType::cVector: string += FString::Printf(TEXT("ConstVector%02d"), coordinateSystem->constVectorCounter++); break;
+            case GeometryType::other:        
+            default:                    string += FString::Printf(TEXT("Geomety%02d"),     coordinateSystem->geometryCounter++); break;
+         }
+         nameString = string;
+      }
+      else
+      {
+         string = inName;
+      }
+
+      if(showMathData) { string += " "; }
+   }
+
+   if(showMathData) 
+   {
+      string += mathDataString;
+   }
+
+   return FText::FromString("   " + string);
+}
+
+
+void AGeometryBase::ShowText()
+{
+   ShowName(coordinateSystem->showNames);
+   ShowMathData(coordinateSystem->showMathData);
+   ShowCVectorName(coordinateSystem->showCVectorName);
+   ShowCVectorMathData(coordinateSystem->showCVectorMathData);
+}
+
 void AGeometryBase::ShowName(bool show)
 {
    if(type == GeometryType::unit) { showName = true; }
    else                           { showName = show; }
 
-   BuildText(nameString);
+   SetName(nameString);
    UpdateTextVisibility();
 }
 
 void AGeometryBase::ShowMathData(bool show)
 {
    showMathData = show;
-   BuildText(nameString);
+   SetName(nameString);
    UpdateTextVisibility();
 }
 
@@ -161,29 +241,14 @@ void AGeometryBase::ShowCVectorMathData(bool show)
    }
 }
 
-
-void AGeometryBase::SetName(FString inName)
+void AGeometryBase::UpdateTextVisibility()
 {
-   if(coordinateSystem->NameNotUsed(inName)) { nameString = inName; }
-   else                                      { nameString = ""; }   
-
-   nameText->SetText(BuildText(nameString));
+   nameRender->SetVisibility(showName||showMathData);
 }
 
 void AGeometryBase::ClearName()
 {
    SetName("");
-}
-
-void AGeometryBase::ShowVectorGuides(bool show)
-{
-   showConstruction = show;
-
-   for(ACVectorBase *g : constVectors)
-   {
-      MLD_PTR_CHECK(g); if(!g) continue;
-      g->RootComponent->SetHiddenInGame(!show, true);
-   }
 }
 
 // --------------------------------------------------------------------------------------------------
@@ -209,70 +274,15 @@ void AGeometryBase::AddCVector(ACVectorBase *guide)
    constVectors.Add(guide);
 }
 
-FText AGeometryBase::BuildText(FString inName)
+void AGeometryBase::ShowVectorGuides(bool show)
 {
-   FString string = "";
+   showConstruction = show;
 
-   if(showName)
+   for(ACVectorBase *g : constVectors)
    {
-      if(inName == "")
-      {
-         switch(type)
-         {
-            case GeometryType::circle:  string += FString::Printf(TEXT("Circle%02d"),      coordinateSystem->circleCounter++); break;
-            case GeometryType::line:    string += FString::Printf(TEXT("Line%02d"),        coordinateSystem->lineCounter++); break;
-            case GeometryType::plane:   string += FString::Printf(TEXT("Plane%02d"),       coordinateSystem->planeCounter++); break;
-            case GeometryType::point:   string += FString::Printf(TEXT("Point%02d"),       coordinateSystem->pointCounter++); break;
-            case GeometryType::sphere:  string += FString::Printf(TEXT("Sphere%02d"),      coordinateSystem->sphereCounter++); break;
-            case GeometryType::unit:    string += FString::Printf(TEXT("Unit%02d"),        coordinateSystem->unitCounter++); break;
-            case GeometryType::cVector: string += FString::Printf(TEXT("ConstVector%02d"), coordinateSystem->constVectorCounter++); break;
-            case GeometryType::other:        
-            default:                    string += FString::Printf(TEXT("Geomety%02d"),     coordinateSystem->geometryCounter++); break;
-         }
-         
-         nameString = string;
-      }
-      else
-      {
-         string = inName;
-      }
-
-      if(showMathData) { string += " "; }
+      MLD_PTR_CHECK(g); if(!g) continue;
+      g->RootComponent->SetHiddenInGame(!show, true);
    }
-
-   if(showMathData)
-   {
-      string += mathDataString;
-   }
-
-   return FText::FromString(string);
-}
-
-void AGeometryBase::UpdateTextVisibility()
-{
-   nameText->SetVisibility(showName||showMathData);
-}
-
-void AGeometryBase::InitText(FString inName)
-{
-   float textSize = 0;
-
-   ShowText();
-   SetName(inName);
-
-   if     (type == GeometryType::unit)    { textSize = coordinateSystem->unitTextSize; }
-   else if(type == GeometryType::cVector) { textSize = coordinateSystem->cVectorTextSize; }
-   else                                   { textSize = coordinateSystem->nameTextSize; }
-
-   nameText->SetWorldSize(textSize);
-}
-
-void AGeometryBase::ShowText()
-{
-   ShowName(coordinateSystem->showNames);
-   ShowMathData(coordinateSystem->showMathData);
-   ShowCVectorName(coordinateSystem->showCVectorName);
-   ShowCVectorMathData(coordinateSystem->showCVectorMathData);
 }
 
 
@@ -285,7 +295,7 @@ void AGeometryBase::InitScalePoint(UStaticMeshComponent *point)
 }
 void AGeometryBase::InitScaleLine(UStaticMeshComponent *line)
 {
-   SetLaserScale(line, FVector(size/5, size/5, NULL));
+   SetLaserScale(line, FVector(size/3.6, size/3.6, NULL));
 }
 void AGeometryBase::InitScaleArrowhead(UStaticMeshComponent *arrowhead)
 {

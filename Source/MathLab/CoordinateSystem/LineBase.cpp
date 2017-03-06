@@ -73,7 +73,7 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRen
    arrowheadMesh->SetVisibility(false);
 
    if(!MLD_PTR_CHECK(inText)) return;
-   nameText = inText;
+   nameRender = inText;
 }
 
 
@@ -85,7 +85,14 @@ void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inCo
    type = GeometryType::line;
    line = inLine;
    mode = inMode;
-   mathDataString = inLine.ToStringShort();
+   
+   switch(mode)
+   {
+      case LineMode::line:    mathDataString = inLine.ToStringShort(); break;
+      case LineMode::segment: mathDataString = inLine.ToStringShort(); break;
+      case LineMode::vector:  mathDataString = FString::Printf(TEXT("(%s, %s, %s)"), *FString::SanitizeFloat(inLine.direction.X), *FString::SanitizeFloat(inLine.direction.Y), *FString::SanitizeFloat(inLine.direction.Z)); break;
+   }
+
    Super::Init(inCoordinateSystem, inColor, inName);
    
    switch(mode)
@@ -117,6 +124,9 @@ void ALineBase::BuildCVector()
    if     (mode == LineMode::line)    { SetLaserScale(lineMesh, FVector(NULL, NULL, coordinateSystem->MaxVisibleLength())); }
    else if(mode == LineMode::segment) { ScaleLine(lineMesh, UKismetMathLibrary::VSize(line.direction - line.position)); }
    else                               { ScaleVector(lineMesh, arrowheadMesh, UKismetMathLibrary::VSize(line.direction)); }
+
+   if     (mode == LineMode::segment) { MoveText(nameRender, (line.position + line.direction) / 2); }
+   else if(mode == LineMode::vector)  { MoveText(nameRender,  line.position + line.direction/2); }
 }
 
 FString ALineBase::ToString()
@@ -128,6 +138,20 @@ FString ALineBase::ToString()
 
 void ALineBase::CreateCVector(LaserColors inColor)
 {
-   AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, line.position, CVectorMode::vector, "Position"));
-   AddCVector(coordinateSystem->AddCVector(inColor, line.position, line.direction, CVectorMode::vector, "Direction"));
+   switch(mode)
+   {
+      case LineMode::line:    
+         AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, line.position, CVectorMode::vector, "Position"));
+         AddCVector(coordinateSystem->AddCVector(inColor, line.position, line.direction, CVectorMode::vector, "Direction"));
+      break;
+      case LineMode::segment: 
+         AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, line.position,  CVectorMode::vectorPoint, "Point A"));
+         AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, line.direction, CVectorMode::vectorPoint, "Point B"));
+      break;
+      case LineMode::vector:  
+      break;
+      default:
+      break;
+   }
+
 }

@@ -46,7 +46,7 @@ void ACVectorBase::SetComponents(TArray<UStaticMeshComponent*> components, UText
    AddLaserComponent(arrowheadMesh);
 
    if(!MLD_PTR_CHECK(inText)) return;
-   nameText = inText;
+   nameRender = inText;
 }
 
 
@@ -116,8 +116,8 @@ void ACVectorBase::BuildCVector()
    if(mode == CVectorMode::segment) { ScaleLine(lineMesh, UKismetMathLibrary::VSize(b - a)); }
    else                             { ScaleVector(lineMesh, arrowheadMesh, UKismetMathLibrary::VSize(b)); }
 
-   if(mode == CVectorMode::segment) { MoveText(nameText, (a + b) / 2); }
-   else                             { MoveText(nameText,  a + b/2); }
+   if(mode == CVectorMode::segment) { MoveText(nameRender, (a + b) / 2); }
+   else                             { MoveText(nameRender,  a + b/2); }
 }
 
 void ACVectorBase::MovePointB()

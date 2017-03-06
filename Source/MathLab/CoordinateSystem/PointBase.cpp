@@ -64,7 +64,7 @@ void APointBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRe
    AddLaserComponent(pointMesh);
 
    if(!MLD_PTR_CHECK(inText)) return;
-   nameText = inText;
+   nameRender = inText;
 }
 
 

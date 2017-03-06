@@ -65,7 +65,7 @@ void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextR
    AddLaserComponent(sphereMesh);
 
    if(!MLD_PTR_CHECK(inText)) return;
-   nameText = inText;
+   nameRender = inText;
 }
 
 

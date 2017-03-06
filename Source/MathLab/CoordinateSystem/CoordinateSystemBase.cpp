@@ -13,7 +13,7 @@ ACoordinateSystemBase::ACoordinateSystemBase()
 
 // Coordinate System -------------------------------------------------------------------------------
    axisLength = 1;
-   axisSize = 0.03f;
+   axisSize = 0.02f;
 
    glowiness = 10.f;
 
@@ -22,8 +22,8 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    unitCount = 10;
    unitLaserColor = LaserColors::green;
    unitGlowiness = 10.f;
-   unitSizeFactor = 0.5f;
-   unitLaserSizeFactor = 0.4f;
+   unitSizeFactor = 0.4f;
+   unitLaserSizeFactor = 0.5f;
 
 // Text --------------------------------------------------------------------------------------------
    showNames = true;
@@ -402,6 +402,9 @@ bool ACoordinateSystemBase::NameNotUsed(FString inName)
 
    for(AGeometryBase *g : elements)
    {
+      if(g->type == GeometryType::cVector) { continue; }
+      if(g->type == GeometryType::unit)    { continue; }
+
       if(g->GetGeometryName() == inName)
       {
          nameNotUsed = false;

@@ -53,7 +53,7 @@ void ACircleBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextR
    AddLaserComponent(circleMeshBorder);
 
    if(!MLD_PTR_CHECK(inText)) return;
-   nameText = inText;
+   nameRender = inText;
 }
 
 void ACircleBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle, FString inName)

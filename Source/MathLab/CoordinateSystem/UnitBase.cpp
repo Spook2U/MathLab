@@ -43,7 +43,7 @@ void AUnitBase::SetComponents(TArray<UStaticMeshComponent *> components, UTextRe
    AddLaserComponent(yLaser);
 
    if(!MLD_PTR_CHECK(inText)) return;
-   nameText = inText;
+   nameRender = inText;
 }
 
 void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inCoordinate, FString inName)
@@ -68,7 +68,7 @@ void AUnitBase::Update()
 
 void AUnitBase::SetName(FString inName)
 {
-   nameText->SetText(BuildText(inName));
+   nameRender->SetText(BuildText(inName));
 }
 
 
@@ -91,7 +91,7 @@ void AUnitBase::OrientateToAxis(UStaticMeshComponent *axis)
 {
    float thickness = coordinateSystem->axisSize*coordinateSystem->unitSizeFactor;
    SetActorTransform(FTransform(axis->GetComponentRotation(), GetActorLocation(), FVector(thickness, thickness, 0.1f)));
-   nameText->SetWorldScale3D(FVector(1.f, 1.f, 1.f));
+   nameRender->SetWorldScale3D(FVector(1.f, 1.f, 1.f));
 }
 
 // -------------------------------------------------------------------------------------------------
