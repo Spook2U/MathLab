@@ -13,12 +13,19 @@ AGeometryBase::AGeometryBase()
    PrimaryActorTick.bCanEverTick = true; 
 
    coordinateSystem = NULL;
-   laserCompoents;
+   color = LaserColors::green;
    type = GeometryType::other;
-
+   showConstruction = false;
    size = 0.075;
+
+   nameRender = nullptr;
+   nameString = "";
    mathDataString = "";
+   showName = true;
+   showMathData = true;
 }
+
+// Unreal Events -------------------------------------------------------------------------------------------------------------------------------------
 
 void AGeometryBase::BeginPlay() { 
    Super::BeginPlay();
@@ -30,20 +37,7 @@ void AGeometryBase::Tick(float DeltaTime)
    RotateText(); 
 }
 
-// Pure Functions -----------------------------------------------------------------------------------
-
-FVector AGeometryBase::CoordinateToLocation(FVector coordinate)
-{
-   FVector location = coordinate;
-
-   location *= coordinateSystem->convertFactor;
-   location *= FVector(1.f, -1.f, 1.f);
-   location += coordinateSystem->GetActorLocation();
-
-   return location;
-}
-
-// Callable Functions --------------------------------------------------------------------------------
+// Geometry Setup ------------------------------------------------------------------------------------------------------------------------------------
 
 void AGeometryBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FString inName)
 {
@@ -54,7 +48,10 @@ void AGeometryBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors 
    SetColor(inColor);
 }
 
-// --------------------------------------------------------------------------------------------------
+void AGeometryBase::AddLaserComponent(UStaticMeshComponent *laser)
+{
+   laserCompoents.Add(laser);
+}
 
 void AGeometryBase::Update()
 {
@@ -78,25 +75,18 @@ void AGeometryBase::UpdateRendering()
    }
 }
 
-void AGeometryBase::RotateText()
+// Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
+
+void AGeometryBase::ShowConstructingVector(bool show)
 {
-   if(!nameRender) return;
+   showConstruction = show;
 
-   FVector actorLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->GetActorLocation() + FVector(0, 0, 64);
-   FVector textLocation  = nameRender->GetComponentLocation();
-
-   FVector norm = UKismetMathLibrary::Normal(actorLocation - textLocation);
-   FVector rotatedVector = UKismetMathLibrary::GreaterGreater_VectorRotator(norm, FRotator(0, 0, 0));
-   FRotator newRotation = UKismetMathLibrary::Conv_VectorToRotator(rotatedVector);
-   nameRender->SetWorldRotation(newRotation);
+   for(ACVectorBase *g : constVectors)
+   {
+      MLD_PTR_CHECK(g); if(!g) continue;
+      g->RootComponent->SetHiddenInGame(!show, true);
+   }
 }
-
-FString AGeometryBase::GetGeometryName()
-{
-   return nameString;
-}
-
-// --------------------------------------------------------------------------------------------------
 
 void AGeometryBase::SetColor(LaserColors inColor)
 {
@@ -127,9 +117,30 @@ void AGeometryBase::SetColor(LaserColors inColor)
 void AGeometryBase::SetPosition(FVector coordinate)
 {
    SetActorLocation(CoordinateToLocation(coordinate));
+   MoveCVector(coordinate);
 }
 
-// Text Functions------------------------------------------------------------------------------------
+void AGeometryBase::SetName(FString inName)
+{
+   if(nameString != inName)
+   {
+      nameString = NameCheck(inName);
+   }
+
+   nameRender->SetText(BuildText(nameString));
+}
+
+void AGeometryBase::ClearName()
+{
+   SetName("");
+}
+
+FString AGeometryBase::GetName()
+{
+   return nameString;
+}
+
+// Name Functions-------------------------------------------------------------------------------------------------------------------------------------
 
 void AGeometryBase::InitText(FString inName)
 {
@@ -151,16 +162,6 @@ FString AGeometryBase::NameCheck(FString inName)
    if(coordinateSystem->NameNotUsed(inName)) { name = inName; }
    else                                      { name = ""; }   
    return name;
-}
-
-void AGeometryBase::SetName(FString inName)
-{
-   if(nameString != inName)
-   {
-      nameString = NameCheck(inName);
-   }
-
-   nameRender->SetText(BuildText(nameString));
 }
 
 FText AGeometryBase::BuildText(FString inName)
@@ -199,7 +200,6 @@ FText AGeometryBase::BuildText(FString inName)
 
    return FText::FromString("   " + string);
 }
-
 
 void AGeometryBase::ShowText()
 {
@@ -246,67 +246,70 @@ void AGeometryBase::UpdateTextVisibility()
    nameRender->SetVisibility(showName||showMathData);
 }
 
-void AGeometryBase::ClearName()
-{
-   SetName("");
-}
+// Utility Functions----------------------------------------------------------------------------------------------------------------------------------
 
-// --------------------------------------------------------------------------------------------------
+FVector AGeometryBase::CoordinateToLocation(FVector coordinate)
+{
+   FVector location = coordinate;
+
+   location *= coordinateSystem->convertFactor;
+   location *= FVector(1.f, -1.f, 1.f);
+   location += coordinateSystem->GetActorLocation();
+
+   return location;
+}
 
 FString AGeometryBase::ToString()
 {
    return FString::Printf(TEXT(""));
 }
 
-// Protected-----------------------------------------------------------------------------------------
+// Constructing Vector Functions ---------------------------------------------------------------------------------------------------------------------
 
 void AGeometryBase::CreateCVector(LaserColors inColor)
-{
-}
-
-void AGeometryBase::AddLaserComponent(UStaticMeshComponent *laser)
-{
-   laserCompoents.Add(laser);
-}
+{}
 
 void AGeometryBase::AddCVector(ACVectorBase *guide)
 {
    constVectors.Add(guide);
 }
 
-void AGeometryBase::ShowVectorGuides(bool show)
+void AGeometryBase::MoveCVector(FVector coordinate)
 {
-   showConstruction = show;
-
-   for(ACVectorBase *g : constVectors)
+   for(ACVectorBase *v : constVectors)
    {
-      MLD_PTR_CHECK(g); if(!g) continue;
-      g->RootComponent->SetHiddenInGame(!show, true);
+      v->SetPosition((-1)*coordinate);
    }
 }
 
 
 
-// Build Components----------------------------------------------------------------------------------
+// StaticMeshComponent Setup -------------------------------------------------------------------------------------------------------------------------
+
+
 
 void AGeometryBase::InitScalePoint(UStaticMeshComponent *point)
 {
    SetLaserScale(point, FVector(1.f, 1.f, 1.f) * size);
 }
+
 void AGeometryBase::InitScaleLine(UStaticMeshComponent *line)
 {
    SetLaserScale(line, FVector(size/3.6, size/3.6, NULL));
 }
+
 void AGeometryBase::InitScaleArrowhead(UStaticMeshComponent *arrowhead)
 {
    SetLaserScale(arrowhead, FVector(1.f, 1.f, 1.5f) * size);
 }
+
 
 void AGeometryBase::SetLaserMatTransparency(UStaticMeshComponent *laser, float value)
 {
    MLD_PTR_CHECK(laser); if(!laser) return;
    laser->SetScalarParameterValueOnMaterials("Transparency", value);
 }
+
 
 void AGeometryBase::MoveLaser(UStaticMeshComponent *laser, Direction dir, float length)
 {
@@ -331,14 +334,30 @@ void AGeometryBase::MoveText(UTextRenderComponent *textRender, FVector coordinat
    textRender->SetWorldLocation(CoordinateToLocation(coordinate));
 }
 
+
 void AGeometryBase::RotateLine(FVector direction)
 {
    SetActorRotation(UKismetMathLibrary::Conv_VectorToRotator(direction*FVector(1.f, -1.f, 1.f)));
 }
+
 void AGeometryBase::RotateLaserLookAt(FVector from, FVector to)
 {
    SetActorRotation(UKismetMathLibrary::FindLookAtRotation(CoordinateToLocation(from), CoordinateToLocation(to)));
 }
+
+void AGeometryBase::RotateText()
+{
+   if(!nameRender) return;
+
+   FVector actorLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->GetActorLocation() + FVector(0, 0, 64);
+   FVector textLocation  = nameRender->GetComponentLocation();
+
+   FVector norm = UKismetMathLibrary::Normal(actorLocation - textLocation);
+   FVector rotatedVector = UKismetMathLibrary::GreaterGreater_VectorRotator(norm, FRotator(0, 0, 0));
+   FRotator newRotation = UKismetMathLibrary::Conv_VectorToRotator(rotatedVector);
+   nameRender->SetWorldRotation(newRotation);
+}
+
 
 void AGeometryBase::SetLaserScale(UStaticMeshComponent *laser, FVector scale)
 {
@@ -348,20 +367,24 @@ void AGeometryBase::SetLaserScale(UStaticMeshComponent *laser, FVector scale)
                                   (scale.Z ? scale.Z : laser->GetComponentScale().Z)
    ));
 }
+
 void AGeometryBase::ScaleLine(UStaticMeshComponent *line, float length)
 {
    MoveLaser(line, Direction::up, length/2);
    SetLaserScale(line, FVector(NULL, NULL, (coordinateSystem->convertFactor/100)*length));
 }
+
 void AGeometryBase::ScaleVector(UStaticMeshComponent *line, UStaticMeshComponent *arrowhead, float lenght)
 {
    MoveLaser(arrowhead, Direction::up, lenght-size);
    ScaleLine(line, lenght);
 }
+
 void AGeometryBase::ScalePlane(UStaticMeshComponent *plane, float lenght)
 {
    SetLaserScale(plane, FVector(lenght, lenght, NULL));
 }
+
 void AGeometryBase::ScaleSphere(UStaticMeshComponent *sphere, float radius)
 {
    SetLaserScale(sphere, FVector(1.f, 1.f, 1.f) * ((radius*2) * coordinateSystem->convertFactor/100));

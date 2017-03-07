@@ -160,21 +160,21 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane1, FMathPlane plane2)
             FVector dir;
             
             // E: ax + by + cz = d
-            // linear System Result: ky + lz = m
+            // linear System Result: ky + lz = p
             // z = t
-            // y = m/k - l/k * t
-            // x = (-b*m + k*d) / k*a  + ((b*l - k*c) / k*a) *t 
+            // y = p/n - o/n * t
+            // x = (-b*p + n*d) / n*a  + ((b*o - n*c) / n*a) *t 
 
             float a = plane1.normal.X;
             float b = plane1.normal.Y;
             float c = plane1.normal.Z;
             float d = plane1.d;
-            float k = resultMatrix.GetElement(1, 1);
-            float l = resultMatrix.GetElement(2, 1);
-            float m = resultMatrix.GetElement(3, 1);
+            float n = resultMatrix.GetElement(1, 1);
+            float o = resultMatrix.GetElement(2, 1);
+            float p = resultMatrix.GetElement(3, 1);
             
-            pos = FVector(((-1)*b*m + k*d) / (k*a), m/k, 0);
-            dir = FVector((b*l - k*c) / (k*a), (-1)*l/k, 1);
+            pos = FVector(((-1)*b*p + n*d) / (n*a), p/n, 0);
+            dir = FVector((b*o - n*c) / (n*a), (-1)*o/n, 1);
             
             result.intersections = FIntersection(FMathLine(pos, dir)); 
          }
@@ -230,6 +230,79 @@ FCalcReturn CalcRelation::CalculateWith(FMathSphere sphere, FMathPlane plane)
 }
 FCalcReturn CalcRelation::CalculateWith(FMathSphere sphere1, FMathSphere sphere2) 
 {
-   MLD_WAR("Not defined yet");
-   return FCalcReturn(Relation::undefined);
+   FCalcReturn result;
+   //Center Distance
+   float distance = CalcDistance().CalculateWith(sphere1, sphere2).distance + sphere1.radius + sphere2.radius;
+
+   if(fabsf(sphere1.radius - sphere2.radius) > distance)
+   {
+      MLD_LOG("Inside");
+   }
+
+   if(fabsf(sphere1.radius - sphere2.radius) == distance)
+   {
+      MLD_LOG("Inside Tagential Point");
+   }
+
+   if(fabsf(sphere1.radius - sphere2.radius) < distance)
+   {
+      MLD_LOG("Intersection");
+   }
+
+   if(fabsf(sphere1.radius + sphere2.radius) == distance)
+   {
+      MLD_LOG("Tangential Point");
+   }
+
+   if((sphere1.radius < distance) || (sphere2.radius < distance))
+   {
+      MLD_LOG("Different");
+   }
+
+   if((distance == 0) && (sphere1.radius == sphere2.radius))
+   {
+      MLD_LOG("Identical");
+   }
+
+
+   //// Tangention Point
+   //if(distance == 0)
+   //{
+   //   FMathLine line = FMathLine(sphere1.center, sphere2.center - sphere1.center);
+   //   result.relation = Relation::intersection;
+   //   result.intersections = FIntersection(m.GetPointOnLine(line, sphere1.radius));
+   //}
+   //// No Intersection
+   //else if(distance > 0)
+   //{
+   //   result.relation = Relation::different;
+   //}
+   //// Intersections / Inside
+   //else
+   //{
+   //   float d = fabsf(distance);
+
+   //   // 
+   //   if(((d + sphere1.radius) == sphere2.radius) || ((d + sphere2.radius) == sphere1.radius))
+   //   {
+   //      FMathLine line = FMathLine(sphere1.center, sphere2.center - sphere1.center);
+   //      result.relation = Relation::insideIntersection;
+   //      result.intersections = FIntersection(m.GetPointOnLine(line, (-1)*sphere1.radius));
+   //   }
+   //   else if(((d + sphere1.radius) < sphere2.radius) || ((d + sphere2.radius) < sphere1.radius))
+   //   {
+   //      result.relation = Relation::inside;
+   //   }
+   //   else
+   //   {
+   //      float circleDistance = sphere1.radius - (d/2);
+   //      float circleRadius = m.SetOfPythagorasGetB(circleDistance, sphere1.radius);
+   //      FMathLine line = FMathLine(sphere1.center, sphere2.center - sphere1.center);
+   //      
+   //      result.relation = Relation::intersection;
+   //      result.intersections = FIntersection(FMathCircle(m.GetPointOnLine(line, circleDistance), line.direction, circleRadius));
+   //   }
+   //}
+
+   return result;
 }

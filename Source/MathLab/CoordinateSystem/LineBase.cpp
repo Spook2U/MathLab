@@ -143,12 +143,12 @@ void ALineBase::CreateCVector(LaserColors inColor)
    switch(mode)
    {
       case LineMode::line:    
-         AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, line.position, CVectorMode::vector, "Position"));
-         AddCVector(coordinateSystem->AddCVector(inColor, line.position, line.direction, CVectorMode::vector, "Direction"));
+         AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, FVector::ZeroVector, line.position, CVectorMode::vector, "Position"));
+         AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, line.position, line.direction, CVectorMode::vector, "Direction"));
       break;
       case LineMode::segment: 
-         AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, line.position,  CVectorMode::vectorPoint, "Point A"));
-         AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, line.direction, CVectorMode::vectorPoint, "Point B"));
+         AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, FVector::ZeroVector, line.position,  CVectorMode::vectorPoint, "Point A"));
+         AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, FVector::ZeroVector, line.direction, CVectorMode::vectorPoint, "Point B"));
       break;
       case LineMode::vector:  
       break;

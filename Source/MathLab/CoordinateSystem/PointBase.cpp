@@ -89,6 +89,14 @@ void APointBase::Update()
    SetPosition(point.coordinate);
 }
 
+APointBase *APointBase::SetPoint(FMathPoint inPoint)
+{
+   point = inPoint;
+   mathDataString = inPoint.ToStringShort();
+   Update();
+   return this;
+}
+
 FString APointBase::ToString()
 {
    return FString::Printf(TEXT("%s; %s"), *Super::ToString(), *point.ToString());
@@ -100,6 +108,6 @@ FString APointBase::ToString()
 
 void APointBase::CreateCVector(LaserColors inColor)
 {
-   AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, point.coordinate, CVectorMode::vector, "Position"));
+   AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, FVector::ZeroVector, point.coordinate, CVectorMode::vector, "Position"));
 }
 

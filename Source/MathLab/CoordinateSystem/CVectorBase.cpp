@@ -103,6 +103,7 @@ void ACVectorBase::SetVisibility(bool showPointA, bool showPointB, bool showLine
 void ACVectorBase::Update()
 {
    Super::Update();
+   
    SetPosition(a);
    BuildCVector();
    MovePointB();

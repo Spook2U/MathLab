@@ -25,14 +25,15 @@ struct FNVector;
 UENUM(BlueprintType)
 enum class Relation : uint8
 {
-   identical     UMETA(DisplayName = "Identical"),   
-   different     UMETA(DisplayName = "Different"),   
-   inside        UMETA(DisplayName = "Inside"),
-   outside       UMETA(DisplayName = "Outside"),
-   parallel      UMETA(DisplayName = "Parallel"),   
-   skew          UMETA(DisplayName = "Skew"),   
-   intersection  UMETA(DisplayName = "Intersection(s)"),   
-   undefined     UMETA(DisplayName = "Undefined")
+   identical           UMETA(DisplayName = "Identical"),   
+   different           UMETA(DisplayName = "Different"),   
+   inside              UMETA(DisplayName = "Inside"),
+   outside             UMETA(DisplayName = "Outside"),
+   parallel            UMETA(DisplayName = "Parallel"),   
+   skew                UMETA(DisplayName = "Skew"),   
+   intersection        UMETA(DisplayName = "Intersection(s)"),   
+   insideIntersection  UMETA(DisplayName = "Inside & Intersection(s)"),   
+   undefined           UMETA(DisplayName = "Undefined")
 };
 
 /* Defines the type of the intersection. */

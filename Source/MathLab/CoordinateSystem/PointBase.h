@@ -66,6 +66,8 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|point")
    virtual void Update() override;
 
+   APointBase *SetPoint(FMathPoint inPoint);
+
    UFUNCTION(Blueprintcallable, Category = "math lab|point")
    virtual FString ToString() override;
 

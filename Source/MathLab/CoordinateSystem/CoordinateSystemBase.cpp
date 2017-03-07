@@ -11,13 +11,13 @@ ACoordinateSystemBase::ACoordinateSystemBase()
 { 
    PrimaryActorTick.bCanEverTick = true;
 
-// Coordinate System -------------------------------------------------------------------------------
+// Coordinate System ---------------------------------------------------------------------------------------------------------------------------------
    axisLength = 1;
    axisSize = 0.02f;
 
    glowiness = 10.f;
 
-// Coordinate System - Units------------------------------------------------------------------------
+// Coordinate System - Units--------------------------------------------------------------------------------------------------------------------------
 
    unitCount = 10;
    unitLaserColor = LaserColors::green;
@@ -25,7 +25,7 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    unitSizeFactor = 0.4f;
    unitLaserSizeFactor = 0.5f;
 
-// Text --------------------------------------------------------------------------------------------
+// Text ----------------------------------------------------------------------------------------------------------------------------------------------
    showNames = true;
    showMathData = true;
    nameTextSize = 7.5f;
@@ -36,7 +36,7 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    cVectorTextSize = 5;
    //textGlowiness = 5;
 
-// Protected ---------------------------------------------------------------------------------------
+// Member --------------------------------------------------------------------------------------------------------------------------------------------
    elements;
    convertFactor = 0;
    maxCoordinate = 0;
@@ -50,6 +50,8 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    constVectorCounter = 1;
    geometryCounter    = 1;
 
+
+// Private -------------------------------------------------------------------------------------------------------------------------------------------
    xAxis = nullptr;
    yAxis = nullptr;
    zAxis = nullptr;
@@ -83,7 +85,7 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    if(CVectorBlueprint.Object) { cVectorBP = (UClass *)CVectorBlueprint.Object->GeneratedClass; }
 }
 
-// Unreal Events -----------------------------------------------------------------------------------
+// Unreal Events -------------------------------------------------------------------------------------------------------------------------------------
 
 void ACoordinateSystemBase::OnConstruction(const FTransform &Transform)
 {
@@ -107,51 +109,29 @@ void ACoordinateSystemBase::Tick( float DeltaTime ) { Super::Tick( DeltaTime ); 
 
 
 
+// Test Function -------------------------------------------------------------------------------------------------------------------------------------
+
 void ACoordinateSystemBase::TestFunction()
 {
 }
 
 
 
+// Coordinate System Setup ---------------------------------------------------------------------------------------------------------------------------
+
 void ACoordinateSystemBase::SetComponents(UStaticMeshComponent *inXAxis, UStaticMeshComponent *inYAxis, UStaticMeshComponent *inZAxis)
 {
-   MLD_PTR_CHECK(inXAxis);
-   MLD_PTR_CHECK(inYAxis);
-   MLD_PTR_CHECK(inZAxis);
-   if(!(inXAxis && inYAxis && inZAxis)) return;
+   if(!(MLD_PTR_CHECK(inXAxis) && MLD_PTR_CHECK(inYAxis) && MLD_PTR_CHECK(inZAxis))) return;
    xAxis = inXAxis;
    yAxis = inYAxis;
    zAxis = inZAxis;
 }
 
-// Pure Functions -----------------------------------------------------------------------------------
-
-float ACoordinateSystemBase::MaxVisibleLength()
-{
-   float length;
-   FVector v = FVector(1, 1, 1);
-
-   length = (v*maxCoordinate - v*maxCoordinate*(-1)).Size();
-
-   return length;
-}
-
-// Update -------------------------------------------------------------------------------------------
-
-void ACoordinateSystemBase::Update()
-{
-   for(AGeometryBase *g : elements)
-   {
-      MLD_PTR_CHECK(g); if(!g) return;
-      g->Update();
-   }
-}
-
-// Setup --------------------------------------------------------------------------------------------
-
 void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
 {
-   if(unitCount) convertFactor = axisLength * 100 / unitCount;
+   if(!(MLD_PTR_CHECK(xAxis) && MLD_PTR_CHECK(yAxis) && MLD_PTR_CHECK(zAxis))) return;
+
+   if(unitCount) { convertFactor = axisLength * 100 / unitCount; }
 
    FVector scaleVector = {diameter, diameter, 2 * length};
 
@@ -160,17 +140,26 @@ void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
    zAxis->SetWorldScale3D(scaleVector);
 }
 
-// Make ---------------------------------------------------------------------------------------------
+void ACoordinateSystemBase::Update()
+{
+   for(AGeometryBase *g : elements)
+   {
+      if(!MLD_PTR_CHECK(g)) return;
+      g->Update();
+   }
+}
 
-AGeometryBase *ACoordinateSystemBase::AddGeometry(TSubclassOf<AGeometryBase> geometry)
+// Add Functions--------------------------------------------------------------------------------------------------------------------------------------
+
+AGeometryBase *ACoordinateSystemBase::AddGeometry(TSubclassOf<AGeometryBase> geometry, AActor *parent)
 {  
    AGeometryBase *newGeometry;
    FTransform transform = GetTransform();
 
    newGeometry = (AGeometryBase *)GetWorld()->SpawnActor(geometry, &transform);
 
-   MLD_PTR_CHECK(newGeometry); if(!newGeometry) return nullptr;
-   newGeometry->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+   if(!MLD_PTR_CHECK(newGeometry)) return nullptr;
+   newGeometry->AttachToActor(parent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
    elements.Add(newGeometry);
 
    return newGeometry;
@@ -191,8 +180,10 @@ void ACoordinateSystemBase::AddUnits()
 
 void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int index)
 {
-   AUnitBase *newUnit = (AUnitBase *)AddGeometry(unitBP);
-   MLD_PTR_CHECK(newUnit); if(!newUnit) return;
+   if(!MLD_PTR_CHECK(axis)) return;
+   AUnitBase *newUnit = (AUnitBase *)AddGeometry(unitBP, this);
+   
+   if(!MLD_PTR_CHECK(newUnit)) return;
    newUnit->Init(this, unitLaserColor, axis->GetUpVector()*index, FString::Printf(TEXT("%d"), index));
    newUnit->OrientateToAxis(axis);
    newUnit->Update();
@@ -200,11 +191,11 @@ void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int inde
 
 APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, FMathPoint inPoint, FString inName, bool showGuides)
 {  
-   APointBase *point = (APointBase *)AddGeometry(pointBP);
+   APointBase *point = (APointBase *)AddGeometry(pointBP, this);
 
-   MLD_PTR_CHECK(point); if(!point) return nullptr;
+   if(!MLD_PTR_CHECK(point)) return nullptr;
    point->Init(this, color, inPoint, inName);
-   point->ShowVectorGuides(showGuides);
+   point->ShowConstructingVector(showGuides);
    point->Update();
    return point;
 }
@@ -213,11 +204,11 @@ ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, FMathLine inLine, L
 {
    if(inLine.direction.Size() == 0) { MLD_ERR("Line not created. Invalid diection. Direction of the line cannt be {0, 0, 0}."); return nullptr; }
 
-   ALineBase *line = (ALineBase *)AddGeometry(lineBP);
+   ALineBase *line = (ALineBase *)AddGeometry(lineBP, this);
 
-   MLD_PTR_CHECK(line); if(!line) return nullptr;
+   if(!MLD_PTR_CHECK(line)) return nullptr;
    line->Init(this, color, inLine, mode, inName);
-   line->ShowVectorGuides(showGuides);
+   line->ShowConstructingVector(showGuides);
    line->Update();
    return line;
 }
@@ -226,10 +217,10 @@ APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, FMathPlane inPlan
 {
    if((inPlane.direction1.Size() == 0) || (inPlane.direction2.Size() == 0)) { MLD_ERR("Plane not created. Invalid diection. No direction of the plane shall be {0, 0, 0}."); return nullptr; }
 
-   APlaneBase *plane = (APlaneBase *)AddGeometry(planeBP);
-   MLD_PTR_CHECK(plane); if(!plane) return nullptr;
+   APlaneBase *plane = (APlaneBase *)AddGeometry(planeBP, this);
+   if(!MLD_PTR_CHECK(plane)) return nullptr;
    plane->Init(this, color, inPlane, mode, inName);
-   plane->ShowVectorGuides(showGuides);
+   plane->ShowConstructingVector(showGuides);
    plane->Update();
    return plane;
 }
@@ -238,10 +229,10 @@ ASphereBase *ACoordinateSystemBase::AddSphere(LaserColors color, FMathSphere inS
 {
    if(inSphere.radius <= 0) { MLD_ERR("Sphere not created. Invalid radius. Cannt create Sphere with radius <= 0."); return nullptr; }
 
-   ASphereBase *sphere = (ASphereBase *)AddGeometry(sphereBP);
-   MLD_PTR_CHECK(sphere); if(!sphere) return nullptr;
+   ASphereBase *sphere = (ASphereBase *)AddGeometry(sphereBP, this);
+   if(!MLD_PTR_CHECK(sphere)) return nullptr;
    sphere->Init(this, color, inSphere, inName);
-   sphere->ShowVectorGuides(showGuides);
+   sphere->ShowConstructingVector(showGuides);
    sphere->Update();
    return sphere;
 }
@@ -250,18 +241,18 @@ ACircleBase *ACoordinateSystemBase::AddCircle(LaserColors color, FMathCircle inC
 {
    if(inCircle.radius <= 0) { MLD_ERR("Circle not created. Invalid radius. Cannt create Circle with radius <= 0."); return nullptr; }
 
-   ACircleBase *circle = (ACircleBase *)AddGeometry(circleBP);
-   MLD_PTR_CHECK(circle); if(!circle) return nullptr;
+   ACircleBase *circle = (ACircleBase *)AddGeometry(circleBP, this);
+   if(!MLD_PTR_CHECK(circle)) return nullptr;
    circle->Init(this, color, inCircle, inName);
-   circle->ShowVectorGuides(showGuides);
+   circle->ShowConstructingVector(showGuides);
    circle->Update();
    return circle;
 }
 
-ACVectorBase *ACoordinateSystemBase::AddCVector(LaserColors color, FVector pointA, FVector pointB, CVectorMode mode, FString inName)
+ACVectorBase *ACoordinateSystemBase::AddCVector(AActor *parent, LaserColors color, FVector pointA, FVector pointB, CVectorMode mode, FString inName)
 {
-   ACVectorBase *newCVector = (ACVectorBase *)AddGeometry(cVectorBP);
-   MLD_PTR_CHECK(newCVector); if(!newCVector) return nullptr;
+   ACVectorBase *newCVector = (ACVectorBase *)AddGeometry(cVectorBP, parent);
+   if(!MLD_PTR_CHECK(newCVector)) return nullptr;
    newCVector->Init(this, color, pointA, pointB, mode, inName);
    newCVector->Update();
    switch(mode)
@@ -275,6 +266,8 @@ ACVectorBase *ACoordinateSystemBase::AddCVector(LaserColors color, FVector point
    return newCVector;
 }
 
+// Find Functions-------------------------------------------------------------------------------------------------------------------------------------
+
 AGeometryBase* ACoordinateSystemBase::FindGeometryWithName(FString inName, bool &found)
 {
    AGeometryBase *wanted = nullptr;
@@ -282,10 +275,11 @@ AGeometryBase* ACoordinateSystemBase::FindGeometryWithName(FString inName, bool 
 
    for(AGeometryBase *g : elements)
    {
+      if(!MLD_PTR_CHECK(g)) return nullptr;
       if(g->type == GeometryType::cVector) { continue; }
       if(g->type == GeometryType::unit)    { continue; }
 
-      if(g->GetGeometryName() == inName)
+      if(g->GetName() == inName)
       {
          found = true;
          wanted = g;
@@ -302,6 +296,7 @@ TArray<ACircleBase *> ACoordinateSystemBase::FindCircle(FMathCircle inCircle, bo
 
    for(AGeometryBase *g : elements)
    {
+      if(!MLD_PTR_CHECK(g)) return TArray<ACircleBase*>();
       if(g->type != GeometryType::circle) { continue; }
 
       ACircleBase *e = ((ACircleBase *)g);
@@ -321,6 +316,7 @@ TArray<ALineBase *> ACoordinateSystemBase::FindLine(FMathLine inLine, bool &foun
 
    for(AGeometryBase *g : elements)
    {
+      if(!MLD_PTR_CHECK(g)) return TArray<ALineBase*>();
       if(g->type != GeometryType::line) { continue; }
 
       ALineBase *e = ((ALineBase *)g);
@@ -340,6 +336,7 @@ TArray<APlaneBase *> ACoordinateSystemBase::FindPlane(FMathPlane inPlane, bool &
 
    for(AGeometryBase *g : elements)
    {
+      if(!MLD_PTR_CHECK(g)) return TArray<APlaneBase*>();
       if(g->type != GeometryType::plane) { continue; }
 
       APlaneBase *e = ((APlaneBase *)g);
@@ -359,6 +356,7 @@ TArray<APointBase *> ACoordinateSystemBase::FindPoint(FMathPoint inPoint, bool &
 
    for(AGeometryBase *g : elements)
    {
+      if(!MLD_PTR_CHECK(g)) return TArray<APointBase*>();
       if(g->type != GeometryType::point) { continue; }
 
       APointBase *e = ((APointBase *)g);
@@ -378,6 +376,7 @@ TArray<ASphereBase *> ACoordinateSystemBase::FindSphere(FMathSphere inSphere, bo
 
    for(AGeometryBase *g : elements)
    {
+      if(!MLD_PTR_CHECK(g)) return TArray<ASphereBase*>();
       if(g->type != GeometryType::sphere) { continue; }
 
       ASphereBase *e = ((ASphereBase *)g);
@@ -390,10 +389,25 @@ TArray<ASphereBase *> ACoordinateSystemBase::FindSphere(FMathSphere inSphere, bo
    return wanted;
 }
 
+// Remove Functions-----------------------------------------------------------------------------------------------------------------------------------
+
 void ACoordinateSystemBase::Remove(AGeometryBase *target)
 {
+   if(!MLD_PTR_CHECK(target)) return;
    elements.Remove(target);
    target->Destroy();
+}
+
+// Utility Functions----------------------------------------------------------------------------------------------------------------------------------
+
+float ACoordinateSystemBase::MaxVisibleLength()
+{
+   float length;
+   FVector v = FVector(1, 1, 1);
+
+   length = (v*maxCoordinate - v*maxCoordinate*(-1)).Size();
+
+   return length;
 }
 
 bool ACoordinateSystemBase::NameNotUsed(FString inName)
@@ -402,10 +416,11 @@ bool ACoordinateSystemBase::NameNotUsed(FString inName)
 
    for(AGeometryBase *g : elements)
    {
+      if(!MLD_PTR_CHECK(g)) return true;
       if(g->type == GeometryType::cVector) { continue; }
       if(g->type == GeometryType::unit)    { continue; }
 
-      if(g->GetGeometryName() == inName)
+      if(g->GetName() == inName)
       {
          nameNotUsed = false;
          break;
@@ -416,17 +431,21 @@ bool ACoordinateSystemBase::NameNotUsed(FString inName)
 
 
 
+// Function Library Workaround -----------------------------------------------------------------------------------------------------------------------
+
+
+
 void ACoordinateSystemBase::bp_debug_Screen(FString inString, FLinearColor color) 
 { 
    MLD_BLP(color.ToFColor(true), "%s", *inString); 
 }
 
-void ACoordinateSystemBase::LE_Solve(FLinearSystem inLinearEqualation)
+void ACoordinateSystemBase::SolveLinearSystem(FLinearSystem inLinearSystem)
 {
-   inLinearEqualation.GetSolution();
+   inLinearSystem.GetSolution();
 }
 
-
+// Autocast Function ---------------------------------------------------------------------------------------------------------------------------------
 
 FString ACoordinateSystemBase::FNVectorToString(FNVector inNVector)          { return inNVector.ToString(); }
 FString ACoordinateSystemBase::FNMatrixToString(FNMatrix inNMatrix)          { return inNMatrix.ToString(); }
@@ -438,11 +457,11 @@ FString ACoordinateSystemBase::FMathPlaneToString(FMathPlane inPlane)    { retur
 FString ACoordinateSystemBase::FMathPointToString(FMathPoint inPoint)    { return inPoint.ToString();  }
 FString ACoordinateSystemBase::FMathSphereToString(FMathSphere inSphere) { return inSphere.ToString(); }
 
-FString ACoordinateSystemBase::BPCircleToString(ACircleBase *inCircle)   { if(!MLD_PTR_CHECK(inCircle)) return ""; return inCircle->ToString(); }
-FString ACoordinateSystemBase::BPLineToString(ALineBase *inLine)         { if(!MLD_PTR_CHECK(inLine)) return "";   return inLine->ToString();   }
-FString ACoordinateSystemBase::BPPlaneToString(APlaneBase *inPlane)      { if(!MLD_PTR_CHECK(inPlane)) return "";  return inPlane->ToString();  }                                                                                                                                               
-FString ACoordinateSystemBase::BPPointToString(APointBase *inPoint)      { if(!MLD_PTR_CHECK(inPoint)) return "";  return inPoint->ToString();  }
-FString ACoordinateSystemBase::BPSphereToString(ASphereBase *inSphere)   { if(!MLD_PTR_CHECK(inSphere)) return ""; return inSphere->ToString(); }
+FString ACoordinateSystemBase::BPCircleToString(ACircleBase *inCircle)   { if(!MLD_PTR_CHECK(inCircle)) { return "";} return inCircle->ToString(); }
+FString ACoordinateSystemBase::BPLineToString(ALineBase *inLine)         { if(!MLD_PTR_CHECK(inLine))   { return "";} return inLine->ToString();   }
+FString ACoordinateSystemBase::BPPlaneToString(APlaneBase *inPlane)      { if(!MLD_PTR_CHECK(inPlane))  { return "";} return inPlane->ToString();  }                                                                                                                                               
+FString ACoordinateSystemBase::BPPointToString(APointBase *inPoint)      { if(!MLD_PTR_CHECK(inPoint))  { return "";} return inPoint->ToString();  }
+FString ACoordinateSystemBase::BPSphereToString(ASphereBase *inSphere)   { if(!MLD_PTR_CHECK(inSphere)) { return "";} return inSphere->ToString(); }
 
 FString ACoordinateSystemBase::IntersectionToString(FIntersection inIntersection)
 {
@@ -475,27 +494,29 @@ FString ACoordinateSystemBase::RelativePositionToString(FRelativePosition inRela
    return s; 
 }
 
-FMathCircle ACoordinateSystemBase::CircleBPToFCircle(ACircleBase *inCircle) { if(!MLD_PTR_CHECK(inCircle)) return FMathCircle(); return inCircle->circle; }                                                                                                                                                         
-FMathLine ACoordinateSystemBase::LineBPToFLine(ALineBase *inLine)           { if(!MLD_PTR_CHECK(inLine)) return FMathLine();     return inLine->line;     }                                                                                                                                                         
-FMathPlane ACoordinateSystemBase::PlaneBPToFPlane(APlaneBase *inPlane)      { if(!MLD_PTR_CHECK(inPlane)) return FMathPlane();   return inPlane->plane;   }                                                                                                                                                         
-FMathPoint ACoordinateSystemBase::PointBPToFPoint(APointBase *inPoint)      { if(!MLD_PTR_CHECK(inPoint)) return FMathPoint();   return inPoint->point;   }                                                                                                                                                         
-FMathSphere ACoordinateSystemBase::SphereBPToFSphere(ASphereBase *inSphere) { if(!MLD_PTR_CHECK(inSphere)) return FMathSphere(); return inSphere->sphere; }
+FMathCircle ACoordinateSystemBase::CircleBPToFCircle(ACircleBase *inCircle) { if(!MLD_PTR_CHECK(inCircle)) { return FMathCircle(); } return inCircle->circle; }                                                                                                                                                         
+FMathLine ACoordinateSystemBase::LineBPToFLine(ALineBase *inLine)           { if(!MLD_PTR_CHECK(inLine))   { return FMathLine();   } return inLine->line;     }                                                                                                                                                         
+FMathPlane ACoordinateSystemBase::PlaneBPToFPlane(APlaneBase *inPlane)      { if(!MLD_PTR_CHECK(inPlane))  { return FMathPlane();  } return inPlane->plane;   }                                                                                                                                                         
+FMathPoint ACoordinateSystemBase::PointBPToFPoint(APointBase *inPoint)      { if(!MLD_PTR_CHECK(inPoint))  { return FMathPoint();  } return inPoint->point;   }                                                                                                                                                         
+FMathSphere ACoordinateSystemBase::SphereBPToFSphere(ASphereBase *inSphere) { if(!MLD_PTR_CHECK(inSphere)) { return FMathSphere(); } return inSphere->sphere; }
 
-
+// Calculations --------------------------------------------------------------------------------------------------------------------------------------
 
 float ACoordinateSystemBase::Distance(AGeometryBase *from, AGeometryBase *to)
 {
    if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return 0.f;
-
    return m.GetDistance(from, to);
 }
 
 FRelativePosition ACoordinateSystemBase::GetRelativePosition(AGeometryBase *from, AGeometryBase *to)
 {
    if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return Relation::undefined;
-
    return m.GetRelativePosition(from, to);
 }
+
+
+
+// ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 

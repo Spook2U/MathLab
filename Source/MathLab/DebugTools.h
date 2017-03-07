@@ -54,7 +54,7 @@ enum MLog
 
 #define MLD_CALLTEST()              UE_LOG(MLogLog, Log,     TEXT("%s"), *debug_BuildText(MLD_CLASS_NAME, FString::Printf(TEXT("%s() %s"), MLD_FUNCTION_NAME))) 
 #else
-#define MLD_PTR_CHECK(x)
+#define MLD_PTR_CHECK(x)            x
 #define MLD_LOG(string, ...) 
 #define MLD_WAR(string, ...) 
 #define MLD_ERR(string, ...) 

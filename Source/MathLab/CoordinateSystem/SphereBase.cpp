@@ -107,7 +107,7 @@ FString ASphereBase::ToString()
 
 void ASphereBase::CreateCVector(LaserColors inColor)
 {
-   AddCVector(coordinateSystem->AddCVector(inColor, FVector::ZeroVector, sphere.center, CVectorMode::vectorPoint, "Position"));
-   AddCVector(coordinateSystem->AddCVector(inColor, sphere.center, sphere.center + FVector(sphere.radius, 0, 0), CVectorMode::segment, "Radius"));
+   AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, FVector::ZeroVector, sphere.center, CVectorMode::vectorPoint, "Position"));
+   AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, sphere.center, sphere.center + FVector(sphere.radius, 0, 0), CVectorMode::segment, "Radius"));
 }
 
