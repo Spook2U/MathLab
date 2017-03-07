@@ -32,6 +32,7 @@ public:
    FVector direction2;
 
    FVector normal;
+   float d;
 
    /* Default constructor (no initialization). */
    FMathPlane();
@@ -47,9 +48,24 @@ public:
    /* Check against another plane for inequality. */
    bool operator!=(const FMathPlane& Other) const;
 
+   /* Builds the normal Vector based on it's members. */
+   void BuildNormal();
+   /* Builds the value d based on it's members. */
+   void BuildD();
+
+   /* Returns the unified normal Vector of the plane. */
+   FVector GetNormal();
+   /* Returns the value d of the koordinate form: ax + by + cz = d. */
+   float GetD();
+
    /* Get a textual representation of this Plane. */
    FString ToString();
    FString ToStringShort();
+
+private:
+   bool isNormalSet;
+   bool isDSet;
+
 };
 
 // -------------------------------------------------------------------------------------------------

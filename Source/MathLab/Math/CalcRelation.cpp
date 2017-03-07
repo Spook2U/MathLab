@@ -140,8 +140,9 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane, FMathLine line)
 FCalcReturn CalcRelation::CalculateWith(FMathPlane plane1, FMathPlane plane2)   
 { 
    FCalcReturn result;
-   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane1.normal.X, plane1.normal.Y, plane1.normal.Z, FVector::DotProduct(plane1.position, plane1.normal)}),
-                                                        FNVector({plane2.normal.X, plane2.normal.Y, plane2.normal.Z, FVector::DotProduct(plane2.position, plane2.normal)})
+   
+   FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane1.normal.X, plane1.normal.Y, plane1.normal.Z, plane1.d}),
+                                                        FNVector({plane2.normal.X, plane2.normal.Y, plane2.normal.Z, plane2.d})
                                                        }));
 
    switch(linearSystem.GetSolution().type)
@@ -154,7 +155,28 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane1, FMathPlane plane2)
          else
          {
             result.relation = Relation::intersection; 
-            result.intersections = FIntersection(m.GetIntersectionLine(plane2, linearSystem.GetSolution().solution)); 
+            FNMatrix resultMatrix = linearSystem.coefficientMatrix;
+            FVector pos;
+            FVector dir;
+            
+            // E: ax + by + cz = d
+            // linear System Result: ky + lz = m
+            // z = t
+            // y = m/k - l/k * t
+            // x = (-b*m + k*d) / k*a  + ((b*l - k*c) / k*a) *t 
+
+            float a = plane1.normal.X;
+            float b = plane1.normal.Y;
+            float c = plane1.normal.Z;
+            float d = plane1.d;
+            float k = resultMatrix.GetElement(1, 1);
+            float l = resultMatrix.GetElement(2, 1);
+            float m = resultMatrix.GetElement(3, 1);
+            
+            pos = FVector(((-1)*b*m + k*d) / (k*a), m/k, 0);
+            dir = FVector((b*l - k*c) / (k*a), (-1)*l/k, 1);
+            
+            result.intersections = FIntersection(FMathLine(pos, dir)); 
          }
       break;
       case LSSolutionType::no: result.relation = Relation::parallel; break;

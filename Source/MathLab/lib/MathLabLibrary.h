@@ -139,7 +139,7 @@ public:
    float HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point);
    FMathLine GetIntersectionLine(FMathPlane plane, FNVector solution);
 
-   // Algebra Calculations ----------------------------------------------------------------------------
+// Algebra Calculations ----------------------------------------------------------------------------
 
    float SetOfPythagorasGetA(float b, float c);
    float SetOfPythagorasGetB(float a, float c);

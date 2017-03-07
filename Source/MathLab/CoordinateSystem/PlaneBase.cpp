@@ -9,23 +9,30 @@
 
 
 
-FMathPlane::FMathPlane() {}
-FMathPlane::FMathPlane(FVector inPosition, FVector inDirection1, FVector inDirection2) : position(inPosition), direction1(inDirection1), direction2(inDirection2)
+FMathPlane::FMathPlane() : isNormalSet(false), isDSet(false) {}
+FMathPlane::FMathPlane(FVector inPosition, FVector inDirection1, FVector inDirection2) : position(inPosition), direction1(inDirection1), direction2(inDirection2), isNormalSet(false), isDSet(false)
 {
-   normal = UKismetMathLibrary::Normal(UKismetMathLibrary::Cross_VectorVector(inDirection1, inDirection2));
+   BuildNormal();
+   BuildD();
 }
-FMathPlane::FMathPlane(FMathPoint inPoint, FVector inNormal) : normal(inNormal)
+FMathPlane::FMathPlane(FMathPoint inPoint, FVector inNormal) : normal(inNormal), isNormalSet(true), isDSet(false)
 {
    position   = FVector(0, 0, UKismetMathLibrary::Dot_VectorVector(inPoint.coordinate, inNormal) / inNormal.Z);
    direction1 = FVector(1, 0, (-1) * inNormal.X / inNormal.Z);
    direction2 = FVector(0, 1, (-1) * inNormal.Y / inNormal.Z);
+   BuildD();
 }
 
 FMathPlane &FMathPlane::operator=(const FMathPlane &Other)
 {
-   this->position = Other.position;
+   this->position   = Other.position;
    this->direction1 = Other.direction1; 
    this->direction2 = Other.direction2;
+   this->normal     = Other.normal;
+   this->d          = Other.d;
+
+   this->isNormalSet = Other.isNormalSet;
+   this->isDSet = Other.isDSet;
 
    return *this;
 }
@@ -36,6 +43,36 @@ bool FMathPlane::operator==(const FMathPlane &Other) const
 bool FMathPlane::operator!=(const FMathPlane &Other) const
 {
    return !(this == &Other);
+}
+
+void FMathPlane::BuildNormal()
+{
+   if(!isNormalSet)
+   {
+      normal = UKismetMathLibrary::Normal(UKismetMathLibrary::Cross_VectorVector(direction1, direction2));
+      isNormalSet = true;
+   }
+}
+
+void FMathPlane::BuildD()
+{
+   if(!isDSet)
+   {
+      d      = FVector::DotProduct(position, normal);
+      isDSet = true;
+   }
+}
+
+FVector FMathPlane::GetNormal()
+{
+   if(!isNormalSet) { BuildNormal(); }
+   return normal;
+}
+
+float FMathPlane::GetD()
+{
+   if(!isDSet) { BuildD(); }
+   return d;
 }
 
 FString FMathPlane::ToString()
@@ -88,8 +125,9 @@ void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inC
 
    type = GeometryType::plane;
    plane = inPlane;
+   plane.BuildNormal();
+   plane.BuildD();
    mathDataString = inPlane.ToStringShort();
-   plane.normal = UKismetMathLibrary::Normal(UKismetMathLibrary::Cross_VectorVector(plane.direction1, plane.direction2));
 
    Super::Init(inCoordinateSystem, inColor, inName);
    
@@ -105,7 +143,7 @@ void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inC
 
 FVector APlaneBase::GetNormal()
 {
-   return plane.normal;
+   return plane.GetNormal();
 }
 
 

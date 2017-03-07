@@ -60,7 +60,7 @@ FLSSolution FLinearSystem::GetSolution()
       }
       else
       {
-         solution = FLSSolution(LSSolutionType::endless, FNVector({coefficientMatrix.GetRow(CountNonZeroRows()-1)}));
+         solution = FLSSolution(LSSolutionType::endless);
       }
    }
    else

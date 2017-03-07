@@ -28,7 +28,7 @@ FString debug_ClassPrefix(FString classname)
    else if(classname.Equals(TEXT("LineBase.cpp")))         { prefix = "Line  - "; }
    else if(classname.Equals(TEXT("PlaneBase.cpp")))        { prefix = "Plane - "; }
    else if(classname.Equals(TEXT("SphereBase.cpp")))       { prefix = "Spher - "; }
-   else if(classname.Equals(TEXT("LinearEqualation.cpp"))) { prefix = "LinEq - "; }
+   else if(classname.Equals(TEXT("LinearSystem.cpp")))     { prefix = "LinSy - "; }
    else if(classname.Equals(TEXT("NVector.cpp")))          { prefix = "nVect - "; }
    else if(classname.Equals(TEXT("NMatrix.cpp")))          { prefix = "nMat  - "; }
    else if(classname.Equals(TEXT("GeometryCalc.cpp")))     { prefix = "GCalc - "; }
