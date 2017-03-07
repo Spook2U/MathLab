@@ -5,6 +5,7 @@
 
 #include "CoordinateSystemBase.h"
 #include "CVectorBase.h"
+#include "Lib/MathLabLibrary.h"
 
 
 
@@ -20,7 +21,8 @@ FMathLine &FMathLine::operator=(const FMathLine &Other)
 }
 bool FMathLine::operator==(const FMathLine &Other) const
 {
-   return (this->position == Other.position) && (this->direction == Other.direction);
+   MathLabLibrary m;
+   return ((m.MakeUnitVector(this->direction) == m.MakeUnitVector(Other.direction)) && m.IsPointInLine(*this, FMathPoint(Other.position)));
 }
 bool FMathLine::operator!=(const FMathLine &Other) const
 {

@@ -6,7 +6,7 @@
 #include "CoordinateSystemBase.h"
 #include "PointBase.h"
 #include "CVectorBase.h"
-
+#include "Lib/MathLabLibrary.h"
 
 
 FMathPlane::FMathPlane() : isNormalSet(false), isDSet(false) {}
@@ -38,7 +38,8 @@ FMathPlane &FMathPlane::operator=(const FMathPlane &Other)
 }
 bool FMathPlane::operator==(const FMathPlane &Other) const
 {
-   return (this->position == Other.position) && (this->direction1 == Other.direction1) && (this->direction2 == Other.direction2);
+   MathLabLibrary m;
+   return ((m.MakeUnitVector(this->normal) == m.MakeUnitVector(Other.normal)) && m.IsPointInPlane(*this, FMathPoint(Other.position)));
 }
 bool FMathPlane::operator!=(const FMathPlane &Other) const
 {

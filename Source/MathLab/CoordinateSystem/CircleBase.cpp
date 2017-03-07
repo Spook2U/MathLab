@@ -2,6 +2,7 @@
 
 #include "MathLab.h"
 #include "CircleBase.h"
+#include "Lib/MathLabLibrary.h"
 
 
 
@@ -18,7 +19,8 @@ FMathCircle &FMathCircle::operator=(const FMathCircle &Other)
 }
 bool FMathCircle::operator==(const FMathCircle &Other) const
 {
-   return (this->center == Other.center) && (this->normal == Other.normal) && (this->radius == Other.radius);
+   MathLabLibrary m;
+   return (this->center == Other.center) && (m.MakeUnitVector(this->normal) == m.MakeUnitVector(Other.normal)) && (this->radius == Other.radius);
 }
 bool FMathCircle::operator!=(const FMathCircle &Other) const
 {
