@@ -6,6 +6,8 @@
 #include "SphereBase.generated.h"
 
 
+// Math Sphere Structure -----------------------------------------------------------------------------------------------------------------------------
+
 
 /* Defines a mathematical sphere. */
 USTRUCT(BlueprintType)
@@ -36,8 +38,10 @@ public:
    FString ToStringShort();
 };
 
-// -------------------------------------------------------------------------------------------------
 
+// Sphere Class --------------------------------------------------------------------------------------------------------------------------------------
+
+ 
 UCLASS()
 class MATHLAB_API ASphereBase : public AGeometryBase
 {
@@ -49,39 +53,48 @@ public:
    virtual void BeginPlay() override;
 
 public:
+// Member --------------------------------------------------------------------------------------------------------------------------------------------
+
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "sphere")
    FMathSphere sphere;
 
 private:
    UStaticMeshComponent *sphereMesh;
 
-
+// Functions -----------------------------------------------------------------------------------------------------------------------------------------
 
 public:
+// Sphere Setup --------------------------------------------------------------------------------------------------------------------------------------
+
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere, FString inName = "");
+
    //Saves the StaticMeshReferences in the source file to work on
    UFUNCTION(BlueprintCallable, Category = "math lab|sphere")
    void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere, FString inName = "");
+// Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "math lab|sphere")
    virtual void Update() override;
 
-   /* Sets the MathSphere struct. */
-   UFUNCTION(BlueprintCallable, Category = "math lab|sphere")
-   ASphereBase *SetSphere(FMathSphere inSphere);
-   
    //Sets up the Components to display the sphere with the specified radus
    UFUNCTION(BlueprintCallable, Category = "math lab|sphere")
    void BuildSphere();
 
+// Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
+
+   /* Sets the MathSphere struct. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|sphere")
+   ASphereBase *SetSphere(FMathSphere inSphere);
+
+// Utility Functions----------------------------------------------------------------------------------------------------------------------------------
+
    UFUNCTION(Blueprintcallable, Category = "math lab|sphere")
    virtual FString ToString() override;
 
-protected:
+// Constructing Vector Functions ---------------------------------------------------------------------------------------------------------------------
+
    virtual void CreateCVector(LaserColors inColor) override;
 
-	
-	
 };

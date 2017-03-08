@@ -7,6 +7,10 @@
 
 
 
+// Unit Class ----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 AUnitBase::AUnitBase()
 {
    xAxis  = nullptr;
@@ -15,12 +19,25 @@ AUnitBase::AUnitBase()
    yLaser = nullptr;
 }
 
+// Unreal Events -------------------------------------------------------------------------------------------------------------------------------------
+
 void AUnitBase::BeginPlay() 
 { 
    Super::BeginPlay();
 }
 
+// Unit Setup ----------------------------------------------------------------------------------------------------------------------------------------
 
+void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inCoordinate, FString inName)
+{
+   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
+
+   type = GeometryType::unit;
+   coordinate = inCoordinate;
+
+   Super::Init(inCoordinateSystem, inColor, inName);
+   InitText(inName);
+}
 
 void AUnitBase::SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText)
 {
@@ -46,18 +63,14 @@ void AUnitBase::SetComponents(TArray<UStaticMeshComponent *> components, UTextRe
    nameRender = inText;
 }
 
-void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inCoordinate, FString inName)
+void AUnitBase::OrientateToAxis(UStaticMeshComponent *axis)
 {
-   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
-
-   type = GeometryType::unit;
-   coordinate = inCoordinate;
-
-   Super::Init(inCoordinateSystem, inColor, inName);
-   InitText(inName);
+   float thickness = coordinateSystem->axisSize*coordinateSystem->unitSizeFactor;
+   SetActorTransform(FTransform(axis->GetComponentRotation(), GetActorLocation(), FVector(thickness, thickness, 0.1f)));
+   nameRender->SetWorldScale3D(FVector(1.f, 1.f, 1.f));
 }
 
-
+// Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
 void AUnitBase::Update()
 {
@@ -65,13 +78,6 @@ void AUnitBase::Update()
    Move(coordinate);
    ScaleUnitLaser();
 }
-
-void AUnitBase::SetName(FString inName)
-{
-   nameRender->SetText(BuildText(inName));
-}
-
-
 
 void AUnitBase::ScaleUnitLaser()
 {
@@ -85,16 +91,18 @@ void AUnitBase::ScaleUnitLaser_AtAxis(UStaticMeshComponent *axis, UStaticMeshCom
    laser->SetWorldScale3D(FVector(axisScale.X*laserSize, axisScale.Y*laserSize, coordinateSystem->axisLength*2));
 }
 
+// Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
 
+// Name Functions-------------------------------------------------------------------------------------------------------------------------------------
 
-void AUnitBase::OrientateToAxis(UStaticMeshComponent *axis)
+void AUnitBase::SetName(FString inName)
 {
-   float thickness = coordinateSystem->axisSize*coordinateSystem->unitSizeFactor;
-   SetActorTransform(FTransform(axis->GetComponentRotation(), GetActorLocation(), FVector(thickness, thickness, 0.1f)));
-   nameRender->SetWorldScale3D(FVector(1.f, 1.f, 1.f));
+   nameRender->SetText(BuildText(inName));
 }
 
-// -------------------------------------------------------------------------------------------------
+// Utility Functions----------------------------------------------------------------------------------------------------------------------------------
+
+// Constructing Vector Functions ---------------------------------------------------------------------------------------------------------------------
 
 void AUnitBase::CreateCVector(LaserColors inColor)
 {}

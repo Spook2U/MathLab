@@ -8,6 +8,8 @@
 struct FMathPoint;
 
 
+// Plane Mode ----------------------------------------------------------------------------------------------------------------------------------------
+
 
 UENUM(BlueprintType)
 enum class PlaneMode : uint8
@@ -15,6 +17,8 @@ enum class PlaneMode : uint8
    plane   UMETA(DisplayName = "Plane")
 };
 
+
+// Math Plane Structure ------------------------------------------------------------------------------------------------------------------------------
 
 
 /* Defines a mathematical plane. */
@@ -72,7 +76,9 @@ private:
 
 };
 
-// -------------------------------------------------------------------------------------------------
+
+// Plane Class ---------------------------------------------------------------------------------------------------------------------------------------
+
 
 UCLASS()
 class MATHLAB_API APlaneBase : public AGeometryBase
@@ -85,6 +91,8 @@ public:
    virtual void BeginPlay() override;
 
 public:
+// Member --------------------------------------------------------------------------------------------------------------------------------------------
+
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "plane")
    FMathPlane plane;
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "plane")
@@ -93,37 +101,44 @@ public:
 private:
    UStaticMeshComponent *planeMesh;
 
-
+// Functions -----------------------------------------------------------------------------------------------------------------------------------------
 
 public:
+// Plane Setup ---------------------------------------------------------------------------------------------------------------------------------------
+
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FString inName = "");
+
    //Saves the StaticMeshReferences in the source file to work on
    UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FString inName = "");
-
-   /* Returns the unified normal Vector of the plane. */
-   UFUNCTION(BlueprintPure, Category = "math lab|plane")
-   FVector GetNormal();
+// Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    virtual void Update() override;
 
-   /* Sets the MathPlane struct. */
-   UFUNCTION(BlueprintCallable, Category = "math lab|plane")
-   APlaneBase *SetPlane(FMathPlane inPlane);
-
    //Sets up the Components to display the plane in the selected mode
    UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    void BuildPlane();
 
+// Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
+
+   /* Sets the MathPlane struct. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|plane")
+   APlaneBase *SetPlane(FMathPlane inPlane);
+
+   /* Returns the unified normal Vector of the plane. */
+   UFUNCTION(BlueprintPure, Category = "math lab|plane")
+   FVector GetNormal();
+
+// Utility Functions----------------------------------------------------------------------------------------------------------------------------------
+
    UFUNCTION(Blueprintcallable, Category = "math lab|plane")
    virtual FString ToString() override;
 
-protected:
-   virtual void CreateCVector(LaserColors inColor) override;
+// Constructing Vector Functions ---------------------------------------------------------------------------------------------------------------------
 
-	
+   virtual void CreateCVector(LaserColors inColor) override;
 	
 };

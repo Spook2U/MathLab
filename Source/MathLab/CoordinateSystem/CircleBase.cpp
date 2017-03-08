@@ -8,6 +8,8 @@
 
 
 
+// Math Circle Structure -----------------------------------------------------------------------------------------------------------------------------
+
 FMathCircle::FMathCircle() {}
 FMathCircle::FMathCircle(FVector inCenter, FVector inNormal, float inRadius)   : center(inCenter), normal(inNormal), radius(inRadius) {}
 
@@ -38,8 +40,25 @@ FString FMathCircle::ToStringShort()
    return FString::Printf(TEXT("(%s, %s, %s), R:%s)"), *FString::SanitizeFloat(center.X),  *FString::SanitizeFloat(center.Y),  *FString::SanitizeFloat(center.Z), *FString::SanitizeFloat(radius));
 }
 
-// -------------------------------------------------------------------------------------------------
 
+
+// Circle Class --------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+// Circle Setup --------------------------------------------------------------------------------------------------------------------------------------
+
+void ACircleBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle, FString inName)
+{
+   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
+
+   type = GeometryType::circle;
+   circle = inCircle;
+   mathDataString = inCircle.ToStringShort();
+
+   Super::Init(inCoordinateSystem, inColor, inName);
+   InitText(inName);
+}
 
 void ACircleBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
 {
@@ -60,36 +79,13 @@ void ACircleBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextR
    nameRender = inText;
 }
 
-void ACircleBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle, FString inName)
-{
-   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
-
-   type = GeometryType::circle;
-   circle = inCircle;
-   mathDataString = inCircle.ToStringShort();
-
-   Super::Init(inCoordinateSystem, inColor, inName);
-   InitText(inName);
-}
+// Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
 void ACircleBase::Update()
 {
    Super::Update();
    Move(circle.center);
    BuildCircle();
-}
-
-ACircleBase *ACircleBase::SetCircle(FMathCircle inCircle)
-{
-   circle = inCircle;
-   mathDataString = inCircle.ToStringShort();
-
-   //SetCvector
-   //constVectors[0]->SetCVector(...);
-
-   Update();
-
-   return this;
 }
 
 void ACircleBase::BuildCircle()
@@ -116,13 +112,29 @@ void ACircleBase::BuildCircle()
    circleMeshBorder->SetScalarParameterValueOnMaterials(FName(TEXT("Substraction Radius")), 0.5 - sizeFactor);
 }
 
+// Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
+
+ACircleBase *ACircleBase::SetCircle(FMathCircle inCircle)
+{
+   circle = inCircle;
+   mathDataString = inCircle.ToStringShort();
+
+   //SetCvector
+   //constVectors[0]->SetCVector(...);
+
+   Update();
+
+   return this;
+}
+
+// Utility Functions----------------------------------------------------------------------------------------------------------------------------------
+
 FString ACircleBase::ToString()
 {
    return FString::Printf(TEXT("%s; %s"), *Super::ToString(), *circle.ToString());
 }
 
-// Protected ----------------------------------------------------------------------------------------
+// Constructing Vector Functions ---------------------------------------------------------------------------------------------------------------------
 
 void ACircleBase::CreateCVector(LaserColors inColor)
-{
-}
+{}

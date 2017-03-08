@@ -8,6 +8,8 @@
 
 
 
+// Math Point Structure ------------------------------------------------------------------------------------------------------------------------------
+
 FMathPoint::FMathPoint() {}
 FMathPoint::FMathPoint(FVector inCoordinate) : coordinate(inCoordinate) {}
 
@@ -36,7 +38,10 @@ FString FMathPoint::ToStringShort()
    return FString::Printf(TEXT("(%s, %s, %s)"), *FString::SanitizeFloat(coordinate.X), *FString::SanitizeFloat(coordinate.Y), *FString::SanitizeFloat(coordinate.Z));
 }
 
-// -------------------------------------------------------------------------------------------------
+
+
+// Point Class ---------------------------------------------------------------------------------------------------------------------------------------
+
 
 APointBase::APointBase()
 {
@@ -44,35 +49,19 @@ APointBase::APointBase()
    pointMesh = nullptr;
 }
 
+// Unreal Events -------------------------------------------------------------------------------------------------------------------------------------
+
 void APointBase::BeginPlay() 
 { 
    Super::BeginPlay(); 
 }
 
-
-
-void APointBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
-{
-   for(UStaticMeshComponent *c : components)
-   {
-      MLD_PTR_CHECK(c); if(!c) continue;
-      if(c->GetName().Equals("PointMesh")) { pointMesh = c; }
-   }
-   
-   MLD_PTR_CHECK(pointMesh); if(!pointMesh) return;
-   InitScalePoint(pointMesh);
-   AddLaserComponent(pointMesh);
-
-   if(!MLD_PTR_CHECK(inText)) return;
-   nameRender = inText;
-}
-
-
+// Point Setup ---------------------------------------------------------------------------------------------------------------------------------------
 
 void APointBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPoint inPoint, FString inName)
 {  
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
-  
+
    type = GeometryType::point;
    point = inPoint;
    mathDataString = inPoint.ToStringShort();
@@ -81,13 +70,31 @@ void APointBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inC
    InitText(inName);
 }
 
+void APointBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
+{
+   for(UStaticMeshComponent *c : components)
+   {
+      MLD_PTR_CHECK(c); if(!c) continue;
+      if(c->GetName().Equals("PointMesh")) { pointMesh = c; }
+   }
 
+   MLD_PTR_CHECK(pointMesh); if(!pointMesh) return;
+   InitScalePoint(pointMesh);
+   AddLaserComponent(pointMesh);
+
+   if(!MLD_PTR_CHECK(inText)) return;
+   nameRender = inText;
+}
+
+// Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
 void APointBase::Update()
 {
    Super::Update();
    Move(point.coordinate);
 }
+
+// Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
 
 APointBase *APointBase::SetPoint(FMathPoint inPoint)
 {
@@ -101,14 +108,14 @@ APointBase *APointBase::SetPoint(FMathPoint inPoint)
    return this;
 }
 
+// Utility Functions----------------------------------------------------------------------------------------------------------------------------------
+
 FString APointBase::ToString()
 {
    return FString::Printf(TEXT("%s; %s"), *Super::ToString(), *point.ToString());
 }
 
-
-
-// Protected ----------------------------------------------------------------------------------------
+// Constructing Vector Functions ---------------------------------------------------------------------------------------------------------------------
 
 void APointBase::CreateCVector(LaserColors inColor)
 {

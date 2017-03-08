@@ -7,6 +7,10 @@
 
 
 
+// Constructing Vector Class -------------------------------------------------------------------------------------------------------------------------
+
+
+
 ACVectorBase::ACVectorBase()
 {
    a = FVector::ZeroVector;
@@ -17,7 +21,30 @@ ACVectorBase::ACVectorBase()
    arrowheadMesh = nullptr;
 }
 
+// Constructing Vector Setup--------------------------------------------------------------------------------------------------------------------------
 
+void ACVectorBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, CVectorMode inMode, FString inName)
+{
+   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
+
+   type = GeometryType::cVector;
+   SetCVector(inA, inB);
+   mode = inMode;
+
+   switch(inMode)
+   {
+      case CVectorMode::point:       mathDataString = FString::Printf(TEXT("(%s, %s, %s)"),               *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z)); break;
+      case CVectorMode::segment:     mathDataString = FString::Printf(TEXT("(%s, %s, %s), (%s, %s, %s)"), *FString::SanitizeFloat(a.X), *FString::SanitizeFloat(a.Y), *FString::SanitizeFloat(a.Z), 
+                                                                      *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z)); break;
+      case CVectorMode::vector:      
+      case CVectorMode::vectorPoint: mathDataString = FString::Printf(TEXT("(%s, %s, %s)"),               *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z)); break;
+      case CVectorMode::general:     
+      default:                       break;
+   }
+
+   Super::Init(inCoordinateSystem, inColor, inName);
+   InitText(inName);
+}
 
 void ACVectorBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
 {
@@ -28,7 +55,7 @@ void ACVectorBase::SetComponents(TArray<UStaticMeshComponent*> components, UText
       if(c->GetName().Equals("LineMesh"))      { lineMesh      = c; }
       if(c->GetName().Equals("ArrowheadMesh")) { arrowheadMesh = c; }
    }
-   
+
    MLD_PTR_CHECK(pointAMesh);
    MLD_PTR_CHECK(pointBMesh);
    MLD_PTR_CHECK(lineMesh);
@@ -49,60 +76,12 @@ void ACVectorBase::SetComponents(TArray<UStaticMeshComponent*> components, UText
    nameRender = inText;
 }
 
-
-
-void ACVectorBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, CVectorMode inMode, FString inName)
-{
-   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
-
-   type = GeometryType::cVector;
-   SetCVector(inA, inB);
-   mode = inMode;
-   
-   switch(inMode)
-   {
-      case CVectorMode::point:       mathDataString = FString::Printf(TEXT("(%s, %s, %s)"),               *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z)); break;
-      case CVectorMode::segment:     mathDataString = FString::Printf(TEXT("(%s, %s, %s), (%s, %s, %s)"), *FString::SanitizeFloat(a.X), *FString::SanitizeFloat(a.Y), *FString::SanitizeFloat(a.Z), 
-                                                                                                          *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z)); break;
-      case CVectorMode::vector:      
-      case CVectorMode::vectorPoint: mathDataString = FString::Printf(TEXT("(%s, %s, %s)"),               *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z)); break;
-      case CVectorMode::general:     
-      default:                       break;
-   }
-   
-   Super::Init(inCoordinateSystem, inColor, inName);
-   InitText(inName);
-}
-
-
-
-void ACVectorBase::SetVisibilityPointA(bool visibility)    { pointAMesh->SetVisibility(visibility);    }
-void ACVectorBase::SetVisibilityPointB(bool visibility)    { pointBMesh->SetVisibility(visibility);    }
-void ACVectorBase::SetVisibilityLine(bool visibility)      { lineMesh->SetVisibility(visibility);      }
-void ACVectorBase::SetVisibilityArrowhead(bool visibility) { arrowheadMesh->SetVisibility(visibility); }
-
-void ACVectorBase::SetVisibilityForAll(bool visibility)
-{
-   SetVisibilityPointA(visibility);
-   SetVisibilityPointB(visibility);
-   SetVisibilityLine(visibility);
-   SetVisibilityArrowhead(visibility);
-}
-
-void ACVectorBase::SetVisibility(bool showPointA, bool showPointB, bool showLine, bool showArrowhead)
-{
-   SetVisibilityPointA(showPointA);
-   SetVisibilityPointB(showPointB);
-   SetVisibilityLine(showLine);
-   SetVisibilityArrowhead(showArrowhead);
-}
-
-
+// Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
 void ACVectorBase::Update()
 {
    Super::Update();
-   
+
    Move(a);
    BuildCVector();
    MovePointB();
@@ -126,16 +105,39 @@ void ACVectorBase::MovePointB()
    else                             { pointBMesh->SetWorldLocation(CoordinateToLocation(b + a)); }
 }
 
+// Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
+
+void ACVectorBase::SetVisibilityPointA(bool visibility)    { pointAMesh->SetVisibility(visibility);    }
+void ACVectorBase::SetVisibilityPointB(bool visibility)    { pointBMesh->SetVisibility(visibility);    }
+void ACVectorBase::SetVisibilityLine(bool visibility)      { lineMesh->SetVisibility(visibility);      }
+void ACVectorBase::SetVisibilityArrowhead(bool visibility) { arrowheadMesh->SetVisibility(visibility); }
+
+void ACVectorBase::SetVisibilityForAll(bool visibility)
+{
+   SetVisibilityPointA(visibility);
+   SetVisibilityPointB(visibility);
+   SetVisibilityLine(visibility);
+   SetVisibilityArrowhead(visibility);
+}
+
+void ACVectorBase::SetVisibility(bool showPointA, bool showPointB, bool showLine, bool showArrowhead)
+{
+   SetVisibilityPointA(showPointA);
+   SetVisibilityPointB(showPointB);
+   SetVisibilityLine(showLine);
+   SetVisibilityArrowhead(showArrowhead);
+}
+
 void ACVectorBase::SetCVector(FVector inA, FVector inB)
 {
    a = inA;
    b = inB;
 }
 
+// Name Functions-------------------------------------------------------------------------------------------------------------------------------------
+
 void ACVectorBase::ShowText()
 {
    ShowName(coordinateSystem->showCVectorName);
    ShowMathData(coordinateSystem->showCVectorMathData);
 }
-
-

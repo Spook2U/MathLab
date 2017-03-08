@@ -8,6 +8,8 @@
 
 
 
+// Math Sphere Structure -----------------------------------------------------------------------------------------------------------------------------
+
 FMathSphere::FMathSphere() {}
 FMathSphere::FMathSphere(FVector inCenter, float inRadius) : center(inCenter), radius(inRadius) {}
 
@@ -36,7 +38,11 @@ FString FMathSphere::ToStringShort()
    return FString::Printf(TEXT("(%s, %s, %s), R:%s)"), *FString::SanitizeFloat(center.X),  *FString::SanitizeFloat(center.Y),  *FString::SanitizeFloat(center.Z), *FString::SanitizeFloat(radius));
 }
 
-// -------------------------------------------------------------------------------------------------
+
+
+// Sphere Class --------------------------------------------------------------------------------------------------------------------------------------
+
+
 
 ASphereBase::ASphereBase()
 {
@@ -44,14 +50,26 @@ ASphereBase::ASphereBase()
    sphereMesh = nullptr;
 }
 
-
+// Unreal Events -------------------------------------------------------------------------------------------------------------------------------------
 
 void ASphereBase::BeginPlay()
 {
    Super::BeginPlay();
 }
 
+// Sphere Setup --------------------------------------------------------------------------------------------------------------------------------------
 
+void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere, FString inName)
+{
+   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
+
+   type = GeometryType::sphere;
+   sphere = inSphere;
+   mathDataString = inSphere.ToStringShort();
+   Super::Init(inCoordinateSystem, inColor, inName);
+   CreateCVector(inColor);
+   InitText(inName);
+}
 
 void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
 {
@@ -68,21 +86,7 @@ void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextR
    nameRender = inText;
 }
 
-
-
-void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere, FString inName)
-{
-   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
-
-   type = GeometryType::sphere;
-   sphere = inSphere;
-   mathDataString = inSphere.ToStringShort();
-   Super::Init(inCoordinateSystem, inColor, inName);
-   CreateCVector(inColor);
-   InitText(inName);
-}
-
-
+// Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
 void ASphereBase::Update()
 {
@@ -90,6 +94,13 @@ void ASphereBase::Update()
    Move(sphere.center);
    BuildSphere();
 }
+
+void ASphereBase::BuildSphere()
+{
+   ScaleSphere(sphereMesh, sphere.radius);
+}
+
+// Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
 
 ASphereBase *ASphereBase::SetSphere(FMathSphere inSphere)
 {
@@ -104,19 +115,14 @@ ASphereBase *ASphereBase::SetSphere(FMathSphere inSphere)
    return this;
 }
 
-
-
-void ASphereBase::BuildSphere()
-{
-   ScaleSphere(sphereMesh, sphere.radius);
-}
+// Utility Functions----------------------------------------------------------------------------------------------------------------------------------
 
 FString ASphereBase::ToString()
 {
    return FString::Printf(TEXT("%s; %s"), *Super::ToString(), *sphere.ToString());
 }
 
-// Protected ----------------------------------------------------------------------------------------
+// Constructing Vector Functions ---------------------------------------------------------------------------------------------------------------------
 
 void ASphereBase::CreateCVector(LaserColors inColor)
 {

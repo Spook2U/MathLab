@@ -6,6 +6,8 @@
 #include "PointBase.generated.h"
 
 
+// Math Point Structure ------------------------------------------------------------------------------------------------------------------------------
+
 
 /* Defines a mathematical Point. */
 USTRUCT(BlueprintType)
@@ -34,7 +36,9 @@ public:
    FString ToStringShort();
 };
 
-// -------------------------------------------------------------------------------------------------
+
+// Point Class ---------------------------------------------------------------------------------------------------------------------------------------
+
 
 UCLASS()
 class MATHLAB_API APointBase : public AGeometryBase
@@ -47,38 +51,44 @@ public:
    virtual void BeginPlay() override;
 
 public:
+// Member --------------------------------------------------------------------------------------------------------------------------------------------
+
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "point")
    FMathPoint point;
 
 private:
    UStaticMeshComponent *pointMesh;
    
-
+// Functions -----------------------------------------------------------------------------------------------------------------------------------------
 
 public:
+// Point Setup ---------------------------------------------------------------------------------------------------------------------------------------
+
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPoint inPoint, FString inName = "");
+
    //Saves the StaticMeshReferences in the source file to work on
    UFUNCTION(BlueprintCallable, Category = "math lab|point")
    void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPoint inPoint, FString inName = "");
+// Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
    //Called, when the objects need to update the position or other vales
    UFUNCTION(BlueprintCallable, Category = "math lab|point")
    virtual void Update() override;
 
+// Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
+
    /* Sets the MathPoint struct. */
    UFUNCTION(BlueprintCallable, Category = "math lab|point")
    APointBase *SetPoint(FMathPoint inPoint);
 
+// Utility Functions----------------------------------------------------------------------------------------------------------------------------------
+
    UFUNCTION(Blueprintcallable, Category = "math lab|point")
    virtual FString ToString() override;
 
+// Constructing Vector Functions ---------------------------------------------------------------------------------------------------------------------
 
-   
-protected:
    virtual void CreateCVector(LaserColors inColor) override;	
-
-	
-	
 	
 };

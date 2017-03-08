@@ -6,6 +6,8 @@
 #include "CVectorBase.generated.h"
 
 
+// Constructing Vector Mode --------------------------------------------------------------------------------------------------------------------------
+
 
 UENUM(BlueprintType)
 enum class CVectorMode : uint8
@@ -18,6 +20,8 @@ enum class CVectorMode : uint8
 };
 
 
+// Constructing Vector Class -------------------------------------------------------------------------------------------------------------------------
+
 
 UCLASS()
 class MATHLAB_API ACVectorBase : public AGeometryBase
@@ -28,6 +32,8 @@ public:
    ACVectorBase();
 
 public:
+// Member --------------------------------------------------------------------------------------------------------------------------------------------
+
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "constructingVector")
    FVector a;
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "constructingVector")
@@ -41,27 +47,17 @@ private:
    UStaticMeshComponent *lineMesh;
    UStaticMeshComponent *arrowheadMesh;
 
-// -------------------------------------------------------------------------------------------------
+// Functions -----------------------------------------------------------------------------------------------------------------------------------------
 
 public:
-   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector")
-   void SetComponents(TArray<UStaticMeshComponent *> laserComponents, UTextRenderComponent *inText);
+// Constructing Vector Setup--------------------------------------------------------------------------------------------------------------------------
 
    void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, CVectorMode inMode = CVectorMode::general, FString inName = "");
 
-   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector|visibility")
-   void SetVisibilityPointA(bool visibility);
-   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector|visibility")
-   void SetVisibilityPointB(bool visibility);
-   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector|visibility")
-   void SetVisibilityLine(bool visibility);
-   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector|visibility")
-   void SetVisibilityArrowhead(bool visibility);
-   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector|visibility")
-   void SetVisibilityForAll(bool visibility);
+   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector")
+   void SetComponents(TArray<UStaticMeshComponent *> laserComponents, UTextRenderComponent *inText);
 
-   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector|visibility")
-   void SetVisibility(bool showPointA, bool showPointB, bool showLine, bool showArrowhead);
+// Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
    /**Called, when the objects need to update the position or other vales*/
    UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector")
@@ -75,10 +71,27 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector")
    void MovePointB();
 
+// Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
+
+   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector|visibility")
+   void SetVisibilityPointA(bool visibility);
+   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector|visibility")
+   void SetVisibilityPointB(bool visibility);
+   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector|visibility")
+   void SetVisibilityLine(bool visibility);
+   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector|visibility")
+   void SetVisibilityArrowhead(bool visibility);
+   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector|visibility")
+   void SetVisibilityForAll(bool visibility);
+   UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector|visibility")
+   void SetVisibility(bool showPointA, bool showPointB, bool showLine, bool showArrowhead);
+
    /* Sets nwe values to the constructing vector. */
    UFUNCTION(Blueprintcallable, Category = "math lab|constructingVector")
    void SetCVector(FVector inA, FVector inB);
 
-protected:
+// Name Functions-------------------------------------------------------------------------------------------------------------------------------------
+
    virtual void ShowText() override;
+
 };

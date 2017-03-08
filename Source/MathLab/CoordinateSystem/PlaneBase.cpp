@@ -9,6 +9,9 @@
 #include "Lib/MathLabLibrary.h"
 
 
+
+// Math Plane Structure ------------------------------------------------------------------------------------------------------------------------------
+
 FMathPlane::FMathPlane() : isNormalSet(false), isDSet(false) {}
 FMathPlane::FMathPlane(FVector inPosition, FVector inDirection1, FVector inDirection2) : position(inPosition), direction1(inDirection1), direction2(inDirection2), isNormalSet(false), isDSet(false)
 {
@@ -114,7 +117,11 @@ FString FMathPlane::ToStringShort()
                                                                             *FString::SanitizeFloat(direction2.X), *FString::SanitizeFloat(direction2.Y), *FString::SanitizeFloat(direction2.Z));
 }
 
-// -------------------------------------------------------------------------------------------------
+
+
+// Plane Class ---------------------------------------------------------------------------------------------------------------------------------------
+
+
 
 APlaneBase::APlaneBase()
 {
@@ -122,12 +129,36 @@ APlaneBase::APlaneBase()
    planeMesh = nullptr;
 }
 
+// Unreal Events -------------------------------------------------------------------------------------------------------------------------------------
+
 void APlaneBase::BeginPlay()
 {
    Super::BeginPlay();
 }
 
+// Plane Setup ---------------------------------------------------------------------------------------------------------------------------------------
 
+void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FString inName)
+{
+   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
+
+   type = GeometryType::plane;
+   plane = inPlane;
+   plane.BuildNormal();
+   plane.BuildD();
+   mathDataString = inPlane.ToStringShort();
+
+   Super::Init(inCoordinateSystem, inColor, inName);
+
+   mode = inMode;
+
+   switch(inMode)
+   {
+      case PlaneMode::plane: CreateCVector(inColor); break;
+   }
+
+   InitText(inName);
+}
 
 void APlaneBase::SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText)
 {
@@ -145,36 +176,7 @@ void APlaneBase::SetComponents(TArray<UStaticMeshComponent *> components, UTextR
    nameRender = inText;
 }
 
-
-
-void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FString inName)
-{
-   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
-
-   type = GeometryType::plane;
-   plane = inPlane;
-   plane.BuildNormal();
-   plane.BuildD();
-   mathDataString = inPlane.ToStringShort();
-
-   Super::Init(inCoordinateSystem, inColor, inName);
-   
-   mode = inMode;
-
-   switch(inMode)
-   {
-      case PlaneMode::plane: CreateCVector(inColor); break;
-   }
-
-   InitText(inName);
-}
-
-FVector APlaneBase::GetNormal()
-{
-   return plane.GetNormal();
-}
-
-
+// Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
 void APlaneBase::Update()
 {
@@ -183,6 +185,17 @@ void APlaneBase::Update()
    BuildPlane();
 
 }
+
+void APlaneBase::BuildPlane()
+{
+   if(mode == PlaneMode::plane)
+   {
+      RotateLaserLookAt(plane.position, plane.position + plane.normal);
+      SetLaserScale(planeMesh, FVector(coordinateSystem->MaxVisibleLength(), coordinateSystem->MaxVisibleLength(), NULL));
+   }
+}
+
+// Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
 
 APlaneBase *APlaneBase::SetPlane(FMathPlane inPlane)
 {
@@ -199,23 +212,19 @@ APlaneBase *APlaneBase::SetPlane(FMathPlane inPlane)
    return this;
 }
 
-
-
-void APlaneBase::BuildPlane()
+FVector APlaneBase::GetNormal()
 {
-   if(mode == PlaneMode::plane)
-   {
-      RotateLaserLookAt(plane.position, plane.position + plane.normal);
-      SetLaserScale(planeMesh, FVector(coordinateSystem->MaxVisibleLength(), coordinateSystem->MaxVisibleLength(), NULL));
-   }
+   return plane.GetNormal();
 }
+
+// Utility Functions----------------------------------------------------------------------------------------------------------------------------------
 
 FString APlaneBase::ToString()
 {
    return FString::Printf(TEXT("%s; %s"), *Super::ToString(), *plane.ToString());
 }
 
-// Protected ----------------------------------------------------------------------------------------
+// Constructing Vector Functions ---------------------------------------------------------------------------------------------------------------------
 
 void APlaneBase::CreateCVector(LaserColors inColor)
 {

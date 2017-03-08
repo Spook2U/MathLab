@@ -11,6 +11,7 @@
 class ACoordinateSystemBase;
 class ACVectorBase;
 
+
 // Enum Types-----------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -34,6 +35,7 @@ enum class Direction : uint8
    up
 };
 
+
 // ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -50,6 +52,7 @@ public:
 
 public:
 // Member --------------------------------------------------------------------------------------------------------------------------------------------
+
    /* Holds a reference to the coordinatesystem in wich it's created. */
    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "geometry")
    ACoordinateSystemBase *coordinateSystem;
@@ -83,7 +86,7 @@ protected:
    bool showName;
    bool showMathData;
 
-// ---------------------------------------------------------------------------------------------------------------------------------------------------
+// Function ------------------------------------------------------------------------------------------------------------------------------------------
 
 public:
 
@@ -92,6 +95,9 @@ public:
    void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FString inName = "");
    /* Add the StaticMeshComponent in the list of components handled as laser. */
    void AddLaserComponent(UStaticMeshComponent *laser);
+
+// Update Functions ----------------------------------------------------------------------------------------------------------------------------------
+
    /* Called, when the objects need to update the position or other vales. */
    virtual void Update();
    /* Updates the visible area of the Material. */

@@ -6,6 +6,8 @@
 #include "UnitBase.generated.h"
 
 
+// Unit Class ----------------------------------------------------------------------------------------------------------------------------------------
+
 
 UCLASS()
 class MATHLAB_API AUnitBase : public AGeometryBase
@@ -17,6 +19,9 @@ public:
 
    virtual void BeginPlay() override;
 
+public:
+// Member --------------------------------------------------------------------------------------------------------------------------------------------
+
    FVector coordinate;
 
 private:
@@ -25,33 +30,38 @@ private:
    UStaticMeshComponent *xLaser;
    UStaticMeshComponent *yLaser;
 
-// -------------------------------------------------------------------------------------------------
+// Functions -----------------------------------------------------------------------------------------------------------------------------------------
 
 public:
+// Unit Setup ----------------------------------------------------------------------------------------------------------------------------------------
+
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inCoordinate, FString inName = "");
+
    //Saves the StaticMeshReferences in the source file to work on
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inCoordinate, FString inName = "");
+   void OrientateToAxis(UStaticMeshComponent *axis);
+
+// Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
    //Called, when the objects need to update the position or other values
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    virtual void Update() override;
 
-   // Sets the name of the object
-   UFUNCTION(BlueprintCallable, Category = "math lab|unit")
-   virtual void SetName(FString inName);
-
    //Scales the laser of the Unit to have the same length as the Axis
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    void ScaleUnitLaser();
 
-   void OrientateToAxis(UStaticMeshComponent *axis);
-
-
-
-protected:
    void ScaleUnitLaser_AtAxis(UStaticMeshComponent *laser, UStaticMeshComponent *axis, float laserSize);
+
+// Name Functions-------------------------------------------------------------------------------------------------------------------------------------
+
+   // Sets the name of the object
+   UFUNCTION(BlueprintCallable, Category = "math lab|unit")
+   virtual void SetName(FString inName);
+
+// Constructing Vector Functions ---------------------------------------------------------------------------------------------------------------------
 
    virtual void CreateCVector(LaserColors inColor) override;
 

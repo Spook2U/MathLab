@@ -6,6 +6,8 @@
 #include "LineBase.generated.h"
 
 
+// Line Mode -----------------------------------------------------------------------------------------------------------------------------------------
+
 
 UENUM(BlueprintType)
 enum class LineMode : uint8
@@ -15,6 +17,8 @@ enum class LineMode : uint8
    vector  UMETA(DisplayName = "Vector")
 };
 
+
+// Math Line Structure -------------------------------------------------------------------------------------------------------------------------------
 
 
 /* Defines a mathematical line. */
@@ -46,7 +50,7 @@ public:
    FString ToStringShort();
 };
 
-// -------------------------------------------------------------------------------------------------
+// Line Class ----------------------------------------------------------------------------------------------------------------------------------------
 
 UCLASS()
 class MATHLAB_API ALineBase : public AGeometryBase
@@ -59,6 +63,8 @@ public:
    virtual void BeginPlay() override;
 
 public:
+// Member --------------------------------------------------------------------------------------------------------------------------------------------
+
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "line")
    FMathLine line;
    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "line")
@@ -68,30 +74,40 @@ private:
    UStaticMeshComponent *lineMesh;
    UStaticMeshComponent *arrowheadMesh;
 
-
+// Functions -----------------------------------------------------------------------------------------------------------------------------------------
 
 public:
-   /**Saves the StaticMeshReferences in the source file to work on*/
+// Line Setup ----------------------------------------------------------------------------------------------------------------------------------------
+
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode, FString inName = "");
+
+   /* Saves the StaticMeshReferences in the source file to work on*/
    UFUNCTION(BlueprintCallable, Category = "math lab|line")
    void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode, FString inName = "");
+// Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
    /**Called, when the objects need to update the position or other vales*/
    UFUNCTION(BlueprintCallable, Category = "math lab|line")
    virtual void Update() override;
 
+   /**Sets up the Components to display the line in the selected mode*/
+   UFUNCTION(BlueprintCallable, Category = "math lab|line")
+   void BuildLine();
+
+// Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
+
    /* Sets the MathLine struct. */
    UFUNCTION(BlueprintCallable, Category = "math lab|line")
    ALineBase *SetLine(FMathLine inLine);
 
-   /**Sets up the Components to display the line in the selected mode*/
-   UFUNCTION(BlueprintCallable, Category = "math lab|line")
-   void BuildCVector();
+// Utility Functions----------------------------------------------------------------------------------------------------------------------------------
 
    UFUNCTION(Blueprintcallable, Category = "math lab|line")
    virtual FString ToString() override;
 
-protected:
+// Constructing Vector Functions ---------------------------------------------------------------------------------------------------------------------
+
    virtual void CreateCVector(LaserColors inColor) override;
+
 };
