@@ -68,6 +68,10 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|sphere")
    virtual void Update() override;
 
+   /* Sets the MathSphere struct. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|sphere")
+   ASphereBase *SetSphere(FMathSphere inSphere);
+   
    //Sets up the Components to display the sphere with the specified radus
    UFUNCTION(BlueprintCallable, Category = "math lab|sphere")
    void BuildSphere();

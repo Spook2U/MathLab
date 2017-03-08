@@ -75,6 +75,10 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector")
    void MovePointB();
 
+   /* Sets nwe values to the constructing vector. */
+   UFUNCTION(Blueprintcallable, Category = "math lab|constructingVector")
+   void SetCVector(FVector inA, FVector inB);
+
 protected:
    virtual void ShowText() override;
 };

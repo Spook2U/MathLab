@@ -86,14 +86,18 @@ void APointBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inC
 void APointBase::Update()
 {
    Super::Update();
-   SetPosition(point.coordinate);
+   Move(point.coordinate);
 }
 
 APointBase *APointBase::SetPoint(FMathPoint inPoint)
 {
    point = inPoint;
    mathDataString = inPoint.ToStringShort();
+
+   constVectors[0]->SetCVector(FVector::ZeroVector, point.coordinate);
+
    Update();
+
    return this;
 }
 

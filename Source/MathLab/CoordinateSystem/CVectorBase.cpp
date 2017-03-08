@@ -56,8 +56,7 @@ void ACVectorBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors i
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
    type = GeometryType::cVector;
-   a = inA;
-   b = inB;
+   SetCVector(inA, inB);
    mode = inMode;
    
    switch(inMode)
@@ -104,7 +103,7 @@ void ACVectorBase::Update()
 {
    Super::Update();
    
-   SetPosition(a);
+   Move(a);
    BuildCVector();
    MovePointB();
 }
@@ -125,6 +124,12 @@ void ACVectorBase::MovePointB()
 {
    if(mode == CVectorMode::segment) { pointBMesh->SetWorldLocation(CoordinateToLocation(b)); }
    else                             { pointBMesh->SetWorldLocation(CoordinateToLocation(b + a)); }
+}
+
+void ACVectorBase::SetCVector(FVector inA, FVector inB)
+{
+   a = inA;
+   b = inB;
 }
 
 void ACVectorBase::ShowText()

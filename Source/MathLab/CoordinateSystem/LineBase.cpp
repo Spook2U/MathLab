@@ -112,8 +112,34 @@ void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inCo
 void ALineBase::Update()
 {
    Super::Update();
-   SetPosition(line.position);
+   Move(line.position);
    BuildCVector();
+}
+
+ALineBase *ALineBase::SetLine(FMathLine inLine)
+{
+   line = inLine;
+   mathDataString = inLine.ToStringShort();
+
+   switch(mode)
+   {
+      case LineMode::line:    
+         constVectors[0]->SetCVector(FVector::ZeroVector, line.position);
+         constVectors[0]->SetCVector(line.position, line.direction);
+         break;
+      case LineMode::segment: 
+         constVectors[0]->SetCVector(FVector::ZeroVector, line.position);
+         constVectors[0]->SetCVector(FVector::ZeroVector, line.direction);
+         break;
+      case LineMode::vector:  
+         break;
+      default:
+         break;
+   }
+
+   Update();
+
+   return this;
 }
 
 
@@ -155,5 +181,4 @@ void ALineBase::CreateCVector(LaserColors inColor)
       default:
       break;
    }
-
 }

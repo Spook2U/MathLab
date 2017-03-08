@@ -97,6 +97,9 @@ public:
    /* Updates the visible area of the Material. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void UpdateRendering();
+   /* Moves the object to the specified coordinate. */
+   UFUNCTION(Blueprintcallable, Category = "math lab|geometry")
+   void Move(FVector coordinate);
 
 // Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
 
@@ -107,9 +110,6 @@ public:
    /* Sets color and glowiness depending to the enum value and changes the material of all laser components of this object. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void SetColor(LaserColors inColor);
-   /* Sets the location of the object based on the coordinate. */
-   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
-   void SetPosition(FVector coordinate);
 
    /* Sets the name of the object. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
@@ -165,8 +165,6 @@ public:
    virtual void CreateCVector(LaserColors inColor);
    /* Add the constructing vector to the array. */
    void AddCVector(ACVectorBase *vectorGuide);
-   /* Moves the constructing vector. */
-   void MoveCVector(FVector coordinate);
 
 
 

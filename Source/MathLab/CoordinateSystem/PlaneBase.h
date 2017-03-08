@@ -106,6 +106,10 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    virtual void Update() override;
 
+   /* Sets the MathPlane struct. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|plane")
+   APlaneBase *SetPlane(FMathPlane inPlane);
+
    //Sets up the Components to display the plane in the selected mode
    UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    void BuildPlane();

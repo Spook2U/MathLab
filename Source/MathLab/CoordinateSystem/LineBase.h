@@ -81,6 +81,10 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|line")
    virtual void Update() override;
 
+   /* Sets the MathLine struct. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|line")
+   ALineBase *SetLine(FMathLine inLine);
+
    /**Sets up the Components to display the line in the selected mode*/
    UFUNCTION(BlueprintCallable, Category = "math lab|line")
    void BuildCVector();

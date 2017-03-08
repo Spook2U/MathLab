@@ -87,8 +87,21 @@ void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors in
 void ASphereBase::Update()
 {
    Super::Update();
-   SetPosition(sphere.center);
+   Move(sphere.center);
    BuildSphere();
+}
+
+ASphereBase *ASphereBase::SetSphere(FMathSphere inSphere)
+{
+   sphere = inSphere;
+   mathDataString = inSphere.ToStringShort();
+
+   constVectors[0]->SetCVector(FVector::ZeroVector, sphere.center);
+   constVectors[0]->SetCVector(sphere.center, sphere.center + FVector(sphere.radius, 0, 0));
+
+   Update();
+
+   return this;
 }
 
 

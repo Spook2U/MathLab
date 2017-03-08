@@ -66,6 +66,10 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|circle")
    virtual void Update() override;
 
+   /* Sets the MathCircle struct. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|circle")
+   ACircleBase *SetCircle(FMathCircle inCircle);
+
    //Sets up the Components to display the circle
    UFUNCTION(BlueprintCallable, Category = "math lab|circle")
    void BuildCircle();

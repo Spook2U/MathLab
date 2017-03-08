@@ -62,7 +62,7 @@ void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inCo
 void AUnitBase::Update()
 {
    Super::Update();
-   SetPosition(coordinate);
+   Move(coordinate);
    ScaleUnitLaser();
 }
 

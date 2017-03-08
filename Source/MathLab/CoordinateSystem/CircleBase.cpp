@@ -73,8 +73,21 @@ void ACircleBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors in
 void ACircleBase::Update()
 {
    Super::Update();
-   SetPosition(circle.center);
+   Move(circle.center);
    BuildCircle();
+}
+
+ACircleBase *ACircleBase::SetCircle(FMathCircle inCircle)
+{
+   circle = inCircle;
+   mathDataString = inCircle.ToStringShort();
+
+   //SetCvector
+   //constVectors[0]->SetCVector(...);
+
+   Update();
+
+   return this;
 }
 
 void ACircleBase::BuildCircle()

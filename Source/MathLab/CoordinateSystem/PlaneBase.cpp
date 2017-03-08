@@ -152,9 +152,24 @@ FVector APlaneBase::GetNormal()
 void APlaneBase::Update()
 {
    Super::Update();
-   SetPosition(plane.position);
+   Move(plane.position);
    BuildPlane();
 
+}
+
+APlaneBase *APlaneBase::SetPlane(FMathPlane inPlane)
+{
+   plane = inPlane;
+   mathDataString = inPlane.ToStringShort();
+
+   constVectors[0]->SetCVector(FVector::ZeroVector, plane.position);
+   constVectors[1]->SetCVector(plane.position, plane.direction1);
+   constVectors[2]->SetCVector(plane.position, plane.direction2);
+   constVectors[3]->SetCVector(plane.position, plane.normal);
+
+   Update();
+
+   return this;
 }
 
 

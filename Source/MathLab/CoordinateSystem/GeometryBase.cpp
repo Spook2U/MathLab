@@ -61,7 +61,6 @@ void AGeometryBase::Update()
       MLD_PTR_CHECK(g); if(!g) continue;
       g->Update();
    }
-
 }
 
 void AGeometryBase::UpdateRendering()
@@ -73,6 +72,11 @@ void AGeometryBase::UpdateRendering()
       laser->SetVectorParameterValueOnMaterials(TEXT("Location"), coordinateSystem->GetActorLocation());
       laser->SetVectorParameterValueOnMaterials(TEXT("Bounds"), FVector(bound, bound, bound));
    }
+}
+
+void AGeometryBase::Move(FVector coordinate)
+{
+   SetActorLocation(CoordinateToLocation(coordinate));
 }
 
 // Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
@@ -112,12 +116,6 @@ void AGeometryBase::SetColor(LaserColors inColor)
       laser->SetVectorParameterValueOnMaterials(FName(TEXT("LaserColor")), FVector(newColor));
       laser->SetScalarParameterValueOnMaterials(FName(TEXT("Glowiness Extern")), glow);
    }
-}
-
-void AGeometryBase::SetPosition(FVector coordinate)
-{
-   SetActorLocation(CoordinateToLocation(coordinate));
-   MoveCVector(coordinate);
 }
 
 void AGeometryBase::SetName(FString inName)
@@ -272,14 +270,6 @@ void AGeometryBase::CreateCVector(LaserColors inColor)
 void AGeometryBase::AddCVector(ACVectorBase *guide)
 {
    constVectors.Add(guide);
-}
-
-void AGeometryBase::MoveCVector(FVector coordinate)
-{
-   for(ACVectorBase *v : constVectors)
-   {
-      v->SetPosition((-1)*coordinate);
-   }
 }
 
 
