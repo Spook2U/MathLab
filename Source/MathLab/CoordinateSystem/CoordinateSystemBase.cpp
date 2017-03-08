@@ -508,6 +508,12 @@ float ACoordinateSystemBase::Distance(AGeometryBase *from, AGeometryBase *to)
    return m.GetDistance(from, to);
 }
 
+float ACoordinateSystemBase::DistanceSphereCenter(ASphereBase * from, ASphereBase * to)
+{
+   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return 0.f;
+   return m.GetDistanceSphereCenter(from, to);
+}
+
 FRelativePosition ACoordinateSystemBase::GetRelativePosition(AGeometryBase *from, AGeometryBase *to)
 {
    if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return Relation::undefined;

@@ -33,10 +33,17 @@ MathLabLibrary::~MathLabLibrary(){}
 
 float MathLabLibrary::GetDistance(AGeometryBase *from, AGeometryBase *to)
 {
+   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(to))) return 0.f;
    return CalcDistance().Calculate(from, to).distance;
+}
+float MathLabLibrary::GetDistanceSphereCenter(ASphereBase *s1, ASphereBase *s2)
+{
+   if(!(MLD_PTR_CHECK(s1) && MLD_PTR_CHECK(s2))) return 0.f;
+   return CalcDistance().CalculateWith(FMathPoint(s1->sphere.center), FMathPoint(s1->sphere.center)).distance;
 }
 FRelativePosition MathLabLibrary::GetRelativePosition(AGeometryBase *from, AGeometryBase *with)
 {
+   if(!(MLD_PTR_CHECK(from) && MLD_PTR_CHECK(with))) return FRelativePosition();
    FCalcReturn calcReturn = CalcRelation().Calculate(from, with);
    return FRelativePosition(calcReturn.relation, calcReturn.intersections);
 }

@@ -122,6 +122,9 @@ public:
    /* Calculates the Distance between 2 Geometry Objects. */
    float GetDistance(AGeometryBase *from, AGeometryBase *to);
 
+   /* Calculates the distance between the center points of two spheres. */
+   float GetDistanceSphereCenter(ASphereBase *s1, ASphereBase *s2);
+
    /* Determines the relatives position between 2 Geometry Objects.
       The return struct contains the relative position and depending on the relative postion an array of interception points. */
    FRelativePosition GetRelativePosition(AGeometryBase *from, AGeometryBase *with);

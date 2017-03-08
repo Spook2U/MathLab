@@ -317,6 +317,10 @@ public:
    UFUNCTION(BlueprintCallable, Category = "math lab|calculate")
    float Distance(AGeometryBase *from, AGeometryBase *to);
 
+   /* returns the distance from the center of two spheres. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|calculate")
+   float DistanceSphereCenter(ASphereBase *from, ASphereBase *to);
+
    /* Returns the relative position from one geometry to the other.*/
    UFUNCTION(BlueprintCallable, Category = "math lab|calculate", DisplayName = "Relative Position")
    FRelativePosition GetRelativePosition(AGeometryBase *from, AGeometryBase *to);
