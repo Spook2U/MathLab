@@ -134,7 +134,7 @@ public:
 
    bool IsPointInLine(FMathLine line, FMathPoint point);
    bool IsPointInPlane(FMathPlane plane, FMathPoint point);
-   FVector GetPointOnLine(FMathLine line, float scalar);
+   FVector GetPointOnLine(FMathLine line, float scalar, bool useUnitDirection = false);
    FVector GetPointOnPlane(FMathPlane plane, float scalar1, float scalar2);
 
    float HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point);

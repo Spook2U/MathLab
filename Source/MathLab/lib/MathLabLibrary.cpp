@@ -105,9 +105,12 @@ bool MathLabLibrary::IsPointInPlane(FMathPlane plane, FMathPoint point)
    return isInPlane;
 }
 
-FVector MathLabLibrary::GetPointOnLine(FMathLine line, float scalar)
+FVector MathLabLibrary::GetPointOnLine(FMathLine line, float scalar, bool useUnitDirection)
 {
-   return line.position + scalar * line.direction;
+   FVector point;
+   if(useUnitDirection) point = line.position + scalar * MakeUnitVector(line.direction);
+   else                 point = line.position + scalar * line.direction;
+   return point;
 }
 
 FVector MathLabLibrary::GetPointOnPlane(FMathPlane plane, float scalar1, float scalar2)

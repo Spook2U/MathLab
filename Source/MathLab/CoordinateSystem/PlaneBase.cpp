@@ -17,9 +17,14 @@ FMathPlane::FMathPlane(FVector inPosition, FVector inDirection1, FVector inDirec
 }
 FMathPlane::FMathPlane(FMathPoint inPoint, FVector inNormal) : normal(inNormal), isNormalSet(true), isDSet(false)
 {
-   position   = FVector(0, 0, UKismetMathLibrary::Dot_VectorVector(inPoint.coordinate, inNormal) / inNormal.Z);
-   direction1 = FVector(1, 0, (-1) * inNormal.X / inNormal.Z);
-   direction2 = FVector(0, 1, (-1) * inNormal.Y / inNormal.Z);
+   BuildFromNormalform(inPoint, inNormal),
+   BuildD();
+}
+FMathPlane::FMathPlane(float a, float b, float c, float d) : normal(FVector(a, b, c)), isNormalSet(true), isDSet(false)
+{
+   if(c != 0)      { BuildFromNormalform(FMathPoint({0, 0, -d/c}), normal); }
+   else if(b != 0) { BuildFromNormalform(FMathPoint({0, -d/b, 0}), normal); }
+   else            { BuildFromNormalform(FMathPoint({-d/a, 0, 0}), normal); }
    BuildD();
 }
 
@@ -61,6 +66,28 @@ void FMathPlane::BuildD()
    {
       d      = FVector::DotProduct(position, normal);
       isDSet = true;
+   }
+}
+
+void FMathPlane::BuildFromNormalform(FMathPoint inPoint, FVector inNormal)
+{
+   if(inNormal.Z != 0)      
+   { 
+      position   = FVector(0, 0, UKismetMathLibrary::Dot_VectorVector(inPoint.coordinate, inNormal) / inNormal.Z);
+      direction1 = FVector(1, 0, (-1) * inNormal.X / inNormal.Z);
+      direction2 = FVector(0, 1, (-1) * inNormal.Y / inNormal.Z);
+   }
+   else if(inNormal.Y != 0) 
+   { 
+      position   = FVector(0, UKismetMathLibrary::Dot_VectorVector(inPoint.coordinate, inNormal) / inNormal.Y, 0);
+      direction1 = FVector(1, (-1) * inNormal.X / inNormal.Y, 0);
+      direction2 = FVector(0, (-1) * inNormal.Z / inNormal.Y, 1);
+   }
+   else            
+   { 
+      position   = FVector(UKismetMathLibrary::Dot_VectorVector(inPoint.coordinate, inNormal) / inNormal.X, 0, 0);
+      direction1 = FVector((-1) * inNormal.Y / inNormal.X, 1, 0);
+      direction2 = FVector((-1) * inNormal.Z / inNormal.X, 0, 1);
    }
 }
 

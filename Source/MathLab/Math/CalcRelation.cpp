@@ -62,6 +62,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line1, FMathLine line2)
       {
          case LSSolutionType::one:       
             scalars = linearSystem.GetSolution().solution;
+
             if(m.GetPointOnLine(line1, scalars.Get(0)) == m.GetPointOnLine(line2, scalars.Get(1)))
             {
                result.relation = Relation::intersection;
@@ -234,75 +235,72 @@ FCalcReturn CalcRelation::CalculateWith(FMathSphere sphere1, FMathSphere sphere2
    //Center Distance
    float distance = CalcDistance().CalculateWith(sphere1, sphere2).distance + sphere1.radius + sphere2.radius;
 
-   if(fabsf(sphere1.radius - sphere2.radius) > distance)
+   if(distance == 0)
    {
-      MLD_LOG("Inside");
+      // Same
+      if(sphere1.radius == sphere2.radius)
+      {
+         result.relation = Relation::identical;
+      }
+      // Inside
+      else 
+      {
+         result.relation = Relation::inside;
+      }
    }
-
-   if(fabsf(sphere1.radius - sphere2.radius) == distance)
+   else
    {
-      MLD_LOG("Inside Tagential Point");
+      // Different
+      if(distance > (sphere1.radius + sphere2.radius))
+      {
+         result.relation = Relation::different;
+      }
+      // Tangential Point
+      else if(distance == (sphere1.radius + sphere2.radius))
+      {
+         FMathLine line = FMathLine(sphere1.center, sphere2.center - sphere1.center);
+         result.relation = Relation::intersection;
+         result.intersections = FIntersection(m.GetPointOnLine(line, sphere1.radius, true));
+      }
+      else // distance < r1 + r2
+      {
+         // Intersection circle
+         if(distance > fabsf(sphere1.radius - sphere2.radius))
+         {
+            float s1cx = sphere1.center.X;
+            float s1cy = sphere1.center.Y;
+            float s1cz = sphere1.center.Z;
+            float r1   = sphere1.radius;
+
+            float s2cx = sphere2.center.X;
+            float s2cy = sphere2.center.Y;
+            float s2cz = sphere2.center.Z;
+            float r2   = sphere2.radius;
+
+            FMathPlane plane = FMathPlane(2*s1cx - 2*s2cx, 2*s1cy - 2*s2cy, 2*s1cz - 2*s2cz, (r1*r1 - s1cx*s1cx - s1cy*s1cy - s1cz*s1cz) - (r2*r2 - s2cx*s2cx - s2cy*s2cy - s2cz*s2cz));            
+            FMathLine line = FMathLine(sphere1.center, sphere2.center - sphere1.center);
+            FMathPoint circleCenter = CalculateWith(line, plane).intersections.point;
+            float d1 = CalcDistance().CalculateWith(circleCenter, FMathPoint(sphere1.center)).distance;
+            float circleRadius = m.SetOfPythagorasGetB(d1, sphere1.radius);
+
+            result.relation = Relation::intersection;
+            result.intersections = FIntersection(FMathCircle(circleCenter.coordinate, plane.normal, circleRadius));
+         }
+         // Tangential Point & Inside
+         else if(distance == fabsf(sphere1.radius - sphere2.radius))
+         {
+            FMathLine line = FMathLine(sphere1.center, sphere2.center - sphere1.center);
+            MLD_LOG("line: %s", *line.ToStringShort());
+            result.relation = Relation::insideIntersection;
+            MLD_LOG("Intersection: %s", *m.GetPointOnLine(line, (-1)*sphere1.radius, true).ToString());
+            result.intersections = FIntersection(m.GetPointOnLine(line, (-1)*sphere1.radius, true));
+         }
+         // Inside
+         else // distance < |r1 - r2|
+         {
+            result.relation = Relation::inside;
+         }
+      }
    }
-
-   if(fabsf(sphere1.radius - sphere2.radius) < distance)
-   {
-      MLD_LOG("Intersection");
-   }
-
-   if(fabsf(sphere1.radius + sphere2.radius) == distance)
-   {
-      MLD_LOG("Tangential Point");
-   }
-
-   if((sphere1.radius < distance) || (sphere2.radius < distance))
-   {
-      MLD_LOG("Different");
-   }
-
-   if((distance == 0) && (sphere1.radius == sphere2.radius))
-   {
-      MLD_LOG("Identical");
-   }
-
-
-   //// Tangention Point
-   //if(distance == 0)
-   //{
-   //   FMathLine line = FMathLine(sphere1.center, sphere2.center - sphere1.center);
-   //   result.relation = Relation::intersection;
-   //   result.intersections = FIntersection(m.GetPointOnLine(line, sphere1.radius));
-   //}
-   //// No Intersection
-   //else if(distance > 0)
-   //{
-   //   result.relation = Relation::different;
-   //}
-   //// Intersections / Inside
-   //else
-   //{
-   //   float d = fabsf(distance);
-
-   //   // 
-   //   if(((d + sphere1.radius) == sphere2.radius) || ((d + sphere2.radius) == sphere1.radius))
-   //   {
-   //      FMathLine line = FMathLine(sphere1.center, sphere2.center - sphere1.center);
-   //      result.relation = Relation::insideIntersection;
-   //      result.intersections = FIntersection(m.GetPointOnLine(line, (-1)*sphere1.radius));
-   //   }
-   //   else if(((d + sphere1.radius) < sphere2.radius) || ((d + sphere2.radius) < sphere1.radius))
-   //   {
-   //      result.relation = Relation::inside;
-   //   }
-   //   else
-   //   {
-   //      float circleDistance = sphere1.radius - (d/2);
-   //      float circleRadius = m.SetOfPythagorasGetB(circleDistance, sphere1.radius);
-   //      FMathLine line = FMathLine(sphere1.center, sphere2.center - sphere1.center);
-   //      
-   //      result.relation = Relation::intersection;
-   //      result.intersections = FIntersection(FMathCircle(m.GetPointOnLine(line, circleDistance), line.direction, circleRadius));
-   //   }
-   //}
-
    return result;
 }

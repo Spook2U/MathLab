@@ -5,6 +5,7 @@
 #include "CoordinateSystem/GeometryBase.h"
 #include "CircleBase.generated.h"
 
+struct FMathPlane;
 
 
 /* Defines a circle on a plane. */
@@ -25,7 +26,7 @@ public:
    FMathCircle();
    /* Constructor to set the circle laying on a plane. */
    FMathCircle(FVector inCenter, FVector inNormal, float inRadius);
-   
+
    /* Copy another cicle into this one. */
    FMathCircle& operator=(const FMathCircle& Other);
    /* Check against another cicle for equality. */

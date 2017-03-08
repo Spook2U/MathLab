@@ -2,12 +2,14 @@
 
 #include "MathLab.h"
 #include "CircleBase.h"
+
+#include "PlaneBase.h"
 #include "Lib/MathLabLibrary.h"
 
 
 
 FMathCircle::FMathCircle() {}
-FMathCircle::FMathCircle(FVector inCenter, FVector inNormal, float inRadius) : center(inCenter), normal(inNormal), radius(inRadius) {}
+FMathCircle::FMathCircle(FVector inCenter, FVector inNormal, float inRadius)   : center(inCenter), normal(inNormal), radius(inRadius) {}
 
 FMathCircle &FMathCircle::operator=(const FMathCircle &Other)
 {

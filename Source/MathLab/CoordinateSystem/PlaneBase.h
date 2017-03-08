@@ -36,10 +36,12 @@ public:
 
    /* Default constructor (no initialization). */
    FMathPlane();
-   /* Constructor to set the plane with position and 2 directions. */
+   /* Constructor to set the plane with parametic form position + direction 1 + direction 2. */
    FMathPlane(FVector inPosition, FVector inDirection1, FVector inDirection2);
-   /* Constructor to set the plane with position and normal. */
+   /* Constructor to set the plane with normal form position and normal. */
    FMathPlane(FMathPoint inPoint, FVector inNormal);
+   /* Constructor to set the plane with coordinate form with ax + by + cz = d. */
+   FMathPlane(float a, float b, float c, float d);
 
    /* Copy another plane into this one. */
    FMathPlane& operator=(const FMathPlane& Other);
@@ -52,6 +54,8 @@ public:
    void BuildNormal();
    /* Builds the value d based on it's members. */
    void BuildD();
+   /* Sets up the MathPlane from the normalform*/
+   void BuildFromNormalform(FMathPoint inPoint, FVector inNormal);
 
    /* Returns the unified normal Vector of the plane. */
    FVector GetNormal();
