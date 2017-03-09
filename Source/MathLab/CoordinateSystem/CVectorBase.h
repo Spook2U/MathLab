@@ -52,7 +52,7 @@ private:
 public:
 // Constructing Vector Setup--------------------------------------------------------------------------------------------------------------------------
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, CVectorMode inMode = CVectorMode::general, FString inName = "");
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, CVectorMode inMode = CVectorMode::general, FName inName = "");
 
    UFUNCTION(BlueprintCallable, Category = "math lab|constructingVector")
    void SetComponents(TArray<UStaticMeshComponent *> laserComponents, UTextRenderComponent *inText);
@@ -92,6 +92,6 @@ public:
 
 // Name Functions-------------------------------------------------------------------------------------------------------------------------------------
 
-   virtual void ShowText() override;
+   virtual void SetDefaultNameVisibility() override;
 
 };

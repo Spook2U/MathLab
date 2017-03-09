@@ -57,7 +57,7 @@ public:
    UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate system|unit")
    LaserColors unitLaserColor;
    /* Glow intensity of the laser of the units. */
-   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "coordinate system", meta = (ClampMin = 0))
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "coordinate system|unit", meta = (ClampMin = 0))
    float unitGlowiness;
    /* Size in percent from the axisSize (diameter). */
    UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate system|unit", meta = (ClampMin = 0.01, UIMin = 0.01, UIMax = 1))
@@ -168,36 +168,36 @@ public:
    
    /* Spawns a point in the coordinatesystem. */
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   APointBase *AddPoint(LaserColors color, FMathPoint inPoint, FString inName = "", bool showGuides = false);
+   APointBase *AddPoint(LaserColors color, FMathPoint inPoint, FName inName = "", bool showGuides = false);
    
    /* Spawns a line in the defined mode in the coordinatesystem.
         * line: Spawns an endless line using position and direction vector.
         * segment: Spawns a segmented line between 2 points A (position) and B (direction).
         * vector: Spawns a vector pointing to direction, using position as offset from the orign. */
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   ALineBase *AddLine(LaserColors color, FMathLine inLine, LineMode mode, FString inName = "", bool showGuides = false);
+   ALineBase *AddLine(LaserColors color, FMathLine inLine, LineMode mode, FName inName = "", bool showGuides = false);
    
    /* Spawns a Plane in the defines mode in the coordinatsystem.
       Mode plane: Spawns an endless plane using position and 2 direction vector. */
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   APlaneBase *AddPlane(LaserColors color, FMathPlane inPlane, PlaneMode mode, FString inName = "", bool showGuides = false);
+   APlaneBase *AddPlane(LaserColors color, FMathPlane inPlane, PlaneMode mode, FName inName = "", bool showGuides = false);
    
    /* Spawns a sphere in the coordinatesystem. */
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   ASphereBase *AddSphere(LaserColors color, FMathSphere inSphere, FString inName = "", bool showGuides = false);
+   ASphereBase *AddSphere(LaserColors color, FMathSphere inSphere, FName inName = "", bool showGuides = false);
 
    /* Spawns a circle inside a plane in the coordinatesystem. */
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|add")
-   ACircleBase *AddCircle(LaserColors color, FMathCircle inCircle, FString inName = "", bool showGuides = false);
+   ACircleBase *AddCircle(LaserColors color, FMathCircle inCircle, FName inName = "", bool showGuides = false);
 
    /* Spawns a constructing vector. */
-   ACVectorBase *AddCVector(AActor *parent, LaserColors color, FVector pointA, FVector pointB, CVectorMode mode = CVectorMode::general, FString inName = "");
+   ACVectorBase *AddCVector(AActor *parent, LaserColors color, FVector pointA, FVector pointB, CVectorMode mode = CVectorMode::general, FName inName = "");
 
 // Find Functions-------------------------------------------------------------------------------------------------------------------------------------
 
    /* Searches for the geometry with the selected name. */
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|find")
-   AGeometryBase *FindGeometryWithName(FString inName, bool &found);
+   AGeometryBase *FindGeometryWithName(FName inName, bool &found);
    /* Searches all circle with the selected data. */
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate System|find")
    TArray<ACircleBase *> FindCircle(FMathCircle inCircle, bool &found);
@@ -227,7 +227,7 @@ public:
    float MaxVisibleLength();
 
    /* Checks if the name is already in use. */
-   bool NameNotUsed(FString inName);
+   bool NameNotUsed(FName inName);
 
 
 

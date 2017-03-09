@@ -81,8 +81,8 @@ public:
 protected:
    UTextRenderComponent *nameRender;
 
-   FString nameString;
-   FString mathDataString;
+   FName name;
+   FName nameMathData;
    bool showName;
    bool showMathData;
 
@@ -92,7 +92,7 @@ public:
 
 // Geometry Setup ------------------------------------------------------------------------------------------------------------------------------------
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FString inName = "");
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FName inName = "");
    /* Add the StaticMeshComponent in the list of components handled as laser. */
    void AddLaserComponent(UStaticMeshComponent *laser);
 
@@ -119,40 +119,40 @@ public:
 
    /* Sets the name of the object. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
-   virtual void SetName(FString inName);
+   virtual void SetName(FName inName);
    /* Sets the name of the object to default. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void ClearName();
    /* Returns the name of the object. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
-   FString GetName();
+   FName GetName();
 
 // Name Functions-------------------------------------------------------------------------------------------------------------------------------------
 
-   void InitText(FString inName);
+   void InitName(FName inName);
 
    /* Checks if inName is already used, if so returns a generaic name. */
-   FString NameCheck(FString inName);
+   FName NameCheck(FName inName);
 
    /* Checks if inName has a value, if not creates a generaic name. 
       When showName is true a name is generated.
       When shoeMathData is true the mathematical data will be showm. */
-   FText BuildText(FString inName);
+   FName BuildName(FName inName);
 
-   /* Sets the default value for the ShowText functions. */
-   virtual void ShowText();
+   /* Sets the default value for the SetDefaultNameVisibility functions. */
+   virtual void SetDefaultNameVisibility();
    /* Shows or Hides the Name of the Object. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
-   void ShowName(bool show);
+   void SetNameVisible(bool show);
    /* Shows or Hides the mathematical Data on the Name. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
-   void ShowMathData(bool show);
+   void SetMathDataVisible(bool show);
    /* Shows or Hides the Names of the constructing vectors. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
-   void ShowCVectorName(bool show);
+   void SetCVectorNameVisible(bool show);
    /* Shows or Hides the mathematical Data of the constructing vectors. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
-   void ShowCVectorMathData(bool show);
+   void SetCVectorMathDataVisible(bool show);
 
    /* Sets the name visible if eather showName or showMathData is true. */
    void UpdateTextVisibility();

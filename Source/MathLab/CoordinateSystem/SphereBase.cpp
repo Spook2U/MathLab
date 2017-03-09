@@ -59,16 +59,16 @@ void ASphereBase::BeginPlay()
 
 // Sphere Setup --------------------------------------------------------------------------------------------------------------------------------------
 
-void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere, FString inName)
+void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere, FName inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
    type = GeometryType::sphere;
    sphere = inSphere;
-   mathDataString = inSphere.ToStringShort();
+   nameMathData = FName(*inSphere.ToStringShort());
    Super::Init(inCoordinateSystem, inColor, inName);
    CreateCVector(inColor);
-   InitText(inName);
+   InitName(inName);
 }
 
 void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
@@ -105,7 +105,7 @@ void ASphereBase::BuildSphere()
 ASphereBase *ASphereBase::SetSphere(FMathSphere inSphere)
 {
    sphere = inSphere;
-   mathDataString = inSphere.ToStringShort();
+   nameMathData = FName(*inSphere.ToStringShort());
 
    constVectors[0]->SetCVector(FVector::ZeroVector, sphere.center);
    constVectors[0]->SetCVector(sphere.center, sphere.center + FVector(sphere.radius, 0, 0));
@@ -127,6 +127,6 @@ FString ASphereBase::ToString()
 void ASphereBase::CreateCVector(LaserColors inColor)
 {
    AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, FVector::ZeroVector, sphere.center, CVectorMode::vectorPoint, "Position"));
-   AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, sphere.center, sphere.center + FVector(sphere.radius, 0, 0), CVectorMode::segment, "Radius"));
+   AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, sphere.center, sphere.center + FVector(sphere.radius, 0, 0), CVectorMode::segment, FName(*FString::Printf(TEXT("Radius: %s"), *FString::SanitizeFloat(sphere.radius)))));
 }
 

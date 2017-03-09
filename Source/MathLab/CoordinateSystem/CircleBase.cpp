@@ -48,16 +48,16 @@ FString FMathCircle::ToStringShort()
 
 // Circle Setup --------------------------------------------------------------------------------------------------------------------------------------
 
-void ACircleBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle, FString inName)
+void ACircleBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle, FName inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
    type = GeometryType::circle;
    circle = inCircle;
-   mathDataString = inCircle.ToStringShort();
+   nameMathData = FName(*inCircle.ToStringShort());
 
    Super::Init(inCoordinateSystem, inColor, inName);
-   InitText(inName);
+   InitName(inName);
 }
 
 void ACircleBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
@@ -117,7 +117,7 @@ void ACircleBase::BuildCircle()
 ACircleBase *ACircleBase::SetCircle(FMathCircle inCircle)
 {
    circle = inCircle;
-   mathDataString = inCircle.ToStringShort();
+   nameMathData = FName(*inCircle.ToStringShort());
 
    //SetCvector
    //constVectors[0]->SetCVector(...);

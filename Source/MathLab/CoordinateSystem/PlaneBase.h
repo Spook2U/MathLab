@@ -106,7 +106,7 @@ private:
 public:
 // Plane Setup ---------------------------------------------------------------------------------------------------------------------------------------
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FString inName = "");
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FName inName = "");
 
    //Saves the StaticMeshReferences in the source file to work on
    UFUNCTION(BlueprintCallable, Category = "math lab|plane")

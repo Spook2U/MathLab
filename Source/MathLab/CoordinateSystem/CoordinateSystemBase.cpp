@@ -31,7 +31,7 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    nameTextSize = 7.5f;
    unitTextSize = 10;
 
-   showCVectorName = false;
+   showCVectorName = true;
    showCVectorMathData = false;
    cVectorTextSize = 5;
    //textGlowiness = 5;
@@ -184,12 +184,12 @@ void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int inde
    AUnitBase *newUnit = (AUnitBase *)AddGeometry(unitBP, this);
    
    if(!MLD_PTR_CHECK(newUnit)) return;
-   newUnit->Init(this, unitLaserColor, axis->GetUpVector()*index, FString::Printf(TEXT("%d"), index));
+   newUnit->Init(this, unitLaserColor, axis->GetUpVector()*index, FName(*FString::Printf(TEXT("%d"), index)));
    newUnit->OrientateToAxis(axis);
    newUnit->Update();
 }
 
-APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, FMathPoint inPoint, FString inName, bool showGuides)
+APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, FMathPoint inPoint, FName inName, bool showGuides)
 {  
    APointBase *point = (APointBase *)AddGeometry(pointBP, this);
 
@@ -200,7 +200,7 @@ APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, FMathPoint inPoin
    return point;
 }
 
-ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, FMathLine inLine, LineMode mode, FString inName, bool showGuides)
+ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, FMathLine inLine, LineMode mode, FName inName, bool showGuides)
 {
    if(inLine.direction.Size() == 0) { MLD_ERR("Line not created. Invalid diection. Direction of the line cannt be {0, 0, 0}."); return nullptr; }
 
@@ -213,7 +213,7 @@ ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, FMathLine inLine, L
    return line;
 }
 
-APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, FMathPlane inPlane, PlaneMode mode, FString inName, bool showGuides)
+APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, FMathPlane inPlane, PlaneMode mode, FName inName, bool showGuides)
 {
    if((inPlane.direction1.Size() == 0) || (inPlane.direction2.Size() == 0)) { MLD_ERR("Plane not created. Invalid diection. No direction of the plane shall be {0, 0, 0}."); return nullptr; }
 
@@ -225,7 +225,7 @@ APlaneBase *ACoordinateSystemBase::AddPlane(LaserColors color, FMathPlane inPlan
    return plane;
 }
 
-ASphereBase *ACoordinateSystemBase::AddSphere(LaserColors color, FMathSphere inSphere, FString inName, bool showGuides)
+ASphereBase *ACoordinateSystemBase::AddSphere(LaserColors color, FMathSphere inSphere, FName inName, bool showGuides)
 {
    if(inSphere.radius <= 0) { MLD_ERR("Sphere not created. Invalid radius. Cannt create Sphere with radius <= 0."); return nullptr; }
 
@@ -237,7 +237,7 @@ ASphereBase *ACoordinateSystemBase::AddSphere(LaserColors color, FMathSphere inS
    return sphere;
 }
 
-ACircleBase *ACoordinateSystemBase::AddCircle(LaserColors color, FMathCircle inCircle, FString inName, bool showGuides)
+ACircleBase *ACoordinateSystemBase::AddCircle(LaserColors color, FMathCircle inCircle, FName inName, bool showGuides)
 {
    if(inCircle.radius <= 0) { MLD_ERR("Circle not created. Invalid radius. Cannt create Circle with radius <= 0."); return nullptr; }
 
@@ -249,7 +249,7 @@ ACircleBase *ACoordinateSystemBase::AddCircle(LaserColors color, FMathCircle inC
    return circle;
 }
 
-ACVectorBase *ACoordinateSystemBase::AddCVector(AActor *parent, LaserColors color, FVector pointA, FVector pointB, CVectorMode mode, FString inName)
+ACVectorBase *ACoordinateSystemBase::AddCVector(AActor *parent, LaserColors color, FVector pointA, FVector pointB, CVectorMode mode, FName inName)
 {
    ACVectorBase *newCVector = (ACVectorBase *)AddGeometry(cVectorBP, parent);
    if(!MLD_PTR_CHECK(newCVector)) return nullptr;
@@ -268,7 +268,7 @@ ACVectorBase *ACoordinateSystemBase::AddCVector(AActor *parent, LaserColors colo
 
 // Find Functions-------------------------------------------------------------------------------------------------------------------------------------
 
-AGeometryBase* ACoordinateSystemBase::FindGeometryWithName(FString inName, bool &found)
+AGeometryBase* ACoordinateSystemBase::FindGeometryWithName(FName inName, bool &found)
 {
    AGeometryBase *wanted = nullptr;
    found = false;
@@ -410,7 +410,7 @@ float ACoordinateSystemBase::MaxVisibleLength()
    return length;
 }
 
-bool ACoordinateSystemBase::NameNotUsed(FString inName)
+bool ACoordinateSystemBase::NameNotUsed(FName inName)
 {
    bool nameNotUsed = true;;
 

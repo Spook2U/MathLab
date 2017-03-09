@@ -79,7 +79,7 @@ private:
 public:
 // Line Setup ----------------------------------------------------------------------------------------------------------------------------------------
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode, FString inName = "");
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode, FName inName = "");
 
    /* Saves the StaticMeshReferences in the source file to work on*/
    UFUNCTION(BlueprintCallable, Category = "math lab|line")

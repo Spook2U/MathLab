@@ -15,10 +15,6 @@ public:
    UPROPERTY(BlueprintReadWrite, Category = "geometrySaveData")
    LaserColors color;
    UPROPERTY(BlueprintReadWrite, Category = "geometrySaveData")
-   bool showConstruction;
-   UPROPERTY(BlueprintReadWrite, Category = "geometrySaveData")
-   LineMode lineMode;
-   UPROPERTY(BlueprintReadWrite, Category = "geometrySaveData")
    FMathPoint point;
    UPROPERTY(BlueprintReadWrite, Category = "geometrySaveData")
    FMathLine line;
@@ -28,6 +24,12 @@ public:
    FMathSphere sphere;
    UPROPERTY(BlueprintReadWrite, Category = "geometrySaveData")
    FMathCircle circle;
+   UPROPERTY(BlueprintReadWrite, Category = "geometrySaveData")
+   FName name;
+   UPROPERTY(BlueprintReadWrite, Category = "geometrySaveData")
+   bool showConstruction;
+   UPROPERTY(BlueprintReadWrite, Category = "geometrySaveData")
+   LineMode lineMode;
 
 };
 

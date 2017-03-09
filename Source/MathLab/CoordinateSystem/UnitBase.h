@@ -35,7 +35,7 @@ private:
 public:
 // Unit Setup ----------------------------------------------------------------------------------------------------------------------------------------
 
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inCoordinate, FString inName = "");
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inCoordinate, FName inName = "");
 
    //Saves the StaticMeshReferences in the source file to work on
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
@@ -59,7 +59,7 @@ public:
 
    // Sets the name of the object
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
-   virtual void SetName(FString inName);
+   virtual void SetName(FName inName);
 
 // Constructing Vector Functions ---------------------------------------------------------------------------------------------------------------------
 

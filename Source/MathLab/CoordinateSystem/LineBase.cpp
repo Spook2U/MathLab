@@ -64,7 +64,7 @@ void ALineBase::BeginPlay()
 
 // Line Setup ----------------------------------------------------------------------------------------------------------------------------------------
 
-void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode, FString inName)
+void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode, FName inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
@@ -74,9 +74,9 @@ void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inCo
 
    switch(mode)
    {
-      case LineMode::line:    mathDataString = inLine.ToStringShort(); break;
-      case LineMode::segment: mathDataString = inLine.ToStringShort(); break;
-      case LineMode::vector:  mathDataString = FString::Printf(TEXT("(%s, %s, %s)"), *FString::SanitizeFloat(inLine.direction.X), *FString::SanitizeFloat(inLine.direction.Y), *FString::SanitizeFloat(inLine.direction.Z)); break;
+      case LineMode::line:    nameMathData = FName(*inLine.ToStringShort()); break;
+      case LineMode::segment: nameMathData = FName(*inLine.ToStringShort()); break;
+      case LineMode::vector:  nameMathData = FName(*FString::Printf(TEXT("(%s, %s, %s)"), *FString::SanitizeFloat(inLine.direction.X), *FString::SanitizeFloat(inLine.direction.Y), *FString::SanitizeFloat(inLine.direction.Z))); break;
    }
 
    Super::Init(inCoordinateSystem, inColor, inName);
@@ -88,7 +88,7 @@ void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inCo
       case LineMode::vector:  arrowheadMesh->SetVisibility(true); break;
    }
 
-   InitText(inName);
+   InitName(inName);
 }
 
 void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
@@ -142,7 +142,7 @@ void ALineBase::BuildLine()
 ALineBase *ALineBase::SetLine(FMathLine inLine)
 {
    line = inLine;
-   mathDataString = inLine.ToStringShort();
+   nameMathData = FName(*inLine.ToStringShort());
 
    switch(mode)
    {

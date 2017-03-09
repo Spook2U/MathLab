@@ -19,8 +19,8 @@ AGeometryBase::AGeometryBase()
    size = 0.075;
 
    nameRender = nullptr;
-   nameString = "";
-   mathDataString = "";
+   name = "";
+   nameMathData = "";
    showName = true;
    showMathData = true;
 }
@@ -39,7 +39,7 @@ void AGeometryBase::Tick(float DeltaTime)
 
 // Geometry Setup ------------------------------------------------------------------------------------------------------------------------------------
 
-void AGeometryBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FString inName)
+void AGeometryBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FName inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
@@ -118,14 +118,14 @@ void AGeometryBase::SetColor(LaserColors inColor)
    }
 }
 
-void AGeometryBase::SetName(FString inName)
+void AGeometryBase::SetName(FName inName)
 {
-   if(nameString != inName)
+   if(name != inName)
    {
-      nameString = NameCheck(inName);
+      name = NameCheck(inName);
    }
 
-   nameRender->SetText(BuildText(nameString));
+   nameRender->SetText(FText::FromName(BuildName(name)));
 }
 
 void AGeometryBase::ClearName()
@@ -133,20 +133,20 @@ void AGeometryBase::ClearName()
    SetName("");
 }
 
-FString AGeometryBase::GetName()
+FName AGeometryBase::GetName()
 {
-   return nameString;
+   return name;
 }
 
 // Name Functions-------------------------------------------------------------------------------------------------------------------------------------
 
-void AGeometryBase::InitText(FString inName)
+void AGeometryBase::InitName(FName inName)
 {
    float textSize = 0;
 
-   nameString = NameCheck(inName);
-   ShowText();
+   name = NameCheck(inName);
    SetName(inName);
+   SetDefaultNameVisibility();
 
    if     (type == GeometryType::unit)    { textSize = coordinateSystem->unitTextSize; }
    else if(type == GeometryType::cVector) { textSize = coordinateSystem->cVectorTextSize; }
@@ -154,20 +154,20 @@ void AGeometryBase::InitText(FString inName)
    nameRender->SetWorldSize(textSize);
 }
 
-FString AGeometryBase::NameCheck(FString inName)
+FName AGeometryBase::NameCheck(FName inName)
 {
-   FString name;
+   FName name;
    if(coordinateSystem->NameNotUsed(inName)) { name = inName; }
-   else                                      { name = ""; }   
+   else                                      { name.SetNumber(0); }   
    return name;
 }
 
-FText AGeometryBase::BuildText(FString inName)
+FName AGeometryBase::BuildName(FName inName)
 {
    FString string = "";
    if(showName)
    {
-      if(inName == "")
+      if(inName.IsNone())
       {
          switch(type)
          {
@@ -181,11 +181,11 @@ FText AGeometryBase::BuildText(FString inName)
             case GeometryType::other:        
             default:                    string += FString::Printf(TEXT("Geomety%02d"),     coordinateSystem->geometryCounter++); break;
          }
-         nameString = string;
+         name = FName(*string);
       }
       else
       {
-         string = inName;
+         string = inName.ToString();
       }
 
       if(showMathData) { string += " "; }
@@ -193,49 +193,50 @@ FText AGeometryBase::BuildText(FString inName)
 
    if(showMathData) 
    {
-      string += mathDataString;
+      string += nameMathData.ToString();
    }
-
-   return FText::FromString("   " + string);
+   string = "   " + string;
+   
+   return FName(*string);
 }
 
-void AGeometryBase::ShowText()
+void AGeometryBase::SetDefaultNameVisibility()
 {
-   ShowName(coordinateSystem->showNames);
-   ShowMathData(coordinateSystem->showMathData);
-   ShowCVectorName(coordinateSystem->showCVectorName);
-   ShowCVectorMathData(coordinateSystem->showCVectorMathData);
+   SetNameVisible(coordinateSystem->showNames);
+   SetMathDataVisible(coordinateSystem->showMathData);
+   SetCVectorNameVisible(coordinateSystem->showCVectorName);
+   SetCVectorMathDataVisible(coordinateSystem->showCVectorMathData);
 }
 
-void AGeometryBase::ShowName(bool show)
+void AGeometryBase::SetNameVisible(bool show)
 {
    if(type == GeometryType::unit) { showName = true; }
    else                           { showName = show; }
 
-   SetName(nameString);
+   SetName(name);
    UpdateTextVisibility();
 }
 
-void AGeometryBase::ShowMathData(bool show)
+void AGeometryBase::SetMathDataVisible(bool show)
 {
    showMathData = show;
-   SetName(nameString);
+   SetName(name);
    UpdateTextVisibility();
 }
 
-void AGeometryBase::ShowCVectorName(bool show)
+void AGeometryBase::SetCVectorNameVisible(bool show)
 {
    for(ACVectorBase *cv : constVectors)
    {
-      cv->ShowName(show);
+      cv->SetNameVisible(show);
    }
 }
 
-void AGeometryBase::ShowCVectorMathData(bool show)
+void AGeometryBase::SetCVectorMathDataVisible(bool show)
 {
    for(ACVectorBase *cv : constVectors)
    {
-      cv->ShowMathData(show);
+      cv->SetMathDataVisible(show);
    }
 }
 

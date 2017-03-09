@@ -58,16 +58,16 @@ void APointBase::BeginPlay()
 
 // Point Setup ---------------------------------------------------------------------------------------------------------------------------------------
 
-void APointBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPoint inPoint, FString inName)
+void APointBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPoint inPoint, FName inName)
 {  
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
    type = GeometryType::point;
    point = inPoint;
-   mathDataString = inPoint.ToStringShort();
+   nameMathData = FName(*inPoint.ToStringShort());
    Super::Init(inCoordinateSystem, inColor, inName);
    CreateCVector(inColor);
-   InitText(inName);
+   InitName(inName);
 }
 
 void APointBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
@@ -99,7 +99,7 @@ void APointBase::Update()
 APointBase *APointBase::SetPoint(FMathPoint inPoint)
 {
    point = inPoint;
-   mathDataString = inPoint.ToStringShort();
+   nameMathData = FName(*inPoint.ToStringShort());
 
    constVectors[0]->SetCVector(FVector::ZeroVector, point.coordinate);
 

@@ -138,7 +138,7 @@ void APlaneBase::BeginPlay()
 
 // Plane Setup ---------------------------------------------------------------------------------------------------------------------------------------
 
-void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FString inName)
+void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FName inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
@@ -146,7 +146,7 @@ void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inC
    plane = inPlane;
    plane.BuildNormal();
    plane.BuildD();
-   mathDataString = inPlane.ToStringShort();
+   nameMathData = FName(*inPlane.ToStringShort());
 
    Super::Init(inCoordinateSystem, inColor, inName);
 
@@ -157,7 +157,7 @@ void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inC
       case PlaneMode::plane: CreateCVector(inColor); break;
    }
 
-   InitText(inName);
+   InitName(inName);
 }
 
 void APlaneBase::SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText)
@@ -200,7 +200,7 @@ void APlaneBase::BuildPlane()
 APlaneBase *APlaneBase::SetPlane(FMathPlane inPlane)
 {
    plane = inPlane;
-   mathDataString = inPlane.ToStringShort();
+   nameMathData = FName(*inPlane.ToStringShort());
 
    constVectors[0]->SetCVector(FVector::ZeroVector, plane.position);
    constVectors[1]->SetCVector(plane.position, plane.direction1);

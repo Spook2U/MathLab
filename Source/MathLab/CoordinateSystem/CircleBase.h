@@ -66,7 +66,7 @@ private:
 public:
 // Circle Setup --------------------------------------------------------------------------------------------------------------------------------------
    
-   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle, FString inName = "");
+   void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle, FName inName = "");
 
    //Saves the StaticMeshReferences in the source file to work on
    UFUNCTION(BlueprintCallable, Category = "math lab|circle")

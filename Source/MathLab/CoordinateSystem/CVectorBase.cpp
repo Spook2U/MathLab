@@ -23,7 +23,7 @@ ACVectorBase::ACVectorBase()
 
 // Constructing Vector Setup--------------------------------------------------------------------------------------------------------------------------
 
-void ACVectorBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, CVectorMode inMode, FString inName)
+void ACVectorBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, CVectorMode inMode, FName inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
@@ -33,17 +33,17 @@ void ACVectorBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors i
 
    switch(inMode)
    {
-      case CVectorMode::point:       mathDataString = FString::Printf(TEXT("(%s, %s, %s)"),               *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z)); break;
-      case CVectorMode::segment:     mathDataString = FString::Printf(TEXT("(%s, %s, %s), (%s, %s, %s)"), *FString::SanitizeFloat(a.X), *FString::SanitizeFloat(a.Y), *FString::SanitizeFloat(a.Z), 
-                                                                      *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z)); break;
+      case CVectorMode::point:       nameMathData = FName(*FString::Printf(TEXT("(%s, %s, %s)"),               *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z))); break;
+      case CVectorMode::segment:     nameMathData = FName(*FString::Printf(TEXT("(%s, %s, %s), (%s, %s, %s)"), *FString::SanitizeFloat(a.X), *FString::SanitizeFloat(a.Y), *FString::SanitizeFloat(a.Z), 
+                                                                                                                 *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z))); break;
       case CVectorMode::vector:      
-      case CVectorMode::vectorPoint: mathDataString = FString::Printf(TEXT("(%s, %s, %s)"),               *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z)); break;
+      case CVectorMode::vectorPoint: nameMathData = FName(*FString::Printf(TEXT("(%s, %s, %s)"),               *FString::SanitizeFloat(b.X), *FString::SanitizeFloat(b.Y), *FString::SanitizeFloat(b.Z))); break;
       case CVectorMode::general:     
       default:                       break;
    }
 
    Super::Init(inCoordinateSystem, inColor, inName);
-   InitText(inName);
+   InitName(inName);
 }
 
 void ACVectorBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRenderComponent *inText)
@@ -136,8 +136,8 @@ void ACVectorBase::SetCVector(FVector inA, FVector inB)
 
 // Name Functions-------------------------------------------------------------------------------------------------------------------------------------
 
-void ACVectorBase::ShowText()
+void ACVectorBase::SetDefaultNameVisibility()
 {
-   ShowName(coordinateSystem->showCVectorName);
-   ShowMathData(coordinateSystem->showCVectorMathData);
+   SetNameVisible(coordinateSystem->showCVectorName);
+   SetMathDataVisible(coordinateSystem->showCVectorMathData);
 }

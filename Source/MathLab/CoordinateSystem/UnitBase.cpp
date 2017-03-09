@@ -28,7 +28,7 @@ void AUnitBase::BeginPlay()
 
 // Unit Setup ----------------------------------------------------------------------------------------------------------------------------------------
 
-void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inCoordinate, FString inName)
+void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inCoordinate, FName inName)
 {
    MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
 
@@ -36,7 +36,8 @@ void AUnitBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inCo
    coordinate = inCoordinate;
 
    Super::Init(inCoordinateSystem, inColor, inName);
-   InitText(inName);
+   InitName(inName);
+   SetMathDataVisible(false);
 }
 
 void AUnitBase::SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText)
@@ -95,9 +96,9 @@ void AUnitBase::ScaleUnitLaser_AtAxis(UStaticMeshComponent *axis, UStaticMeshCom
 
 // Name Functions-------------------------------------------------------------------------------------------------------------------------------------
 
-void AUnitBase::SetName(FString inName)
+void AUnitBase::SetName(FName inName)
 {
-   nameRender->SetText(BuildText(inName));
+   nameRender->SetText(FText::FromName(BuildName(inName)));
 }
 
 // Utility Functions----------------------------------------------------------------------------------------------------------------------------------
