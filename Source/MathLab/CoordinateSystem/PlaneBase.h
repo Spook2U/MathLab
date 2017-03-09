@@ -108,17 +108,17 @@ public:
 
    void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FName inName = "");
 
-   //Saves the StaticMeshReferences in the source file to work on
+   /* Saves the StaticMeshReferences in the source file to work on. */
    UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
 // Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
-   //Called, when the objects need to update the position or other vales
+   /* Called, when the objects need to update the position or other values. */
    UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    virtual void Update() override;
 
-   //Sets up the Components to display the plane in the selected mode
+   /* Sets up the components to display the plane in the selected mode. */
    UFUNCTION(BlueprintCallable, Category = "math lab|plane")
    void BuildPlane();
 

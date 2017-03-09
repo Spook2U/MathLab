@@ -39,9 +39,7 @@ public:
 
 
 
-/*
-   Holds a System of Linear Equalations in a (n)x(n+1) nMatrix
-*/
+/* Holds a System of Linear Equalations in a (n)x(n+1) nMatrix. */
 USTRUCT(BlueprintType)
 struct FLinearSystem 
 {

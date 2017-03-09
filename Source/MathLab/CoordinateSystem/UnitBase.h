@@ -37,7 +37,7 @@ public:
 
    void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inCoordinate, FName inName = "");
 
-   //Saves the StaticMeshReferences in the source file to work on
+   /* Saves the StaticMeshReferences in the source file to work on. */
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
@@ -45,11 +45,11 @@ public:
 
 // Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
-   //Called, when the objects need to update the position or other values
+   /* Called, when the objects need to update the position or other values. */
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    virtual void Update() override;
 
-   //Scales the laser of the Unit to have the same length as the Axis
+   /* Scales the laser of the unit to have the same length as the Axis. */
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    void ScaleUnitLaser();
 
@@ -57,7 +57,7 @@ public:
 
 // Name Functions-------------------------------------------------------------------------------------------------------------------------------------
 
-   // Sets the name of the object
+   /* Sets the name of the object. */
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
    virtual bool SetName(FName inName);
 

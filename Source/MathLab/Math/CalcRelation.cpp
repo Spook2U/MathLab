@@ -13,6 +13,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathPoint point1, FMathPoint point2)
    else                                       { result.relation = Relation::different; }
    return result;
 }
+
 FCalcReturn CalcRelation::CalculateWith(FMathPoint point, FMathLine line)      
 { 
    FCalcReturn result;
@@ -20,6 +21,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathPoint point, FMathLine line)
    else                             { result.relation = Relation::outside; }
    return result;
 }
+
 FCalcReturn CalcRelation::CalculateWith(FMathPoint point, FMathPlane plane)    
 { 
    FCalcReturn result;
@@ -27,6 +29,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathPoint point, FMathPlane plane)
    else                               { result.relation = Relation::outside; }
    return result;
 }
+
 FCalcReturn CalcRelation::CalculateWith(FMathPoint point, FMathSphere sphere)  
 { 
    FCalcReturn result;
@@ -35,12 +38,13 @@ FCalcReturn CalcRelation::CalculateWith(FMathPoint point, FMathSphere sphere)
    return result;
 }
 
-// -------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 FCalcReturn CalcRelation::CalculateWith(FMathLine line, FMathPoint point)    
 {
    return CalculateWith(point, line); 
 }
+
 FCalcReturn CalcRelation::CalculateWith(FMathLine line1, FMathLine line2)     
 { 
    FCalcReturn result;
@@ -79,6 +83,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line1, FMathLine line2)
    }
    return result;
 }
+
 FCalcReturn CalcRelation::CalculateWith(FMathLine line, FMathPlane plane)    
 { 
    FCalcReturn result;
@@ -98,6 +103,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line, FMathPlane plane)
    }
    return result;
 }
+
 FCalcReturn CalcRelation::CalculateWith(FMathLine line, FMathSphere sphere)  
 { 
    FCalcReturn result;
@@ -128,16 +134,18 @@ FCalcReturn CalcRelation::CalculateWith(FMathLine line, FMathSphere sphere)
    return result;
 }
 
-// -------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 FCalcReturn CalcRelation::CalculateWith(FMathPlane plane, FMathPoint point)    
 { 
    return CalculateWith(point, plane); 
 }
+
 FCalcReturn CalcRelation::CalculateWith(FMathPlane plane, FMathLine line)     
 { 
    return CalculateWith(line, plane); 
 }
+
 FCalcReturn CalcRelation::CalculateWith(FMathPlane plane1, FMathPlane plane2)   
 { 
    FCalcReturn result;
@@ -184,6 +192,7 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane1, FMathPlane plane2)
    }
    return result;
 }
+
 FCalcReturn CalcRelation::CalculateWith(FMathPlane plane, FMathSphere sphere)  
 { 
    FCalcReturn result;
@@ -215,20 +224,23 @@ FCalcReturn CalcRelation::CalculateWith(FMathPlane plane, FMathSphere sphere)
    return result;
 }
 
-// -------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 FCalcReturn CalcRelation::CalculateWith(FMathSphere sphere, FMathPoint point)    
 { 
    return CalculateWith(point, sphere); 
 }
+
 FCalcReturn CalcRelation::CalculateWith(FMathSphere sphere, FMathLine line)      
 { 
    return CalculateWith(line, sphere); 
 } 
+
 FCalcReturn CalcRelation::CalculateWith(FMathSphere sphere, FMathPlane plane)    
 { 
    return CalculateWith(plane, sphere); 
 }
+
 FCalcReturn CalcRelation::CalculateWith(FMathSphere sphere1, FMathSphere sphere2) 
 {
    FCalcReturn result;

@@ -120,12 +120,20 @@ void AGeometryBase::SetColor(LaserColors inColor)
 
 bool AGeometryBase::SetName(FName inName)
 {
+   bool valid = true;
    if(name != inName)
    {
       name = NameCheck(inName);
+      if(inName.IsNone())
+      {
+         MLD_WAR("Name already in use, choose a different one.");
+         valid = false;
+      }
    }
 
    nameRender->SetText(FText::FromName(BuildName(name)));
+
+   return valid;
 }
 
 void AGeometryBase::ClearName()
@@ -156,10 +164,10 @@ void AGeometryBase::InitName(FName inName)
 
 FName AGeometryBase::NameCheck(FName inName)
 {
-   FName name;
-   if(coordinateSystem->NameNotUsed(inName)) { name = inName; }
-   else                                      { name.SetNumber(0); }   
-   return name;
+   FName newName;
+   if(coordinateSystem->NameNotUsed(inName)) { newName = inName; }
+   else                                      { newName.SetNumber(0); }   
+   return newName;
 }
 
 FName AGeometryBase::BuildName(FName inName)

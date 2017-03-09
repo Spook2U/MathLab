@@ -66,13 +66,13 @@ public:
 
    void Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPoint inPoint, FName inName = "");
 
-   //Saves the StaticMeshReferences in the source file to work on
+   /* Saves the StaticMeshReferences in the source file to work on. */
    UFUNCTION(BlueprintCallable, Category = "math lab|point")
    void SetComponents(TArray<UStaticMeshComponent *> components, UTextRenderComponent *inText);
 
 // Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
-   //Called, when the objects need to update the position or other vales
+   /* Called, when the objects need to update the position or other values. */
    UFUNCTION(BlueprintCallable, Category = "math lab|point")
    virtual void Update() override;
 

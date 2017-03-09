@@ -14,12 +14,28 @@ class  AGeometryBase;
 struct FNVector;
 
 
+// Defines -------------------------------------------------------------------------------------------------------------------------------------------
+
+
 // To prevent misstakes with float rounding
 #define EPSILON 0.0001   
 #define FLOAT_EQ(x,v)     (((v - EPSILON) < x) && (x < (v + EPSILON)))  
 #define FLOAT_EQ_ZERO(x) ((((0 - EPSILON) < x) && (x < (0 + EPSILON))) ? 0 : x)
 
 
+// Enums ---------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/* Defines the type of the intersection. */
+UENUM(BlueprintType)
+enum class IntersectionType : uint8
+{
+   point    UMETA(DisplayName = "Point"),   
+   line     UMETA(DisplayName = "Line"),   
+   circle   UMETA(DisplayName = "Circle"),   
+   puncture UMETA(DisplayName = "Puncture"),   
+   no       UMETA(DisplayName = "No")   
+};
 
 /* Defines possible relations between geometry objects. */
 UENUM(BlueprintType)
@@ -36,19 +52,11 @@ enum class Relation : uint8
    undefined           UMETA(DisplayName = "Undefined")
 };
 
-/* Defines the type of the intersection. */
-UENUM(BlueprintType)
-enum class IntersectionType : uint8
-{
-   point    UMETA(DisplayName = "Point"),   
-   line     UMETA(DisplayName = "Line"),   
-   circle   UMETA(DisplayName = "Circle"),   
-   puncture UMETA(DisplayName = "Puncture"),   
-   no       UMETA(DisplayName = "No")   
-};
+
+// Puncture Structure --------------------------------------------------------------------------------------------------------------------------------
 
 
-
+/* Defines the twi intersectionpoints from a line and an ending object. */ 
 USTRUCT(BlueprintType)
 struct FPuncture
 {
@@ -64,8 +72,9 @@ public:
    FPuncture(FMathPoint inEntry, FMathPoint inExit);
 };
 
+// Intersection Structure ----------------------------------------------------------------------------------------------------------------------------
 
-
+/* Sves all possible Intersections. */
 USTRUCT(BlueprintType)
 struct FIntersection
 {
@@ -90,8 +99,9 @@ public:
    FIntersection(FPuncture inPuncture);
 };   
    
-   
-/* Contains the Relative Position and possible intersections. */
+// Relative Position Structure -----------------------------------------------------------------------------------------------------------------------
+
+/* Contains the relative position and possible intersections. */
 USTRUCT(BlueprintType)
 struct FRelativePosition
 {
@@ -110,6 +120,9 @@ public:
 };
 
 
+// ---------------------------------------------------------------------------------------------------------------------------------------------------
+// MathLabLibrary Class ------------------------------------------------------------------------------------------------------------------------------
+
 
 class MATHLAB_API MathLabLibrary
 {
@@ -117,7 +130,7 @@ public:
    MathLabLibrary();
    ~MathLabLibrary();
 
-// Geometry Calculations ---------------------------------------------------------------------------
+// Geometry Calculations -----------------------------------------------------------------------------------------------------------------------------
 
    /* Calculates the Distance between 2 Geometry Objects. */
    float GetDistance(AGeometryBase *from, AGeometryBase *to);
@@ -129,7 +142,7 @@ public:
       The return struct contains the relative position and depending on the relative postion an array of interception points. */
    FRelativePosition GetRelativePosition(AGeometryBase *from, AGeometryBase *with);
 
-// Vector Calculations -----------------------------------------------------------------------------
+// Vector Calculations -------------------------------------------------------------------------------------------------------------------------------
 
    FVector MakeNomal(FVector a, FVector b, bool unitVector = true);
    FVector MakeUnitVector(FVector v);
@@ -143,7 +156,7 @@ public:
    float HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point);
    FMathLine GetIntersectionLine(FMathPlane plane, FNVector solution);
 
-// Algebra Calculations ----------------------------------------------------------------------------
+// Algebra Calculations ------------------------------------------------------------------------------------------------------------------------------
 
    float SetOfPythagorasGetA(float b, float c);
    float SetOfPythagorasGetB(float a, float c);

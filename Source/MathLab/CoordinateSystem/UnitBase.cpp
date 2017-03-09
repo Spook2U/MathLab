@@ -97,6 +97,7 @@ void AUnitBase::ScaleUnitLaser_AtAxis(UStaticMeshComponent *axis, UStaticMeshCom
 bool AUnitBase::SetName(FName inName)
 {
    nameRender->SetText(FText::FromName(BuildName(inName)));
+   return true;
 }
 
 // Utility Functions----------------------------------------------------------------------------------------------------------------------------------

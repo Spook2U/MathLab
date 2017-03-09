@@ -7,7 +7,7 @@
 FLSSolution::FLSSolution(){}
 FLSSolution::FLSSolution(LSSolutionType inType, FNVector inSolution) : type(inType), solution(inSolution) {}
 
-// -------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 FLinearSystem::FLinearSystem() {}
 FLinearSystem::FLinearSystem(const FNMatrix inMatrix)
@@ -20,7 +20,7 @@ FLinearSystem::FLinearSystem(const FNMatrix inMatrix)
    }
 }
 
-// -------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 #define SOLVELOG(row, string)    Solve_DebugLog(row, string)
 
@@ -78,7 +78,7 @@ int FLinearSystem::NumberOfVariables()
    return coefficientMatrix.ColumnNum() - 1;
 }
 
-// -------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 FString FLinearSystem::ToString() const
 {
@@ -108,7 +108,7 @@ bool FLinearSystem::IsSolved() const{
    return solution.type != LSSolutionType::notSolved;
 }
 
-// -------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 bool FLinearSystem::CheckColumnZeroFromTo(int from, int to)
 {

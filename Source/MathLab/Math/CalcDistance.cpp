@@ -9,27 +9,31 @@ FCalcReturn CalcDistance::CalculateWith(FMathPoint point1, FMathPoint point2)
 { 
    return FCalcReturn(m.VectorDistance(point2.coordinate, point1.coordinate)); 
 }
+
 FCalcReturn CalcDistance::CalculateWith(FMathPoint point, FMathLine line)      
 {
    /* Calculated with Surface of Vectorproduct and Surface of a triangle. */ 
    FVector v = point.coordinate - line.position;
    return FCalcReturn(UKismetMathLibrary::VSize(FVector::CrossProduct(v, line.direction)) / UKismetMathLibrary::VSize(line.direction)); 
 }
+
 FCalcReturn CalcDistance::CalculateWith(FMathPoint point, FMathPlane plane)    
 { 
    return FCalcReturn(UKismetMathLibrary::Abs(m.HesseNormalFormPlugIn(plane, point))); 
 }
+
 FCalcReturn CalcDistance::CalculateWith(FMathPoint point, FMathSphere sphere)  
 { 
    return FCalcReturn(CalculateWith(FMathPoint(sphere.center), point).distance - sphere.radius);
 }
 
-// -------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 FCalcReturn CalcDistance::CalculateWith(FMathLine line, FMathPoint point)    
 { 
    return CalculateWith(point, line); 
 }
+
 FCalcReturn CalcDistance::CalculateWith(FMathLine line1, FMathLine line2)     
 { 
    FCalcReturn distance;
@@ -44,6 +48,7 @@ FCalcReturn CalcDistance::CalculateWith(FMathLine line1, FMathLine line2)
 
    return distance; 
 }
+
 FCalcReturn CalcDistance::CalculateWith(FMathLine line, FMathPlane plane)    
 { 
    FCalcReturn distance;
@@ -57,21 +62,24 @@ FCalcReturn CalcDistance::CalculateWith(FMathLine line, FMathPlane plane)
 
    return distance;
 }
+
 FCalcReturn CalcDistance::CalculateWith(FMathLine line, FMathSphere sphere)  
 { 
    return FCalcReturn(CalculateWith(FMathPoint(sphere.center), line).distance - sphere.radius); 
 }
 
-// -------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 FCalcReturn CalcDistance::CalculateWith(FMathPlane plane, FMathPoint point)    
 { 
    return CalculateWith(point, plane); 
 }
+
 FCalcReturn CalcDistance::CalculateWith(FMathPlane plane, FMathLine line)     
 { 
    return CalculateWith(line, plane); 
 }
+
 FCalcReturn CalcDistance::CalculateWith(FMathPlane plane1, FMathPlane plane2)   
 { 
    FCalcReturn distance;
@@ -94,25 +102,29 @@ FCalcReturn CalcDistance::CalculateWith(FMathPlane plane1, FMathPlane plane2)
 
    return distance;
 }
+
 FCalcReturn CalcDistance::CalculateWith(FMathPlane plane, FMathSphere sphere)  
 { 
    return FCalcReturn(CalculateWith(FMathPoint(sphere.center), plane).distance - sphere.radius); 
 }
 
-// -------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 FCalcReturn CalcDistance::CalculateWith(FMathSphere sphere, FMathPoint point)    
 { 
    return CalculateWith(point, sphere); 
 }
+
 FCalcReturn CalcDistance::CalculateWith(FMathSphere sphere, FMathLine line)      
 { 
    return CalculateWith(line, sphere); 
 } 
+
 FCalcReturn CalcDistance::CalculateWith(FMathSphere sphere, FMathPlane plane)    
 { 
    return CalculateWith(plane, sphere); 
 }
+
 FCalcReturn CalcDistance::CalculateWith(FMathSphere sphere1, FMathSphere sphere2) 
 { 
    return FCalcReturn(CalculateWith(FMathPoint(sphere2.center), FMathPoint(sphere1.center)).distance - sphere1.radius - sphere2.radius); 

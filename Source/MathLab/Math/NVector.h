@@ -6,9 +6,7 @@
 
 
 
-/*
-   A vector in N-D space composed of an array of components with floating point precision.
-*/
+/* A vector in N-D space composed of an array of components with floating point precision. */
 USTRUCT(BlueprintType)
 struct FNVector 
 {

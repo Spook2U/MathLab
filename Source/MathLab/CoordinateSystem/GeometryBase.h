@@ -98,7 +98,7 @@ public:
 
 // Update Functions ----------------------------------------------------------------------------------------------------------------------------------
 
-   /* Called, when the objects need to update the position or other vales. */
+   /* Called, when the objects need to update the position or other values. */
    virtual void Update();
    /* Updates the visible area of the Material. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")

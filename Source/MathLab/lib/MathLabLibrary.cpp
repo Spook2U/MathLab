@@ -11,9 +11,13 @@
 #include "CoordinateSystem/GeometryBase.h"
 
 
+// Puncture Structure --------------------------------------------------------------------------------------------------------------------------------
+
 
 FPuncture::FPuncture() {}
 FPuncture::FPuncture(FMathPoint inEntry, FMathPoint inExit) : entry(inEntry), exit(inExit) {}
+
+// Intersection Structure ----------------------------------------------------------------------------------------------------------------------------
 
 FIntersection::FIntersection() {}
 FIntersection::FIntersection(FMathCircle inCircle) : circle(inCircle), type(IntersectionType::circle) {}
@@ -21,15 +25,19 @@ FIntersection::FIntersection(FMathLine inLine) : line(inLine), type(Intersection
 FIntersection::FIntersection(FMathPoint inPoint) : point(inPoint), type(IntersectionType::point) {}
 FIntersection::FIntersection(FPuncture inPuncture) : puncture(inPuncture), type(IntersectionType::puncture) {}
 
+// Relative Position Structure -----------------------------------------------------------------------------------------------------------------------
+
 FRelativePosition::FRelativePosition(){}
 FRelativePosition::FRelativePosition(Relation inRelation, FIntersection inIntersections) : relation(inRelation), intersections(inIntersections) {}
 
+
+// MathLabLibrary Class ------------------------------------------------------------------------------------------------------------------------------
 
 
 MathLabLibrary::MathLabLibrary(){}
 MathLabLibrary::~MathLabLibrary(){}
 
-
+// Geometry Calculations -----------------------------------------------------------------------------------------------------------------------------
 
 float MathLabLibrary::GetDistance(AGeometryBase *from, AGeometryBase *to)
 {
@@ -48,7 +56,7 @@ FRelativePosition MathLabLibrary::GetRelativePosition(AGeometryBase *from, AGeom
    return FRelativePosition(calcReturn.relation, calcReturn.intersections);
 }
 
-
+// Vector Calculations -------------------------------------------------------------------------------------------------------------------------------
 
 FVector MathLabLibrary::MakeNomal(FVector a, FVector b, bool unitVector)
 {
@@ -69,8 +77,6 @@ float MathLabLibrary::VectorDistance(FVector a, FVector b)
 {
    return UKismetMathLibrary::VSize(b-a);
 }
-
-
 
 bool MathLabLibrary::IsPointInLine(FMathLine line, FMathPoint point)
 {
@@ -125,8 +131,6 @@ FVector MathLabLibrary::GetPointOnPlane(FMathPlane plane, float scalar1, float s
    return plane.position + scalar1 * plane.direction1 + scalar2 * plane.direction2;
 }
 
-
-
 float MathLabLibrary::HesseNormalFormPlugIn(FMathPlane plane, FMathPoint point)
 {
    return UKismetMathLibrary::Dot_VectorVector(plane.normal, point.coordinate) - UKismetMathLibrary::Dot_VectorVector(plane.normal, plane.position);
@@ -153,7 +157,7 @@ FMathLine MathLabLibrary::GetIntersectionLine(FMathPlane plane, FNVector solutio
    return line;
 }
 
-
+// Algebra Calculations ------------------------------------------------------------------------------------------------------------------------------
 
 float MathLabLibrary::SetOfPythagorasGetA(float b, float c)
 {
