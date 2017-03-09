@@ -59,7 +59,7 @@ public:
 
    // Sets the name of the object
    UFUNCTION(BlueprintCallable, Category = "math lab|unit")
-   virtual void SetName(FName inName);
+   virtual bool SetName(FName inName);
 
 // Constructing Vector Functions ---------------------------------------------------------------------------------------------------------------------
 

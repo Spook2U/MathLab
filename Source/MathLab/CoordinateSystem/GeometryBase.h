@@ -119,7 +119,7 @@ public:
 
    /* Sets the name of the object. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
-   virtual void SetName(FName inName);
+   virtual bool SetName(FName inName);
    /* Sets the name of the object to default. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void ClearName();

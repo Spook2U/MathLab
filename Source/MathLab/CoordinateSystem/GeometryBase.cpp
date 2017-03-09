@@ -118,7 +118,7 @@ void AGeometryBase::SetColor(LaserColors inColor)
    }
 }
 
-void AGeometryBase::SetName(FName inName)
+bool AGeometryBase::SetName(FName inName)
 {
    if(name != inName)
    {
