@@ -50,6 +50,9 @@ public:
 
 // Coordinate System - Units--------------------------------------------------------------------------------------------------------------------------
 
+   /* Determines if the laser of the units should be shown. */
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate system|unit")
+   bool showUnitLaser;
    /* Number of units shown on each positive and negative side of each axis. */
    UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate system|unit", meta = (ClampMin = 1, UIMin = 1, UIMax = 50))
    int unitCount;

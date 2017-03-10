@@ -19,6 +19,7 @@ ACoordinateSystemBase::ACoordinateSystemBase()
 
 // Coordinate System - Units--------------------------------------------------------------------------------------------------------------------------
 
+   showUnitLaser = true;
    unitCount = 10;
    unitLaserColor = LaserColors::green;
    unitGlowiness = 10.f;

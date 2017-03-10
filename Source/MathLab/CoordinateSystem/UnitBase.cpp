@@ -78,15 +78,17 @@ void AUnitBase::Update()
 
 void AUnitBase::ScaleUnitLaser()
 {
+   if(!MLD_PTR_CHECK(coordinateSystem)) return;
    ScaleUnitLaser_AtAxis(xAxis, xLaser, coordinateSystem->unitLaserSizeFactor);
    ScaleUnitLaser_AtAxis(yAxis, yLaser, coordinateSystem->unitLaserSizeFactor);
 }
 
 void AUnitBase::ScaleUnitLaser_AtAxis(UStaticMeshComponent *axis, UStaticMeshComponent *laser, float laserSize)
 {
-   if(!MLD_PTR_CHECK(laser)) return;
+   if(!(MLD_PTR_CHECK(axis) && MLD_PTR_CHECK(laser) && MLD_PTR_CHECK(coordinateSystem))) return;
    FVector axisScale = axis->GetComponentScale();
-   laser->SetWorldScale3D(FVector(axisScale.X*laserSize, axisScale.Y*laserSize, coordinateSystem->axisLength*2));
+   if(coordinateSystem->showUnitLaser) { laser->SetWorldScale3D(FVector(axisScale.X*laserSize, axisScale.Y*laserSize, coordinateSystem->axisLength*2)); }
+   else                                { laser->SetWorldScale3D(FVector(axisScale.X*laserSize, axisScale.Y*laserSize, 0.001f)); }
 }
 
 // Setting Functions ---------------------------------------------------------------------------------------------------------------------------------
