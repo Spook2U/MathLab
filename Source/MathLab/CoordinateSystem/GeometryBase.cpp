@@ -41,7 +41,7 @@ void AGeometryBase::Tick(float DeltaTime)
 
 void AGeometryBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FName inName)
 {
-   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
+   if(!MLD_PTR_CHECK(inCoordinateSystem)) return;
 
    coordinateSystem = inCoordinateSystem;
    color = inColor;
@@ -58,7 +58,7 @@ void AGeometryBase::Update()
    UpdateRendering();
    for(ACVectorBase *g : constVectors)
    {
-      MLD_PTR_CHECK(g); if(!g) continue;
+      if(!MLD_PTR_CHECK(g)) continue;
       g->Update();
    }
 }
@@ -68,7 +68,7 @@ void AGeometryBase::UpdateRendering()
    float bound = coordinateSystem->axisLength * 200;
    for(UStaticMeshComponent *laser : laserCompoents)
    {
-      MLD_PTR_CHECK(laser); if(!laser) continue;
+      if(!MLD_PTR_CHECK(laser)) continue;
       laser->SetVectorParameterValueOnMaterials(TEXT("Location"), coordinateSystem->GetActorLocation());
       laser->SetVectorParameterValueOnMaterials(TEXT("Bounds"), FVector(bound, bound, bound));
    }
@@ -87,7 +87,7 @@ void AGeometryBase::ShowConstructingVector(bool show)
 
    for(ACVectorBase *g : constVectors)
    {
-      MLD_PTR_CHECK(g); if(!g) continue;
+      if(!MLD_PTR_CHECK(g)) continue;
       g->RootComponent->SetHiddenInGame(!show, true);
    }
 }
@@ -107,12 +107,13 @@ void AGeometryBase::SetColor(LaserColors inColor)
       case LaserColors::white:   newColor = FLinearColor(1.f,   1.f,   1.f,   1.f); glow = 1.f;  break;
       case LaserColors::yellow:  newColor = FLinearColor(0.75f, 1.f,   0.05f, 1.f); glow = 1.f;  break;
    }
+   if(!MLD_PTR_CHECK(coordinateSystem)) return;
    if(type == GeometryType::unit) { glow *= coordinateSystem->unitGlowiness; }
    else                           { glow *= coordinateSystem->glowiness; }
 
    for(UStaticMeshComponent *laser : laserCompoents)
    {
-      MLD_PTR_CHECK(laser); if(!laser) continue;
+      if(!MLD_PTR_CHECK(laser)) continue;
       laser->SetVectorParameterValueOnMaterials(FName(TEXT("LaserColor")), FVector(newColor));
       laser->SetScalarParameterValueOnMaterials(FName(TEXT("Glowiness Extern")), glow);
    }
@@ -131,6 +132,7 @@ bool AGeometryBase::SetName(FName inName)
       }
    }
 
+   if(!MLD_PTR_CHECK(nameRender)) return false;
    nameRender->SetText(FText::FromName(BuildName(name)));
 
    return valid;
@@ -159,12 +161,15 @@ void AGeometryBase::InitName(FName inName)
    if     (type == GeometryType::unit)    { textSize = coordinateSystem->unitTextSize; }
    else if(type == GeometryType::cVector) { textSize = coordinateSystem->cVectorTextSize; }
    else                                   { textSize = coordinateSystem->nameTextSize; }
+
+   if(!MLD_PTR_CHECK(nameRender)) return;
    nameRender->SetWorldSize(textSize);
 }
 
 FName AGeometryBase::NameCheck(FName inName)
 {
    FName newName;
+   if(!MLD_PTR_CHECK(coordinateSystem)) return FName();
    if(coordinateSystem->NameNotUsed(inName)) { newName = inName; }
    else                                      { newName.SetNumber(0); }   
    return newName;
@@ -210,6 +215,7 @@ FName AGeometryBase::BuildName(FName inName)
 
 void AGeometryBase::SetDefaultNameVisibility()
 {
+   if(!MLD_PTR_CHECK(coordinateSystem)) return;
    SetNameVisible(coordinateSystem->showNames);
    SetMathDataVisible(coordinateSystem->showMathData);
    SetCVectorNameVisible(coordinateSystem->showCVectorName);
@@ -236,6 +242,7 @@ void AGeometryBase::SetCVectorNameVisible(bool show)
 {
    for(ACVectorBase *cv : constVectors)
    {
+      if(!MLD_PTR_CHECK(cv)) return;
       cv->SetNameVisible(show);
    }
 }
@@ -244,12 +251,14 @@ void AGeometryBase::SetCVectorMathDataVisible(bool show)
 {
    for(ACVectorBase *cv : constVectors)
    {
+      if(!MLD_PTR_CHECK(cv)) return;
       cv->SetMathDataVisible(show);
    }
 }
 
 void AGeometryBase::UpdateTextVisibility()
 {
+   if(!MLD_PTR_CHECK(nameRender)) return;
    nameRender->SetVisibility(showName||showMathData);
 }
 
@@ -259,6 +268,7 @@ FVector AGeometryBase::CoordinateToLocation(FVector coordinate)
 {
    FVector location = coordinate;
 
+   if(!MLD_PTR_CHECK(coordinateSystem)) return FVector::ZeroVector;
    location *= coordinateSystem->convertFactor;
    location *= FVector(1.f, -1.f, 1.f);
    location += coordinateSystem->GetActorLocation();
@@ -305,15 +315,14 @@ void AGeometryBase::InitScaleArrowhead(UStaticMeshComponent *arrowhead)
 
 void AGeometryBase::SetLaserMatTransparency(UStaticMeshComponent *laser, float value)
 {
-   MLD_PTR_CHECK(laser); if(!laser) return;
+   if(!MLD_PTR_CHECK(laser)) return;
    laser->SetScalarParameterValueOnMaterials("Transparency", value);
 }
 
 
 void AGeometryBase::MoveLaser(UStaticMeshComponent *laser, Direction dir, float length)
 {
-   MLD_PTR_CHECK(laser); if(!laser) return;
-   MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
+   if(!(MLD_PTR_CHECK(laser) && MLD_PTR_CHECK(coordinateSystem))) return;
 
    FVector moveDirection = FVector::ZeroVector;
    switch(dir)
@@ -327,9 +336,7 @@ void AGeometryBase::MoveLaser(UStaticMeshComponent *laser, Direction dir, float 
 
 void AGeometryBase::MoveText(UTextRenderComponent *textRender, FVector coordinate)
 {
-   MLD_PTR_CHECK(textRender); if(!textRender) return;
-   MLD_PTR_CHECK(coordinateSystem); if(!coordinateSystem) return;
-
+   if(!(MLD_PTR_CHECK(textRender) && MLD_PTR_CHECK(coordinateSystem))) return;
    textRender->SetWorldLocation(CoordinateToLocation(coordinate));
 }
 
@@ -346,7 +353,7 @@ void AGeometryBase::RotateLaserLookAt(FVector from, FVector to)
 
 void AGeometryBase::RotateText()
 {
-   if(!nameRender) return;
+   if(!MLD_PTR_CHECK(nameRender)) return;
 
    FVector actorLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->GetActorLocation() + FVector(0, 0, 64);
    FVector textLocation  = nameRender->GetComponentLocation();
@@ -360,7 +367,7 @@ void AGeometryBase::RotateText()
 
 void AGeometryBase::SetLaserScale(UStaticMeshComponent *laser, FVector scale)
 {
-   MLD_PTR_CHECK(laser); if(!laser) return;
+   if(!MLD_PTR_CHECK(laser)) return;
    laser->SetWorldScale3D(FVector((scale.X ? scale.X : laser->GetComponentScale().X), 
                                   (scale.Y ? scale.Y : laser->GetComponentScale().Y), 
                                   (scale.Z ? scale.Z : laser->GetComponentScale().Z)

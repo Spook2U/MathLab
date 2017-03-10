@@ -44,28 +44,24 @@ void AUnitBase::SetComponents(TArray<UStaticMeshComponent *> components, UTextRe
 {
    for(UStaticMeshComponent *c : components)
    {
-      MLD_PTR_CHECK(c); if(!c) continue;
+      if(!MLD_PTR_CHECK(c)) continue;
       if(c->GetName().Equals("X-Unit"))  { xAxis  = c; }
       if(c->GetName().Equals("Y-Unit"))  { yAxis  = c; }
       if(c->GetName().Equals("X-Laser")) { xLaser = c; }
       if(c->GetName().Equals("Y-Laser")) { yLaser = c; }
    }
 
-   MLD_PTR_CHECK(xAxis);
-   MLD_PTR_CHECK(yAxis);
-   MLD_PTR_CHECK(xLaser);
-   MLD_PTR_CHECK(yLaser);
-   if(!(xAxis && yAxis && xLaser && yLaser)) return;
+   if(!(MLD_PTR_CHECK(xAxis) && MLD_PTR_CHECK(yAxis) && MLD_PTR_CHECK(xLaser) && MLD_PTR_CHECK(yLaser) && MLD_PTR_CHECK(inText))) return;
 
    AddLaserComponent(xLaser);
    AddLaserComponent(yLaser);
 
-   if(!MLD_PTR_CHECK(inText)) return;
    nameRender = inText;
 }
 
 void AUnitBase::OrientateToAxis(UStaticMeshComponent *axis)
 {
+   if(!MLD_PTR_CHECK(nameRender)) return;
    float thickness = coordinateSystem->axisSize*coordinateSystem->unitSizeFactor;
    SetActorTransform(FTransform(axis->GetComponentRotation(), GetActorLocation(), FVector(thickness, thickness, 0.1f)));
    nameRender->SetWorldScale3D(FVector(1.f, 1.f, 1.f));
@@ -88,6 +84,7 @@ void AUnitBase::ScaleUnitLaser()
 
 void AUnitBase::ScaleUnitLaser_AtAxis(UStaticMeshComponent *axis, UStaticMeshComponent *laser, float laserSize)
 {
+   if(!MLD_PTR_CHECK(laser)) return;
    FVector axisScale = axis->GetComponentScale();
    laser->SetWorldScale3D(FVector(axisScale.X*laserSize, axisScale.Y*laserSize, coordinateSystem->axisLength*2));
 }
@@ -96,6 +93,7 @@ void AUnitBase::ScaleUnitLaser_AtAxis(UStaticMeshComponent *axis, UStaticMeshCom
 
 bool AUnitBase::SetName(FName inName)
 {
+   if(!MLD_PTR_CHECK(nameRender)) return false;
    nameRender->SetText(FText::FromName(BuildName(inName)));
    return true;
 }

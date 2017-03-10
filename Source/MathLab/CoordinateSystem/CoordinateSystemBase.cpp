@@ -182,7 +182,6 @@ void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int inde
 {
    if(!MLD_PTR_CHECK(axis)) return;
    AUnitBase *newUnit = (AUnitBase *)AddGeometry(unitBP, this);
-   
    if(!MLD_PTR_CHECK(newUnit)) return;
    newUnit->Init(this, unitLaserColor, axis->GetUpVector()*index, FName(*FString::Printf(TEXT("%d"), index)));
    newUnit->OrientateToAxis(axis);
@@ -192,7 +191,6 @@ void ACoordinateSystemBase::AddUnits_ToAxis(UStaticMeshComponent *axis, int inde
 APointBase *ACoordinateSystemBase::AddPoint(LaserColors color, FMathPoint inPoint, FName inName, bool showGuides)
 {  
    APointBase *point = (APointBase *)AddGeometry(pointBP, this);
-
    if(!MLD_PTR_CHECK(point)) return nullptr;
    point->Init(this, color, inPoint, inName);
    point->ShowConstructingVector(showGuides);
@@ -205,7 +203,6 @@ ALineBase *ACoordinateSystemBase::AddLine(LaserColors color, FMathLine inLine, L
    if(inLine.direction.Size() == 0) { MLD_ERR("Line not created. Invalid diection. Direction of the line cannt be {0, 0, 0}."); return nullptr; }
 
    ALineBase *line = (ALineBase *)AddGeometry(lineBP, this);
-
    if(!MLD_PTR_CHECK(line)) return nullptr;
    line->Init(this, color, inLine, mode, inName);
    line->ShowConstructingVector(showGuides);

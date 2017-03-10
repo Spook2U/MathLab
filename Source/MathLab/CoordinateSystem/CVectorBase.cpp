@@ -25,7 +25,7 @@ ACVectorBase::ACVectorBase()
 
 void ACVectorBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FVector inA, FVector inB, CVectorMode inMode, FName inName)
 {
-   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
+   if(!MLD_PTR_CHECK(inCoordinateSystem)) return;
 
    type = GeometryType::cVector;
    SetCVector(inA, inB);
@@ -56,11 +56,7 @@ void ACVectorBase::SetComponents(TArray<UStaticMeshComponent*> components, UText
       if(c->GetName().Equals("ArrowheadMesh")) { arrowheadMesh = c; }
    }
 
-   MLD_PTR_CHECK(pointAMesh);
-   MLD_PTR_CHECK(pointBMesh);
-   MLD_PTR_CHECK(lineMesh);
-   MLD_PTR_CHECK(arrowheadMesh);
-   if(!(pointAMesh && pointBMesh && lineMesh && arrowheadMesh)) return;
+   if(!(MLD_PTR_CHECK(pointAMesh) && MLD_PTR_CHECK(pointBMesh) &&  MLD_PTR_CHECK(lineMesh) && MLD_PTR_CHECK(arrowheadMesh) && MLD_PTR_CHECK(inText))) return;
 
    InitScalePoint(pointAMesh);
    InitScalePoint(pointBMesh);
@@ -72,7 +68,6 @@ void ACVectorBase::SetComponents(TArray<UStaticMeshComponent*> components, UText
    AddLaserComponent(lineMesh);
    AddLaserComponent(arrowheadMesh);
 
-   if(!MLD_PTR_CHECK(inText)) return;
    nameRender = inText;
 }
 
@@ -138,6 +133,7 @@ void ACVectorBase::SetCVector(FVector inA, FVector inB)
 
 void ACVectorBase::SetDefaultNameVisibility()
 {
+   if(!MLD_PTR_CHECK(coordinateSystem)) return;
    SetNameVisible(coordinateSystem->showCVectorName);
    SetMathDataVisible(coordinateSystem->showCVectorMathData);
 }

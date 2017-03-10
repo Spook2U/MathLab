@@ -140,7 +140,7 @@ void APlaneBase::BeginPlay()
 
 void APlaneBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathPlane inPlane, PlaneMode inMode, FName inName)
 {
-   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
+   if(!MLD_PTR_CHECK(inCoordinateSystem)) return;
 
    type = GeometryType::plane;
    plane = inPlane;
@@ -164,15 +164,14 @@ void APlaneBase::SetComponents(TArray<UStaticMeshComponent *> components, UTextR
 {
    for(UStaticMeshComponent *c : components)
    {
-      MLD_PTR_CHECK(c); if(!c) continue;
+      if(!MLD_PTR_CHECK(c)) continue;
       if(c->GetName().Equals("PlaneMesh")) { this->planeMesh = c; }
    }
 
-   MLD_PTR_CHECK(planeMesh); if(!planeMesh) return;
+   if(!(MLD_PTR_CHECK(planeMesh) && MLD_PTR_CHECK(inText))) return;
    SetLaserMatTransparency(planeMesh, 0.1f);
    AddLaserComponent(planeMesh);
 
-   if(!MLD_PTR_CHECK(inText)) return;
    nameRender = inText;
 }
 
@@ -202,6 +201,7 @@ APlaneBase *APlaneBase::SetPlane(FMathPlane inPlane)
    plane = inPlane;
    nameMathData = FName(*inPlane.ToStringShort());
 
+   if(!(MLD_PTR_CHECK(constVectors[0]) && MLD_PTR_CHECK(constVectors[1]) && MLD_PTR_CHECK(constVectors[2]) && MLD_PTR_CHECK(constVectors[4]))) return nullptr;
    constVectors[0]->SetCVector(FVector::ZeroVector, plane.position);
    constVectors[1]->SetCVector(plane.position, plane.direction1);
    constVectors[2]->SetCVector(plane.position, plane.direction2);
@@ -228,6 +228,7 @@ FString APlaneBase::ToString()
 
 void APlaneBase::CreateCVector(LaserColors inColor)
 {
+   if(!MLD_PTR_CHECK(coordinateSystem)) return;
    AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, FVector::ZeroVector, plane.position, CVectorMode::vectorPoint, "Position"));
    AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, plane.position, plane.direction1, CVectorMode::vectorPoint, "Direction 1"));
    AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, plane.position, plane.direction2, CVectorMode::vectorPoint, "Direction 2"));

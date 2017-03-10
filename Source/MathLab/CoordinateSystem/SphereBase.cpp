@@ -61,7 +61,7 @@ void ASphereBase::BeginPlay()
 
 void ASphereBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathSphere inSphere, FName inName)
 {
-   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
+   if(!MLD_PTR_CHECK(inCoordinateSystem)) return;
 
    type = GeometryType::sphere;
    sphere = inSphere;
@@ -75,14 +75,13 @@ void ASphereBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextR
 {
    for(UStaticMeshComponent *c : components)
    {
-      MLD_PTR_CHECK(c); if(!c) continue;
+      if(!MLD_PTR_CHECK(c)) continue;
       if(c->GetName().Equals("SphereMesh")) { this->sphereMesh = c; }
    }
 
-   MLD_PTR_CHECK(sphereMesh); if(!sphereMesh) return;
+   if(!(MLD_PTR_CHECK(sphereMesh) && MLD_PTR_CHECK(inText))) return;
    AddLaserComponent(sphereMesh);
 
-   if(!MLD_PTR_CHECK(inText)) return;
    nameRender = inText;
 }
 
@@ -107,8 +106,9 @@ ASphereBase *ASphereBase::SetSphere(FMathSphere inSphere)
    sphere = inSphere;
    nameMathData = FName(*inSphere.ToStringShort());
 
+   if(!(MLD_PTR_CHECK(constVectors[0]) && MLD_PTR_CHECK(constVectors[1]))) return nullptr;
    constVectors[0]->SetCVector(FVector::ZeroVector, sphere.center);
-   constVectors[0]->SetCVector(sphere.center, sphere.center + FVector(sphere.radius, 0, 0));
+   constVectors[1]->SetCVector(sphere.center, sphere.center + FVector(sphere.radius, 0, 0));
 
    Update();
 
@@ -126,6 +126,7 @@ FString ASphereBase::ToString()
 
 void ASphereBase::CreateCVector(LaserColors inColor)
 {
+   if(!MLD_PTR_CHECK(coordinateSystem)) return;
    AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, FVector::ZeroVector, sphere.center, CVectorMode::vectorPoint, "Position"));
    AddCVector(coordinateSystem->AddCVector(coordinateSystem, inColor, sphere.center, sphere.center + FVector(sphere.radius, 0, 0), CVectorMode::segment, FName(*FString::Printf(TEXT("Radius: %s"), *FString::SanitizeFloat(sphere.radius)))));
 }

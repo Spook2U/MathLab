@@ -50,7 +50,7 @@ FString FMathCircle::ToStringShort()
 
 void ACircleBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathCircle inCircle, FName inName)
 {
-   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
+   if(!MLD_PTR_CHECK(inCoordinateSystem)) return;
 
    type = GeometryType::circle;
    circle = inCircle;
@@ -64,18 +64,15 @@ void ACircleBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextR
 {
    for(UStaticMeshComponent *c : components)
    {
-      MLD_PTR_CHECK(c); if(!c) continue;
+      if(!MLD_PTR_CHECK(c)) continue;
       if(c->GetName().Equals("CircleMesh"))       { circleMesh = c; }
       if(c->GetName().Equals("CircleMeshBorder")) { circleMeshBorder = c; }
    }
 
-   MLD_PTR_CHECK(circleMesh);
-   MLD_PTR_CHECK(circleMeshBorder);
-   if(!(circleMesh && circleMeshBorder)) return;
+   if(!(MLD_PTR_CHECK(circleMesh) && MLD_PTR_CHECK(circleMeshBorder) && MLD_PTR_CHECK(inText))) return;
    AddLaserComponent(circleMesh);
    AddLaserComponent(circleMeshBorder);
 
-   if(!MLD_PTR_CHECK(inText)) return;
    nameRender = inText;
 }
 
@@ -109,6 +106,7 @@ void ACircleBase::BuildCircle()
    else if(circle.radius < 11) sizeFactor = 0.0392;
    else                        sizeFactor = 0.0391;
 
+   if(!MLD_PTR_CHECK(circleMeshBorder)) return;
    circleMeshBorder->SetScalarParameterValueOnMaterials(FName(TEXT("Substraction Radius")), 0.5 - sizeFactor);
 }
 

@@ -66,7 +66,7 @@ void ALineBase::BeginPlay()
 
 void ALineBase::Init(ACoordinateSystemBase *inCoordinateSystem, LaserColors inColor, FMathLine inLine, LineMode inMode, FName inName)
 {
-   MLD_PTR_CHECK(inCoordinateSystem); if(!inCoordinateSystem) return;
+   if(!MLD_PTR_CHECK(inCoordinateSystem)) return;
 
    type = GeometryType::line;
    line = inLine;
@@ -95,14 +95,14 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRen
 {
    for(UStaticMeshComponent *c : components)
    {
-      MLD_PTR_CHECK(c); if(!c) continue;
+      if(!MLD_PTR_CHECK(c)) continue;
       if(c->GetName().Equals("LineMesh"))      { this->lineMesh      = c; }
       if(c->GetName().Equals("ArrowheadMesh")) { this->arrowheadMesh = c; }
    }
 
-   MLD_PTR_CHECK(lineMesh);
-   MLD_PTR_CHECK(arrowheadMesh);
-   if(!(lineMesh && arrowheadMesh)) return;
+   ;
+   ;
+   if(!(MLD_PTR_CHECK(lineMesh) && MLD_PTR_CHECK(arrowheadMesh) && MLD_PTR_CHECK(inText))) return;
 
    InitScaleLine(lineMesh);
    InitScaleArrowhead(arrowheadMesh);
@@ -111,7 +111,6 @@ void ALineBase::SetComponents(TArray<UStaticMeshComponent*> components, UTextRen
 
    arrowheadMesh->SetVisibility(false);
 
-   if(!MLD_PTR_CHECK(inText)) return;
    nameRender = inText;
 }
 
@@ -144,15 +143,16 @@ ALineBase *ALineBase::SetLine(FMathLine inLine)
    line = inLine;
    nameMathData = FName(*inLine.ToStringShort());
 
+   if(!(MLD_PTR_CHECK(constVectors[0]) && MLD_PTR_CHECK(constVectors[1]))) return nullptr;
    switch(mode)
    {
       case LineMode::line:    
          constVectors[0]->SetCVector(FVector::ZeroVector, line.position);
-         constVectors[0]->SetCVector(line.position, line.direction);
+         constVectors[1]->SetCVector(line.position, line.direction);
          break;
       case LineMode::segment: 
          constVectors[0]->SetCVector(FVector::ZeroVector, line.position);
-         constVectors[0]->SetCVector(FVector::ZeroVector, line.direction);
+         constVectors[1]->SetCVector(FVector::ZeroVector, line.direction);
          break;
       case LineMode::vector:  
          break;
@@ -176,6 +176,7 @@ FString ALineBase::ToString()
 
 void ALineBase::CreateCVector(LaserColors inColor)
 {
+   if(!MLD_PTR_CHECK(coordinateSystem)) return;
    switch(mode)
    {
       case LineMode::line:    
