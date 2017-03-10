@@ -81,16 +81,24 @@ float MathLabLibrary::VectorDistance(FVector a, FVector b)
 bool MathLabLibrary::IsPointInLine(FMathLine line, FMathPoint point)
 {
    bool isInLine = false;
-
+   float lambdaX = 0;
+   float lambdaY = 0;
+   float lambdaZ = 0;
    /* point  = pos + lambda*dir
    lambda = (point - pos) / dir */
-   float lambda =   (point.coordinate.X - line.position.X) / line.direction.X;
-   if  ((lambda == ((point.coordinate.Y - line.position.Y) / line.direction.Y)) &&
-      (lambda == ((point.coordinate.Z - line.position.Z) / line.direction.Z)))
+   
+   if(line.direction.X != 0)                      { lambdaX = (point.coordinate.X - line.position.X) / line.direction.X; }
+   else if(point.coordinate.X != line.position.X) { isInLine = false; }
+   if(line.direction.Y != 0)                      { lambdaY = (point.coordinate.Y - line.position.Y) / line.direction.Y; }
+   else if(point.coordinate.Y != line.position.Y) { isInLine = false; }
+   if(line.direction.Z != 0)                      { lambdaZ = (point.coordinate.Z - line.position.Z) / line.direction.Z; }
+   else if(point.coordinate.Z != line.position.Z) { isInLine = false; }
+   
+   if(isInLine)
    {
-      isInLine = true;
+      isInLine = (lambdaX == lambdaY) && (lambdaX == lambdaZ);
    }
-
+   
    return isInLine;
 }
 

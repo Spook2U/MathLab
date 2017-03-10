@@ -60,7 +60,8 @@ FLSSolution FLinearSystem::GetSolution()
       }
       else
       {
-         solution = FLSSolution(LSSolutionType::endless);
+         if(CountNonZeroColumns(false) == 1) { solution = FLSSolution(LSSolutionType::no); }
+         else                                { solution = FLSSolution(LSSolutionType::endless); }
       }
    }
    else
@@ -110,7 +111,7 @@ bool FLinearSystem::IsSolved() const{
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------
 
-bool FLinearSystem::CheckColumnZeroFromTo(int from, int to)
+bool FLinearSystem::CheckColumnZeroFromTo(int column, int from, int to)
 {
    bool isZero = true;
 
@@ -120,7 +121,7 @@ bool FLinearSystem::CheckColumnZeroFromTo(int from, int to)
    {
       for(int row = from; row < to; row++)
       {
-         if(coefficientMatrix.GetElement(pivotIndex, row) != 0)
+         if(coefficientMatrix.GetElement(column, row) != 0)
          {
             isZero = false;
             break;
@@ -201,7 +202,7 @@ bool FLinearSystem::SwitchRow()
 
 bool FLinearSystem::CheckColumnZero()
 {
-   bool isZero = CheckColumnZeroFromTo(0, coefficientMatrix.RowNum());
+   bool isZero = CheckColumnZeroFromTo(pivotIndex, 0, coefficientMatrix.RowNum());
    if(isZero) 
    {
       SolveLog(pivotIndex, FString::Printf(TEXT("Column %d is empty"), pivotIndex));
@@ -265,6 +266,24 @@ int FLinearSystem::CountNonZeroRows()
    }
 
    return coefficientMatrix.RowNum() - zeroRows;
+}
+
+int FLinearSystem::CountNonZeroColumns(bool withSolutionColumn)
+{
+   int zeroColumns = 0;
+   int solutionColumn = 0;
+
+   for(int column = 0; column < coefficientMatrix.ColumnNum(); column++)
+   {
+      if(CheckColumnZeroFromTo(column, 0, coefficientMatrix.RowNum()))
+      {
+         zeroColumns++;
+      }
+   }
+
+   if(!withSolutionColumn) solutionColumn = 1;
+
+   return coefficientMatrix.ColumnNum() - zeroColumns - solutionColumn;
 }
 
 void FLinearSystem::SolveLog(int row, FString notice, bool comment)

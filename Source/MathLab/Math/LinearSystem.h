@@ -53,7 +53,7 @@ public:
 private: 
    FLSSolution solution = FLSSolution(LSSolutionType::notSolved);
 
-   bool  debugging = false;
+   bool  debugging = true;
    float pivot;
    int   pivotIndex;
    int   rowPivotIndex;
@@ -79,7 +79,7 @@ private:
    bool IsSolved() const;
 
    //Help functions for Solve()
-   bool CheckColumnZeroFromTo(int from, int to);
+   bool CheckColumnZeroFromTo(int column, int from, int to);
    bool CheckRowZeroFromTo(int row, int from, int to);
    void SetPivot();
    bool LastPivot();
@@ -89,5 +89,6 @@ private:
    void MakeRowPivotToZero();
    bool IsSolveable();
    int CountNonZeroRows();
+   int CountNonZeroColumns(bool withSolutionColumn);
    void SolveLog(int row, FString notice, bool comment = true);
 };

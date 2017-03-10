@@ -302,10 +302,8 @@ FCalcReturn CalcRelation::CalculateWith(FMathSphere sphere1, FMathSphere sphere2
          else if(distance == fabsf(sphere1.radius - sphere2.radius))
          {
             FMathLine line = FMathLine(sphere1.center, sphere2.center - sphere1.center);
-            MLD_LOG("line: %s", *line.ToStringShort());
             result.relation = Relation::insideIntersection;
-            MLD_LOG("Intersection: %s", *m.GetPointOnLine(line, (-1)*sphere1.radius, true).ToString());
-            result.intersections = FIntersection(m.GetPointOnLine(line, (-1)*sphere1.radius, true));
+            result.intersections = FIntersection(m.GetPointOnLine(line, sphere1.radius, true));
          }
          // Inside
          else // distance < |r1 - r2|
