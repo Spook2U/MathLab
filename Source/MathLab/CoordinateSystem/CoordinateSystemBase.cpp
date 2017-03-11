@@ -14,6 +14,9 @@ ACoordinateSystemBase::ACoordinateSystemBase()
 // Coordinate System ---------------------------------------------------------------------------------------------------------------------------------
    axisLength = 1;
    axisSize = 0.02f;
+   xAxisName = "x";
+   yAxisName = "y";
+   zAxisName = "z";
 
    glowiness = 10.f;
 
@@ -31,6 +34,7 @@ ACoordinateSystemBase::ACoordinateSystemBase()
    showMathData = true;
    nameTextSize = 7.5f;
    unitTextSize = 10;
+   axisTextSize = 15;
 
    showCVectorName = true;
    showCVectorMathData = false;
@@ -53,9 +57,15 @@ ACoordinateSystemBase::ACoordinateSystemBase()
 
 
 // Private -------------------------------------------------------------------------------------------------------------------------------------------
-   xAxis = nullptr;
-   yAxis = nullptr;
-   zAxis = nullptr;
+   xAxis  = nullptr;
+   yAxis  = nullptr;
+   zAxis  = nullptr;
+   xArrow = nullptr;
+   yArrow = nullptr;
+   zArrow = nullptr;
+   xName  = nullptr;
+   yName  = nullptr;
+   zName  = nullptr;
 
    circleBP = nullptr;
    static ConstructorHelpers::FObjectFinder<UBlueprint> CircleBlueprint(TEXT("Blueprint'/Game/MathLab/Blueprints/CorrdinateSystem/Circle.Circle'"));
@@ -106,7 +116,13 @@ void ACoordinateSystemBase::BeginPlay()
    
    TestFunction();
 }
-void ACoordinateSystemBase::Tick( float DeltaTime ) { Super::Tick( DeltaTime ); }
+void ACoordinateSystemBase::Tick( float DeltaTime ) 
+{ 
+   Super::Tick( DeltaTime ); 
+   RotateText(xName); 
+   RotateText(yName); 
+   RotateText(zName); 
+}
 
 
 
@@ -120,26 +136,124 @@ void ACoordinateSystemBase::TestFunction()
 
 // Coordinate System Setup ---------------------------------------------------------------------------------------------------------------------------
 
-void ACoordinateSystemBase::SetComponents(UStaticMeshComponent *inXAxis, UStaticMeshComponent *inYAxis, UStaticMeshComponent *inZAxis)
+void ACoordinateSystemBase::SetComponents(UStaticMeshComponent *inXAxis,  UStaticMeshComponent *inYAxis,  UStaticMeshComponent *inZAxis, 
+                                          UStaticMeshComponent *inXArrow, UStaticMeshComponent *inYArrow, UStaticMeshComponent *inZArrow,
+                                          UTextRenderComponent *inXName,  UTextRenderComponent *inYName,  UTextRenderComponent *inZName)
 {
-   if(!(MLD_PTR_CHECK(inXAxis) && MLD_PTR_CHECK(inYAxis) && MLD_PTR_CHECK(inZAxis))) return;
-   xAxis = inXAxis;
-   yAxis = inYAxis;
-   zAxis = inZAxis;
+   if(!(MLD_PTR_CHECK(inXAxis)  && MLD_PTR_CHECK(inYAxis)  && MLD_PTR_CHECK(inZAxis) &&
+        MLD_PTR_CHECK(inXArrow) && MLD_PTR_CHECK(inYArrow) && MLD_PTR_CHECK(inZArrow) &&
+        MLD_PTR_CHECK(inXName)  && MLD_PTR_CHECK(inYName)  && MLD_PTR_CHECK(inZName))) 
+   {
+      return;
+   }
+
+   xAxis  = inXAxis;
+   yAxis  = inYAxis;
+   zAxis  = inZAxis;
+   xArrow = inXArrow;
+   yArrow = inYArrow;
+   zArrow = inZArrow;
+   xName  = inXName;
+   yName  = inYName;
+   zName  = inZName;
+
+   SetAxisName(xAxisName, yAxisName, zAxisName);
 }
 
 void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
 {
-   if(!(MLD_PTR_CHECK(xAxis) && MLD_PTR_CHECK(yAxis) && MLD_PTR_CHECK(zAxis))) return;
+   if(!(MLD_PTR_CHECK(xAxis)  && MLD_PTR_CHECK(yAxis)  && MLD_PTR_CHECK(zAxis) && 
+        MLD_PTR_CHECK(xArrow) && MLD_PTR_CHECK(yArrow) && MLD_PTR_CHECK(zArrow))) return;
 
-   if(unitCount) { convertFactor = axisLength * 100 / unitCount; }
+   if(unitCount) { convertFactor = length * 100 / unitCount; }
 
-   FVector scaleVector = {diameter, diameter, 2 * length};
+   FVector scaleVector = {diameter, diameter, ((2*length) + (length/unitCount))};
 
    xAxis->SetWorldScale3D(scaleVector);
    yAxis->SetWorldScale3D(scaleVector);
    zAxis->SetWorldScale3D(scaleVector);
+
+   SetLaserScale(xArrow, FVector(1.f, 1.f, 1.5f) * 5*diameter);
+   SetLaserScale(yArrow, FVector(1.f, 1.f, 1.5f) * (-1)*5*diameter);
+   SetLaserScale(zArrow, FVector(1.f, 1.f, 1.5f) * 5*diameter);
+
+   MoveLaser(xArrow, Direction::up, unitCount + 0.5f);
+   MoveLaser(yArrow, Direction::up, (-1)*(unitCount + 0.5f));
+   MoveLaser(zArrow, Direction::up, unitCount + 0.5f);
+
+   MoveText(xName, FVector(unitCount+1, 0, 0));
+   MoveText(yName, FVector(0, unitCount+1, 0));
+   MoveText(zName, FVector(0, 0, unitCount+1));
+
+   //xName->SetWorldLocation(xArrow->GetComponentLocation());
+   //yName->SetWorldLocation(yArrow->GetComponentLocation());
+   //zName->SetWorldLocation(zArrow->GetComponentLocation());
 }
+
+// Temp Function Library Workaround ------------------------------------------------------------------------------------------------------------------
+// Copy from GeometryBase -> Woraround cause StaticLibrary not working
+
+void ACoordinateSystemBase::SetLaserScale(UStaticMeshComponent *laser, FVector scale)
+{
+   if(!MLD_PTR_CHECK(laser)) return;
+   laser->SetWorldScale3D(FVector((scale.X ? scale.X : laser->GetComponentScale().X), 
+                                  (scale.Y ? scale.Y : laser->GetComponentScale().Y), 
+                                  (scale.Z ? scale.Z : laser->GetComponentScale().Z)
+   ));
+}
+
+void ACoordinateSystemBase::ScaleLine(UStaticMeshComponent *line, float length)
+{
+   MoveLaser(line, Direction::up, length/2);
+   SetLaserScale(line, FVector(NULL, NULL, (convertFactor/100)*length));
+}
+
+void ACoordinateSystemBase::ScaleVector(UStaticMeshComponent *line, UStaticMeshComponent *arrowhead, float lenght)
+{
+   MoveLaser(arrowhead, Direction::up, lenght-0.075f);
+   ScaleLine(line, lenght);
+}
+
+void ACoordinateSystemBase::MoveLaser(UStaticMeshComponent *laser, Direction dir, float length)
+{
+   if(!(MLD_PTR_CHECK(laser))) return;
+
+   FVector moveDirection = FVector::ZeroVector;
+   switch(dir)
+   {
+      case Direction::forward: moveDirection = laser->GetForwardVector(); break;
+      case Direction::right:   moveDirection = laser->GetRightVector();break;
+      case Direction::up:      moveDirection = laser->GetUpVector();break;
+   }
+   laser->SetWorldLocation(((convertFactor*length)*moveDirection) + GetActorLocation());
+}
+
+void ACoordinateSystemBase::MoveText(UTextRenderComponent *textRender, FVector coordinate)
+{
+   if(!(MLD_PTR_CHECK(textRender))) return;
+   
+   FVector location = coordinate;
+   location *= convertFactor;
+   location *= FVector(1.f, -1.f, 1.f);
+   location += GetActorLocation();
+
+   textRender->SetWorldLocation(location);
+}
+
+void ACoordinateSystemBase::RotateText(UTextRenderComponent *name)
+{
+   if(!MLD_PTR_CHECK(name)) return;
+
+   FVector actorLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->GetActorLocation() + FVector(0, 0, 64);
+   FVector textLocation  = name->GetComponentLocation();
+
+   FVector norm = UKismetMathLibrary::Normal(actorLocation - textLocation);
+   FVector rotatedVector = UKismetMathLibrary::GreaterGreater_VectorRotator(norm, FRotator(0, 0, 0));
+   FRotator newRotation = UKismetMathLibrary::Conv_VectorToRotator(rotatedVector);
+   name->SetWorldRotation(newRotation);
+}
+
+
 
 void ACoordinateSystemBase::Update()
 {
@@ -148,6 +262,37 @@ void ACoordinateSystemBase::Update()
       if(!MLD_PTR_CHECK(g)) return;
       g->Update();
    }
+}
+
+// Name Functions-------------------------------------------------------------------------------------------------------------------------------------
+
+void ACoordinateSystemBase::SetAxisName(FName inXName, FName inYName, FName inZName)
+{
+   SetXAxisName(inXName);
+   SetYAxisName(inYName);
+   SetZAxisName(inZName);
+}
+
+void ACoordinateSystemBase::SetXAxisName(FName inName)
+{
+   NameAxis(xName, inName);
+}
+
+void ACoordinateSystemBase::SetYAxisName(FName inName)
+{
+   NameAxis(yName, inName);
+}
+
+void ACoordinateSystemBase::SetZAxisName(FName inName)
+{
+   NameAxis(zName, inName);
+}
+
+void ACoordinateSystemBase::NameAxis(UTextRenderComponent *axis, FName name)
+{
+   if(!MLD_PTR_CHECK(axis)) return;
+   axis->SetText(FText::FromName(name));
+   axis->SetWorldSize(axisTextSize);
 }
 
 // Add Functions--------------------------------------------------------------------------------------------------------------------------------------

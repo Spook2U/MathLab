@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "Runtime/Engine/Classes/Components/TextRenderComponent.h"
 
 #include "MathLabEnums.h"
 #include "Math/LinearSystem.h"
@@ -43,7 +44,15 @@ public:
    /* Diameter of the axis and unit in m. */
    UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "coordinate system", meta = (ClampMin = 0.01, UIMin = 1))
    float axisSize;
-
+   /* Name of the x axis. */
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay,Category = "coordinate system")
+   FName xAxisName;
+   /* Name of the y axis. */
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay,Category = "coordinate system")
+   FName yAxisName;
+   /* Name of the z axis. */
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay,Category = "coordinate system")
+   FName zAxisName;
    /* Glow intensity of the laser of the units. */
    UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "coordinate system", meta = (ClampMin = 0))
    float glowiness;
@@ -80,9 +89,12 @@ public:
    /* Determines the size of the text of all geometry objects. */
    UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "text", meta = (ClampMin = 0.01, UIMin = 2, UIMax = 20))
    float nameTextSize;
-   /* Determines the size if the unit text. */
+   /* Determines the size of the unit text. */
    UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "text", meta = (ClampMin = 0.01, UIMin = 2, UIMax = 20))
    float unitTextSize;
+   /* Determines the size of the axis texts. */
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, SimpleDisplay, Category = "text", meta = (ClampMin = 0.01, UIMin = 2, UIMax = 20))
+   float axisTextSize;
 
    /* Toughles if names from the constructing vectors should be shown by default. */
    UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "text")
@@ -126,6 +138,12 @@ private:
    UStaticMeshComponent *xAxis;
    UStaticMeshComponent *yAxis;
    UStaticMeshComponent *zAxis;
+   UStaticMeshComponent *xArrow;
+   UStaticMeshComponent *yArrow;
+   UStaticMeshComponent *zArrow;
+   UTextRenderComponent *xName;
+   UTextRenderComponent *yName;
+   UTextRenderComponent *zName;
 
    TSubclassOf<AGeometryBase> circleBP;
    TSubclassOf<AGeometryBase> lineBP;
@@ -149,9 +167,19 @@ public:
 
 // Coordinate System Setup ---------------------------------------------------------------------------------------------------------------------------
 
-   /* Sets the staticMeshReferences in the source file to work on. */
+   /* Sets the component references in the source file to work on. */
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate system")
-   void SetComponents(UStaticMeshComponent *inXAxis, UStaticMeshComponent *inYAxis, UStaticMeshComponent *inZAxis);
+   void SetComponents(UStaticMeshComponent *inXAxis,  UStaticMeshComponent *inYAxis,  UStaticMeshComponent *inZAxis, 
+                      UStaticMeshComponent *inXArrow, UStaticMeshComponent *inYArrow, UStaticMeshComponent *inZArrow,
+                      UTextRenderComponent *inXName,  UTextRenderComponent *inYName,  UTextRenderComponent *inZName);
+
+   // Copy from GeometryBase -> Woraround cause StaticLibrary not working
+   void SetLaserScale(UStaticMeshComponent *laser, FVector scale);
+   void ScaleLine(UStaticMeshComponent *line, float length);
+   void ScaleVector(UStaticMeshComponent *line, UStaticMeshComponent *arrowhead, float lenght);
+   void MoveLaser(UStaticMeshComponent *laser, Direction dir, float length);
+   void MoveText(UTextRenderComponent *textRender, FVector coordinate);
+   void RotateText(UTextRenderComponent *name);
 
    /* Changes size of the axis and updates the convertFactor. */
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate system")
@@ -160,6 +188,23 @@ public:
    /* Updates the coordinatesystem and all of its geometry. */
    UFUNCTION(BlueprintCallable, Category = "math lab|coordinate system")
    void Update();
+
+// Name Functions-------------------------------------------------------------------------------------------------------------------------------------
+   
+   /* Set the name of all axis. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|coordinate system|name")
+   void SetAxisName(FName inXName, FName inYName, FName inZName);
+   /* Set the name of the x axis. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|coordinate system|name")
+   void SetXAxisName(FName inName);
+   /* Set the name of the y axis. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|coordinate system|name")
+   void SetYAxisName(FName inName);
+   /* Set the name of the z axis. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|coordinate system|name")
+   void SetZAxisName(FName inName);
+
+   void NameAxis(UTextRenderComponent *axis, FName name);
 
 // Add Functions--------------------------------------------------------------------------------------------------------------------------------------
 

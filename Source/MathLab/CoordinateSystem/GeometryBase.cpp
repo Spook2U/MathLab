@@ -376,6 +376,7 @@ void AGeometryBase::SetLaserScale(UStaticMeshComponent *laser, FVector scale)
 
 void AGeometryBase::ScaleLine(UStaticMeshComponent *line, float length)
 {
+   if(!MLD_PTR_CHECK(coordinateSystem)) return;
    MoveLaser(line, Direction::up, length/2);
    SetLaserScale(line, FVector(NULL, NULL, (coordinateSystem->convertFactor/100)*length));
 }
@@ -393,6 +394,7 @@ void AGeometryBase::ScalePlane(UStaticMeshComponent *plane, float lenght)
 
 void AGeometryBase::ScaleSphere(UStaticMeshComponent *sphere, float radius)
 {
+   if(!MLD_PTR_CHECK(coordinateSystem)) return;
    SetLaserScale(sphere, FVector(1.f, 1.f, 1.f) * ((radius*2) * coordinateSystem->convertFactor/100));
 }
 
