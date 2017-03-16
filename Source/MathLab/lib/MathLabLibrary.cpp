@@ -84,19 +84,34 @@ bool MathLabLibrary::IsPointInLine(FMathLine line, FMathPoint point)
    float lambdaX = 0;
    float lambdaY = 0;
    float lambdaZ = 0;
+   bool dirXZero = false;
+   bool dirYZero = false;
+   bool dirZZero = false;
    /* point  = pos + lambda*dir
    lambda = (point - pos) / dir */
    
-   if(line.direction.X != 0)                      { lambdaX = (point.coordinate.X - line.position.X) / line.direction.X; }
-   else if(point.coordinate.X != line.position.X) { isInLine = false; }
-   if(line.direction.Y != 0)                      { lambdaY = (point.coordinate.Y - line.position.Y) / line.direction.Y; }
-   else if(point.coordinate.Y != line.position.Y) { isInLine = false; }
-   if(line.direction.Z != 0)                      { lambdaZ = (point.coordinate.Z - line.position.Z) / line.direction.Z; }
-   else if(point.coordinate.Z != line.position.Z) { isInLine = false; }
-   
-   if(isInLine)
+   if(FLOAT_EQ(line.direction.X, 0)) { dirXZero = true; }
+   else                              { lambdaX = (point.coordinate.X - line.position.X) / line.direction.X; }
+   if(FLOAT_EQ(line.direction.Y, 0)) { dirYZero = true; }
+   else                              { lambdaY = (point.coordinate.Y - line.position.Y) / line.direction.Y; }
+   if(FLOAT_EQ(line.direction.Z, 0)) { dirZZero = true; }
+   else                              { lambdaZ = (point.coordinate.Z - line.position.Z) / line.direction.Z; }
+
+   if((dirYZero && dirZZero) || (dirXZero && dirZZero) || (dirXZero && dirYZero))
    {
-      isInLine = (lambdaX == lambdaY) && (lambdaX == lambdaZ);
+      if(dirYZero && dirZZero) { isInLine = FLOAT_EQ(point.coordinate.Y, line.position.Y) && FLOAT_EQ(point.coordinate.Z, line.position.Z); }
+      if(dirXZero && dirZZero) { isInLine = FLOAT_EQ(point.coordinate.X, line.position.X) && FLOAT_EQ(point.coordinate.Z, line.position.Z); }
+      if(dirXZero && dirYZero) { isInLine = FLOAT_EQ(point.coordinate.X, line.position.X) && FLOAT_EQ(point.coordinate.Y, line.position.Y); }
+   }
+   else if(dirXZero || dirYZero || dirZZero)
+   {
+      if(dirXZero) { isInLine = FLOAT_EQ(lambdaY, lambdaZ) && FLOAT_EQ(point.coordinate.X, line.position.X); }
+      if(dirYZero) { isInLine = FLOAT_EQ(lambdaX, lambdaZ) && FLOAT_EQ(point.coordinate.Y, line.position.Y); }
+      if(dirZZero) { isInLine = FLOAT_EQ(lambdaX, lambdaY) && FLOAT_EQ(point.coordinate.Z, line.position.Z); }
+   }
+   else
+   {
+      isInLine = FLOAT_EQ(lambdaX, lambdaY) && FLOAT_EQ(lambdaX, lambdaZ);
    }
    
    return isInLine;
@@ -106,19 +121,19 @@ bool MathLabLibrary::IsPointInPlane(FMathPlane plane, FMathPoint point)
 {
    bool isInPlane = false;
    FLinearSystem linearSystem = FLinearSystem(FNMatrix({FNVector({plane.direction1.X, plane.direction2.X, point.coordinate.X-plane.position.X}), 
-                                                       FNVector({plane.direction1.Y, plane.direction2.Y, point.coordinate.Y-plane.position.Y}), 
+                                                        FNVector({plane.direction1.Y, plane.direction2.Y, point.coordinate.Y-plane.position.Y}), 
    }));
    FNVector scalars;
    switch(linearSystem.GetSolution().type)
    {
       case LSSolutionType::one:       
          scalars = linearSystem.GetSolution().solution;
-         if(point.coordinate.Z == (plane.position.Z + scalars.Get(0) * plane.direction1.Z + scalars.Get(1) * plane.direction2.Z))
+         if(FLOAT_EQ(point.coordinate.Z, (plane.position.Z + scalars.Get(0) * plane.direction1.Z + scalars.Get(1) * plane.direction2.Z)))
          {
             isInPlane = true;
          }
          break;
-      case LSSolutionType::endless: MLD_WAR("PointToPlane: Linear System has endless Solutions. What to do here?"); break;
+      case LSSolutionType::endless: MLD_WAR("PointToPlane: Not possible internal error"); break;
       case LSSolutionType::no:      MLD_WAR("PointToPlane: Linear System has no solution."); break;
       default:                      MLD_WAR("PointToPlane: Wrong enum output"); break;
    }

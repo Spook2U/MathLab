@@ -153,6 +153,9 @@ public:
    /* Shows or Hides the mathematical Data of the constructing vectors. */
    UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
    void SetCVectorMathDataVisible(bool show);
+   /* Sets up how the name should be build. */
+   UFUNCTION(BlueprintCallable, Category = "math lab|geometry")
+   void SetupName(bool showName, bool showMathdata, bool showConstructingVectorName, bool showConstructingVectorMathData);
 
    /* Sets the name visible if eather showName or showMathData is true. */
    void UpdateTextVisibility();

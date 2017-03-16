@@ -165,6 +165,8 @@ void ACoordinateSystemBase::ScaleAxis(float length, float diameter)
    if(!(MLD_PTR_CHECK(xAxis)  && MLD_PTR_CHECK(yAxis)  && MLD_PTR_CHECK(zAxis) && 
         MLD_PTR_CHECK(xArrow) && MLD_PTR_CHECK(yArrow) && MLD_PTR_CHECK(zArrow))) return;
 
+   axisLength = length;
+   axisSize   = diameter;
    if(unitCount) { convertFactor = length * 100 / unitCount; }
 
    FVector scaleVector = {diameter, diameter, ((2*length) + (length/unitCount))};
@@ -642,6 +644,17 @@ FMathLine ACoordinateSystemBase::LineBPToFLine(ALineBase *inLine)           { if
 FMathPlane ACoordinateSystemBase::PlaneBPToFPlane(APlaneBase *inPlane)      { if(!MLD_PTR_CHECK(inPlane))  { return FMathPlane();  } return inPlane->plane;   }                                                                                                                                                         
 FMathPoint ACoordinateSystemBase::PointBPToFPoint(APointBase *inPoint)      { if(!MLD_PTR_CHECK(inPoint))  { return FMathPoint();  } return inPoint->point;   }                                                                                                                                                         
 FMathSphere ACoordinateSystemBase::SphereBPToFSphere(ASphereBase *inSphere) { if(!MLD_PTR_CHECK(inSphere)) { return FMathSphere(); } return inSphere->sphere; }
+
+bool ACoordinateSystemBase::Equal_CircleCircle(const FMathCircle& A, const FMathCircle& B) {    return A == B; }
+bool ACoordinateSystemBase::Equal_LineLine(const FMathLine& A, const FMathLine& B)         {    return A == B; }
+bool ACoordinateSystemBase::Equal_PlanePlane(const FMathPlane& A, const FMathPlane& B)     {    return A == B; }
+bool ACoordinateSystemBase::Equal_PointPoint(const FMathPoint& A, const FMathPoint& B)     {    return A == B; }
+bool ACoordinateSystemBase::Equal_SphereSphere(const FMathSphere& A, const FMathSphere& B) {    return A == B; }
+
+FMathPlane ACoordinateSystemBase::MakePlaneFromNormal(FMathPoint point, FVector normal)
+{
+   return FMathPlane(point, normal);
+}
 
 // Calculations --------------------------------------------------------------------------------------------------------------------------------------
 

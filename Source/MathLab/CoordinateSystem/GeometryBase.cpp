@@ -256,6 +256,14 @@ void AGeometryBase::SetCVectorMathDataVisible(bool show)
    }
 }
 
+void AGeometryBase::SetupName(bool showName, bool showMathdata, bool showConstructingVectorName, bool showConstructingVectorMathData)
+{
+   SetNameVisible(showName);
+   SetMathDataVisible(showMathdata);
+   SetCVectorNameVisible(showConstructingVectorName);
+   SetCVectorMathDataVisible(showConstructingVectorMathData);
+}
+
 void AGeometryBase::UpdateTextVisibility()
 {
    if(!MLD_PTR_CHECK(nameRender)) return;
@@ -389,7 +397,7 @@ void AGeometryBase::ScaleVector(UStaticMeshComponent *line, UStaticMeshComponent
 
 void AGeometryBase::ScalePlane(UStaticMeshComponent *plane, float lenght)
 {
-   SetLaserScale(plane, FVector(lenght, lenght, NULL));
+   SetLaserScale(plane, FVector((coordinateSystem->convertFactor/100)*lenght*2, (coordinateSystem->convertFactor/100)*lenght*2, NULL));
 }
 
 void AGeometryBase::ScaleSphere(UStaticMeshComponent *sphere, float radius)

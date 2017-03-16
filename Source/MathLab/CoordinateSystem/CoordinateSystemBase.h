@@ -359,6 +359,26 @@ public:
    UFUNCTION(BlueprintPure, DisplayName = "ToSphereStruct (Sphere Base)", Category = "math lab|struct", meta = (CompactNodeTitle = "->", BlueprintAutocast))
    FMathSphere SphereBPToFSphere(ASphereBase *inSphere);
 
+   /* Compares if the two MathCircle are the same. */
+   UFUNCTION(BlueprintPure, meta=(DisplayName = "Equal (Math Circle)", CompactNodeTitle = "=="), Category="math lab|struct")
+   bool Equal_CircleCircle(const FMathCircle& A, const FMathCircle& B);
+   /* Compares if the two MathLine are the same. */
+   UFUNCTION(BlueprintPure, meta=(DisplayName = "Equal (Math Line)", CompactNodeTitle = "=="), Category="math lab|struct")
+   bool Equal_LineLine(const FMathLine& A, const FMathLine& B);
+   /* Compares if the two MathPlane are the same. */
+   UFUNCTION(BlueprintPure, meta=(DisplayName = "Equal (Math Plane)", CompactNodeTitle = "=="), Category="math lab|struct")
+   bool Equal_PlanePlane(const FMathPlane& A, const FMathPlane& B);
+   /* Compares if the two MathPoint are the same. */
+   UFUNCTION(BlueprintPure, meta=(DisplayName = "Equal (Math Point)", CompactNodeTitle = "=="), Category="math lab|struct")
+   bool Equal_PointPoint(const FMathPoint& A, const FMathPoint& B);
+   /* Compares if the two MathSphere are the same. */
+   UFUNCTION(BlueprintPure, meta=(DisplayName = "Equal (Math Sphere)", CompactNodeTitle = "=="), Category="math lab|struct")
+   bool Equal_SphereSphere(const FMathSphere& A, const FMathSphere& B);
+
+   /* Makes a MathPlane with a point and a normal. */
+   UFUNCTION(BlueprintPure, meta=(DisplayName = "Make MathPlane from Normal"), Category="math lab|struct")
+   FMathPlane MakePlaneFromNormal(FMathPoint point, FVector normal);
+
 // Calculations --------------------------------------------------------------------------------------------------------------------------------------
 
    /* Returns the distance from one geometry to the other.*/
